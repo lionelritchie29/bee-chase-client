@@ -14,6 +14,7 @@ const Login: NextPage = () => {
 
   return (
     <Layout
+      showNavbar={false}
       className='grid place-items-center bg-primary'
       style={{
         backgroundImage: `url('/assets/login_backdrop.jpg')`,
