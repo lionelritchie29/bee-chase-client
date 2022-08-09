@@ -23,7 +23,7 @@ export default function Layout({ children, className = '', style = {}, showNavba
   return (
     <div>
       {showNavbar && (
-        <nav className='navbar bg-primary border-b text-white'>
+        <nav className='navbar bg-primary border-b text-white fixed'>
           <div className='flex-1'>
             {/* <Image src={binusLogo} width={50} height={30} alt='logo' /> */}
             <a className='btn btn-ghost normal-case text-xl'>BeeChase</a>
@@ -46,7 +46,7 @@ export default function Layout({ children, className = '', style = {}, showNavba
         </nav>
       )}
 
-      <main style={style} className={`pt-4 min-h-screen px-6 ${className}`}>
+      <main style={style} className={`pt-20 min-h-screen px-6 ${className}`}>
         {children}
       </main>
     </div>

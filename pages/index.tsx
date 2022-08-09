@@ -1,8 +1,15 @@
-import type { NextPage } from 'next';
 import Layout from '../components/shared/Layout';
+import InputGameCode from '../components/home/InputGameCode';
+import { NextPage } from 'next';
+import GameList from '../components/home/GameList';
 
 const Home: NextPage = () => {
-  return <Layout>Test</Layout>;
+  return (
+    <Layout>
+      {/* <InputGameCode /> */}
+      <GameList />
+    </Layout>
+  );
 };
 
 export default Home;
