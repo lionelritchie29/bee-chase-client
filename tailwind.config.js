@@ -7,5 +7,13 @@ module.exports = {
   plugins: [require('daisyui')],
   daisyui: {
     darkTheme: 'night',
+    themes: [
+      {
+        light: {
+          ...require('daisyui/src/colors/themes')['[data-theme=winter]'],
+          primary: '#00a9e2',
+        },
+      },
+    ],
   },
 };
