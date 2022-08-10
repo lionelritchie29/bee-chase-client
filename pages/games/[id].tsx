@@ -5,6 +5,7 @@ import GameBottomNavbar from '../../widgets/BottomNavbar';
 import { BottomNavbarItem } from '../../models/view/BottomNavbarItem';
 import { useState } from 'react';
 import LeaderboardList from '../../components/games/LeaderboardList';
+import MissionList from '../../components/games/MissionList';
 
 const GamePage: NextPage = () => {
   const bottomNavItems: BottomNavbarItem[] = [
@@ -26,10 +27,10 @@ const GamePage: NextPage = () => {
   ];
   const [activeNavItemId, setActiveNavItemId] = useState(1);
 
-  const getContent = () => {
+  const renderContent = () => {
     switch (activeNavItemId) {
       case 1:
-        return '1';
+        return <MissionList />;
       case 2:
         return <LeaderboardList />;
       default:
@@ -39,7 +40,7 @@ const GamePage: NextPage = () => {
 
   return (
     <Layout controlSpacing={false}>
-      {getContent()}
+      {renderContent()}
 
       <GameBottomNavbar
         activeItemId={activeNavItemId}
