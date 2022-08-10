@@ -1,4 +1,4 @@
-import Layout from '../components/shared/Layout';
+import Layout from '../widgets/Layout';
 import InputGameCode from '../components/home/InputGameCode';
 import { NextPage } from 'next';
 import GameList from '../components/home/GameList';

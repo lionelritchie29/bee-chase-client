@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
-import Layout from '../../components/shared/Layout';
+import Layout from '../../widgets/Layout';
 import BinusImg from '../../public/assets/logo.png';
 import RibbonImg from '../../public/assets/ribbon.png';
 
