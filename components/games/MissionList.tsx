@@ -32,14 +32,14 @@ export default function MissionList() {
             key={tab.id}
             onClick={() => setActiveTabId(tab.id)}
             className={`tab w-1/2 ${
-              activeTabId === tab.id ? 'bg-primary text-white rounded shadow' : ''
+              activeTabId === tab.id ? 'bg-orange-400 text-white rounded shadow' : ''
             }`}>
             {tab.title}
           </button>
         ))}
       </div>
 
-      <div>
+      <div className='mt-4'>
         <ul className='grid grid-cols-1 md:grid-cols-2'>
           <li>
             <MissionCard />
