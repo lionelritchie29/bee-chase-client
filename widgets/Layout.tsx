@@ -8,9 +8,16 @@ type Props = {
   className?: string;
   style?: any;
   showNavbar?: boolean;
+  controlSpacing?: boolean;
 };
 
-export default function Layout({ children, className = '', style = {}, showNavbar = true }: Props) {
+export default function Layout({
+  children,
+  className = '',
+  style = {},
+  showNavbar = true,
+  controlSpacing = true,
+}: Props) {
   const size = useWindowSize();
 
   if (size.width && size.width >= 1024) {
@@ -25,7 +32,9 @@ export default function Layout({ children, className = '', style = {}, showNavba
     <div>
       {showNavbar && <Navbar />}
 
-      <main style={style} className={`pt-20 min-h-screen px-4 ${className}`}>
+      <main
+        style={style}
+        className={`${controlSpacing ? 'px-4' : ''} pt-16 min-h-screen ${className}`}>
         {children}
       </main>
     </div>

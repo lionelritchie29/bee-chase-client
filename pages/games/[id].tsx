@@ -4,6 +4,7 @@ import Layout from '../../widgets/Layout';
 import GameBottomNavbar from '../../widgets/BottomNavbar';
 import { BottomNavbarItem } from '../../models/view/BottomNavbarItem';
 import { useState } from 'react';
+import LeaderboardList from '../../components/games/LeaderboardList';
 
 const GamePage: NextPage = () => {
   const bottomNavItems: BottomNavbarItem[] = [
@@ -25,8 +26,21 @@ const GamePage: NextPage = () => {
   ];
   const [activeNavItemId, setActiveNavItemId] = useState(1);
 
+  const getContent = () => {
+    switch (activeNavItemId) {
+      case 1:
+        return '1';
+      case 2:
+        return <LeaderboardList />;
+      default:
+        return 'hehe';
+    }
+  };
+
   return (
-    <Layout>
+    <Layout controlSpacing={false}>
+      {getContent()}
+
       <GameBottomNavbar
         activeItemId={activeNavItemId}
         setActiveItemId={setActiveNavItemId}
