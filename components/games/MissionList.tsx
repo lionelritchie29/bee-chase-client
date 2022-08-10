@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import MissionCard from './MissionCard';
 
 export default function MissionList() {
   const tabs = [
@@ -38,7 +39,19 @@ export default function MissionList() {
         ))}
       </div>
 
-      <div className='px-3'>{renderContent()}</div>
+      <div>
+        <ul className='grid grid-cols-1 md:grid-cols-2'>
+          <li>
+            <MissionCard />
+          </li>
+          <li>
+            <MissionCard />
+          </li>
+          <li>
+            <MissionCard />
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }
