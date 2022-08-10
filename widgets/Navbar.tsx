@@ -1,6 +1,6 @@
 export default function Navbar() {
   return (
-    <nav className='navbar bg-primary border-b text-white fixed'>
+    <nav className='navbar bg-primary border-b text-white'>
       <div className='flex-1'>
         {/* <Image src={binusLogo} width={50} height={30} alt='logo' /> */}
         <a className='btn btn-ghost normal-case text-xl'>BeeChase</a>

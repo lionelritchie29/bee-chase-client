@@ -29,12 +29,10 @@ export default function Layout({
   }
 
   return (
-    <div>
+    <div className='min-h-screen'>
       {showNavbar && <Navbar />}
 
-      <main
-        style={style}
-        className={`${controlSpacing ? 'px-4' : ''} pt-16 min-h-screen ${className}`}>
+      <main style={style} className={`${controlSpacing ? 'px-4' : ''} ${className}`}>
         {children}
       </main>
     </div>
