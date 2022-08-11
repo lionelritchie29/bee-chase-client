@@ -4,18 +4,42 @@ import { useForm } from 'react-hook-form';
 import Layout from '../../widgets/Layout';
 import BinusImg from '../../public/assets/logo.png';
 import RibbonImg from '../../public/assets/ribbon.png';
+import { signIn } from 'next-auth/react';
+import UseLoading from '../../hooks/use-loading';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/router';
+
+type FormData = {
+  username: string;
+  password: string;
+};
 
 const Login: NextPage = () => {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+  const [{ isLoading, load, finish }] = UseLoading(false);
+  const router = useRouter();
 
-  const onSubmit = handleSubmit(async (data) => {
-    console.log({ data });
+  const onSubmit = handleSubmit(async ({ username, password }) => {
+    load('Signing in...');
+    const response = await signIn('credentials', { redirect: false, username, password });
+
+    if (response?.error) {
+      toast.error(response.error);
+    } else {
+      router.push('/');
+    }
+
+    finish();
   });
 
   return (
     <Layout
       showNavbar={false}
-      className='grid place-items-center bg-primary'
+      className='grid place-items-center bg-primary min-h-screen'
       style={{
         backgroundImage: `url('/assets/login_backdrop.jpg')`,
         backgroundPosition: 'center',
@@ -30,25 +54,34 @@ const Login: NextPage = () => {
             <Image src={BinusImg} alt='binus' />
           </div>
 
-          <form onSubmit={onSubmit} className='card-body items-center text-center'>
-            <input
-              type='text'
-              {...register('nim')}
-              placeholder='NIM'
-              className='input input-bordered w-full max-w-xs input-md'
-              required
-            />
+          <form onSubmit={onSubmit} className='card-body '>
+            <div>
+              <input
+                type='text'
+                {...register('username', { required: true })}
+                placeholder='NIM'
+                className='input input-bordered w-full max-w-xs input-md'
+              />
+              {errors?.username && <small className='text-red-300'>Username must be filled</small>}
+            </div>
 
-            <input
-              type='password'
-              {...register('password')}
-              placeholder='Password'
-              className='input input-bordered w-full max-w-xs input-md'
-              required
-            />
+            <div>
+              <input
+                type='password'
+                {...register('password', { required: true })}
+                placeholder='Password'
+                className='input input-bordered w-full max-w-xs input-md'
+              />
+              {errors?.password && <small className='text-red-300'>Password must be filled</small>}
+            </div>
 
             <div className='card-actions w-full'>
-              <button type='submit' className='btn btn-primary w-full mt-3 text-white'>
+              <button
+                disabled={isLoading}
+                type='submit'
+                className={`btn ${
+                  isLoading ? 'btn-disabled' : 'btn-primary'
+                } w-full mt-3 text-white`}>
                 Login
               </button>
             </div>
