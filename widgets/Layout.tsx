@@ -2,6 +2,7 @@ import Image from 'next/image';
 import useWindowSize from '../hooks/use-window-size';
 import binusLogo from '../../public/assets/logo.png';
 import Navbar from './Navbar';
+import Head from 'next/head';
 
 type Props = {
   children: any;
@@ -29,12 +30,17 @@ export default function Layout({
   }
 
   return (
-    <div className='min-h-screen'>
-      {showNavbar && <Navbar />}
+    <>
+      <Head>
+        <title>BeeChase</title>
+      </Head>
+      <div className='min-h-screen'>
+        {showNavbar && <Navbar />}
 
-      <main style={style} className={`${controlSpacing ? 'px-4' : ''} ${className}`}>
-        {children}
-      </main>
-    </div>
+        <main style={style} className={`${controlSpacing ? 'px-4' : ''} ${className}`}>
+          {children}
+        </main>
+      </div>
+    </>
   );
 }
