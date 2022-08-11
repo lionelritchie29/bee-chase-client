@@ -33,7 +33,7 @@ export default function InputGameCode() {
       toast.dismiss();
       toast.error('Ups, invalid code');
     } else {
-      router.push(`/games/${game.id}/teams`);
+      router.push(`/games/${game.id}`);
     }
 
     finish();

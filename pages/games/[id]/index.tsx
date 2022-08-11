@@ -1,73 +1,58 @@
-import { GetServerSideProps, NextPage } from 'next';
-import { ChartBarIcon, ClipboardListIcon, BellIcon } from '@heroicons/react/outline';
+import { LockClosedIcon, PlayIcon, StopIcon } from '@heroicons/react/outline';
+import { NextPage } from 'next';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import GameDetailHeader from '../../../components/games/GameDetailHeader';
 import Layout from '../../../widgets/Layout';
-import GameBottomNavbar from '../../../widgets/BottomNavbar';
-import { BottomNavbarItem } from '../../../models/view/BottomNavbarItem';
-import { useState } from 'react';
-import LeaderboardList from '../../../components/games/LeaderboardList';
-import MissionList from '../../../components/games/MissionList';
-import { unstable_getServerSession } from 'next-auth';
-import { authOptions } from '../../api/auth/[...nextauth]';
 
-const GamePage: NextPage = () => {
-  const bottomNavItems: BottomNavbarItem[] = [
+const GameIndexPage: NextPage = () => {
+  const router = useRouter();
+  const { id } = router.query;
+
+  const items = [
     {
       id: 1,
-      title: 'Mission',
-      icon: <ClipboardListIcon className='w-5 h-5' />,
+      title: 'START',
+      value: 'TBD',
+      icon: <PlayIcon className='w-5 h-5'></PlayIcon>,
     },
     {
       id: 2,
-      title: 'Leaderboards',
-      icon: <ChartBarIcon className='w-5 h-5' />,
+      title: 'END',
+      value: 'TBD',
+      icon: <StopIcon className='w-5 h-5'></StopIcon>,
     },
     {
       id: 3,
-      title: 'Notifications',
-      icon: <BellIcon className='w-5 h-5' />,
+      title: 'PASSWORD',
+      value: 'ON',
+      icon: <LockClosedIcon className='w-5 h-5'></LockClosedIcon>,
     },
   ];
-  const [activeNavItemId, setActiveNavItemId] = useState(1);
-
-  const renderContent = () => {
-    switch (activeNavItemId) {
-      case 1:
-        return <MissionList />;
-      case 2:
-        return <LeaderboardList />;
-      default:
-        return 'hehe';
-    }
-  };
 
   return (
     <Layout controlSpacing={false}>
-      {renderContent()}
+      <GameDetailHeader />
 
-      <GameBottomNavbar
-        activeItemId={activeNavItemId}
-        setActiveItemId={setActiveNavItemId}
-        items={bottomNavItems}
-      />
+      <ul className='flex flex-col divide-y'>
+        {items.map((item) => (
+          <li key={item.id} className='flex justify-between w-full px-4 py-3'>
+            <div className='font-semibold text-gray-400 flex items-center'>
+              {item.icon}
+              <span className='block ml-2'>{item.title}</span>
+            </div>
+            <div className='font-semibold'>{item.value}</div>
+          </li>
+        ))}
+      </ul>
+
+      <div className='px-4 mt-4'>
+        <Link href={`/games/${id}/teams`}>
+          <button className='w-full text-white btn btn-primary'>Select Team & Join Game</button>
+        </Link>
+      </div>
     </Layout>
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const session = await unstable_getServerSession(req, res, authOptions);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/auth/login',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-};
-
-export default GamePage;
+export default GameIndexPage;
