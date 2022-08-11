@@ -5,13 +5,13 @@ type LoadOptions = {
   useToast?: boolean;
 };
 
-export default function UseLoading(initLoadingState: boolean, initMessage: string = '') {
+export default function useLoading(initLoadingState: boolean, initMessage: string = '') {
   const [isLoading, setIsLoading] = useState(initLoadingState);
   const [message, setMessage] = useState(initMessage);
 
   function load(message: string, { useToast = true }: LoadOptions = {}) {
     setIsLoading(true);
-    if (useToast) toast(message);
+    if (useToast) toast(message, { icon: '🔄' });
     setMessage(message);
   }
 

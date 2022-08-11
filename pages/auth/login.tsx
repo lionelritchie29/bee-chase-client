@@ -5,7 +5,7 @@ import Layout from '../../widgets/Layout';
 import BinusImg from '../../public/assets/logo.png';
 import RibbonImg from '../../public/assets/ribbon.png';
 import { signIn } from 'next-auth/react';
-import UseLoading from '../../hooks/use-loading';
+import useLoading from '../../hooks/use-loading';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import { unstable_getServerSession } from 'next-auth';
@@ -22,7 +22,7 @@ const Login: NextPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
-  const [{ isLoading, load, finish }] = UseLoading(false);
+  const [{ isLoading, load, finish }] = useLoading(false);
   const router = useRouter();
 
   const onSubmit = handleSubmit(async ({ username, password }) => {

@@ -8,8 +8,8 @@ import { authOptions } from './api/auth/[...nextauth]';
 const Home: NextPage = () => {
   return (
     <Layout>
-      {/* <InputGameCode /> */}
-      <GameList />
+      <InputGameCode />
+      {/* <GameList /> */}
     </Layout>
   );
 };
