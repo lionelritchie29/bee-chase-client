@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import Layout from '../../widgets/Layout';
@@ -8,6 +8,8 @@ import { signIn } from 'next-auth/react';
 import UseLoading from '../../hooks/use-loading';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]';
 
 type FormData = {
   username: string;
@@ -100,6 +102,23 @@ const Login: NextPage = () => {
       </div>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await unstable_getServerSession(req, res, authOptions);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default Login;

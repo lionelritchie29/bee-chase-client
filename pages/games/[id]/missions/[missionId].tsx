@@ -1,6 +1,8 @@
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
+import { unstable_getServerSession } from 'next-auth';
 import MissionCard from '../../../../components/games/MissionCard';
 import Layout from '../../../../widgets/Layout';
+import { authOptions } from '../../../api/auth/[...nextauth]';
 
 const MissionDetailPage: NextPage = () => {
   return (
@@ -12,6 +14,23 @@ const MissionDetailPage: NextPage = () => {
       </div>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await unstable_getServerSession(req, res, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default MissionDetailPage;
