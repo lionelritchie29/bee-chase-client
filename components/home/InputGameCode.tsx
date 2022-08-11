@@ -6,6 +6,7 @@ import { GameService } from '../../services/GameService';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useLoading from '../../hooks/use-loading';
+import { useRouter } from 'next/router';
 
 type FormData = {
   code: string;
@@ -22,6 +23,7 @@ export default function InputGameCode() {
     formState: { errors },
   } = useForm<FormData>();
   const [{ isLoading, load, finish }] = useLoading(false);
+  const router = useRouter();
 
   const onSubmit = handleSubmit(async ({ code }) => {
     load('Searching game...');
@@ -31,6 +33,7 @@ export default function InputGameCode() {
       toast.dismiss();
       toast.error('Ups, invalid code');
     } else {
+      router.push(`/games/${game.id}/teams`);
     }
 
     finish();
