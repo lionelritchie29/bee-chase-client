@@ -31,7 +31,7 @@ export default function GameDetailHeader({ game }: Props) {
               </div>
             </div>
           )}
-          <div className='text-center mt-2 font-bold text-lg'>Telor</div>
+          <div className='text-center mt-2 font-bold text-lg'>{game.name}</div>
         </div>
       </div>
     </div>

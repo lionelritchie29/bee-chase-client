@@ -1,21 +1,37 @@
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
+import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import useLoading from '../../../../hooks/use-loading';
+import { redirectToHome, redirectToLogin } from '../../../../lib/server-redirect-helper';
+import { CreateGameTeamDto } from '../../../../models/dto/game-teams/create-team.dto';
+import { Game } from '../../../../models/Game';
 import { SessionUser } from '../../../../models/SessionUser';
+import { GameService } from '../../../../services/GameService';
+import { GameTeamService } from '../../../../services/GameTeamService';
 import Layout from '../../../../widgets/Layout';
+import { authOptions } from '../../../api/auth/[...nextauth]';
 
 type FormData = {
   name: string;
-  code: string;
+  code: number;
 };
 
-const CreateTeamPage: NextPage = () => {
+type Props = {
+  game: Game;
+};
+
+const CreateTeamPage: NextPage<Props> = ({ game }) => {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+  const gameTeamService = new GameTeamService(user?.access_token);
+
   const router = useRouter();
   const { id } = router.query;
+  const [{ isLoading, load, finish }] = useLoading(false);
 
   const {
     register,
@@ -30,11 +46,27 @@ const CreateTeamPage: NextPage = () => {
     const randomAccessCode = Math.floor(Math.random() * (MAX - MIN)) + MIN;
 
     setValue('name', user?.name);
-    setValue('code', randomAccessCode.toString());
-  }, []);
+    setValue('code', randomAccessCode);
+  }, [user, setValue]);
 
   const onSubmit = handleSubmit(async ({ name, code }) => {
-    router.push(`/games/${id}/play`);
+    const dto: CreateGameTeamDto = {
+      game_id: game.id,
+      name,
+    };
+
+    if (code) dto.access_code = code.toString();
+
+    await toast.promise(gameTeamService.create(dto), {
+      success: (createdTeam) => {
+        console.log({ createdTeam });
+        return 'Team created!';
+      },
+      loading: 'Creating team...',
+      error: (e) => {
+        return e.response.data.message;
+      },
+    });
   });
 
   return (
@@ -71,12 +103,21 @@ const CreateTeamPage: NextPage = () => {
             </span>
           </label>
           <input
-            type='text'
-            {...register('code', { required: true })}
+            type='number'
+            {...register('code', {
+              validate: (value) => {
+                console.log({ value });
+                if (value) return value >= 1000 && value <= 9999;
+                else return true;
+              },
+              valueAsNumber: true,
+            })}
             placeholder='Access Code'
             className='input input-bordered w-full input-md'
           />
-          {errors?.name && <small className='text-red-300'>Access code must be filled</small>}
+          {errors?.code?.type == 'validate' && (
+            <small className='text-red-300'>Access code must be exactly 4 characters</small>
+          )}
         </div>
 
         <button type='submit' className='btn btn-primary w-full text-white mt-4'>
@@ -85,6 +126,24 @@ const CreateTeamPage: NextPage = () => {
       </form>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res, params }) => {
+  const session = await unstable_getServerSession(req, res, authOptions);
+  if (!session) return redirectToLogin();
+
+  const { id } = params as any;
+  const user = session.user as SessionUser;
+  const gameService = new GameService(user.access_token);
+  const game = await gameService.get(id);
+
+  if (!game) return redirectToHome();
+
+  return {
+    props: {
+      game,
+    },
+  };
 };
 
 export default CreateTeamPage;

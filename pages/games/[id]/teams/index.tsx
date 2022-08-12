@@ -1,12 +1,22 @@
 import { ChevronRightIcon, PlusCircleIcon } from '@heroicons/react/outline';
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
+import { unstable_getServerSession } from 'next-auth';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import GameDetailHeader from '../../../../components/games/GameDetailHeader';
 import TeamCard from '../../../../components/teams/TeamCard';
+import { redirectToHome, redirectToLogin } from '../../../../lib/server-redirect-helper';
+import { Game } from '../../../../models/Game';
+import { SessionUser } from '../../../../models/SessionUser';
+import { GameService } from '../../../../services/GameService';
 import Layout from '../../../../widgets/Layout';
+import { authOptions } from '../../../api/auth/[...nextauth]';
 
-const GameTeamsPage: NextPage = () => {
+type Props = {
+  game: Game;
+};
+
+const GameTeamsPage: NextPage<Props> = ({ game }) => {
   const router = useRouter();
   const { id } = router.query;
   const dummy = [
@@ -26,7 +36,7 @@ const GameTeamsPage: NextPage = () => {
 
   return (
     <Layout controlSpacing={false}>
-      <GameDetailHeader />
+      <GameDetailHeader game={game} />
 
       <div className='bg-gray-200 py-2 px-4 font-semibold uppercase text-sm'>Select Team</div>
       <ul>
@@ -54,6 +64,24 @@ const GameTeamsPage: NextPage = () => {
       </ul>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res, params }) => {
+  const session = await unstable_getServerSession(req, res, authOptions);
+  if (!session) return redirectToLogin();
+
+  const { id } = params as any;
+  const user = session.user as SessionUser;
+  const gameService = new GameService(user.access_token);
+  const game = await gameService.get(id);
+
+  if (!game) return redirectToHome();
+
+  return {
+    props: {
+      game,
+    },
+  };
 };
 
 export default GameTeamsPage;
