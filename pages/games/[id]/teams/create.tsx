@@ -137,7 +137,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
   const gameService = new GameService(user.access_token);
   const game = await gameService.get(id);
 
-  if (!game) return redirectToHome();
+  if (!game || !game.allow_user_create_team) return redirectToHome();
 
   return {
     props: {
