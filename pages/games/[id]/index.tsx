@@ -1,9 +1,14 @@
 import { LockClosedIcon, PlayIcon, StopIcon } from '@heroicons/react/outline';
 import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
 import GameDetailHeader from '../../../components/games/GameDetailHeader';
+import InputGamePassModal from '../../../components/games/InputGamePassModal';
+import useLoading from '../../../hooks/use-loading';
 import { redirectToHome, redirectToLogin } from '../../../lib/server-redirect-helper';
 import { Game } from '../../../models/Game';
 import { SessionUser } from '../../../models/SessionUser';
@@ -18,6 +23,12 @@ type Props = {
 const GameIndexPage: NextPage<Props> = ({ game }) => {
   const router = useRouter();
   const { id } = router.query;
+  const [openModal, setOpenModal] = useState(false);
+  const [{ load, finish, isLoading }] = useLoading(false);
+
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const gameService = new GameService(user?.access_token);
 
   const items = [
     {
@@ -35,10 +46,29 @@ const GameIndexPage: NextPage<Props> = ({ game }) => {
     {
       id: 3,
       title: 'PASSWORD',
-      value: game?.password ? 'ON' : 'OFF',
+      value: game?.has_password ? 'ON' : 'OFF',
       icon: <LockClosedIcon className='w-5 h-5'></LockClosedIcon>,
     },
   ];
+
+  const onClick = () => {
+    if (game.has_password) {
+      setOpenModal(true);
+    } else {
+      router.push(`/games/${game.id}/teams`);
+    }
+  };
+
+  const verifyPass = async (passcode: string) => {
+    load('Verifying...');
+    const isCorrect = await gameService.verifyPasscode(game.id, passcode);
+    if (isCorrect) {
+      toast.success('Success');
+      router.push(`/games/${game.id}/teams`);
+    } else {
+      finish('Wrong passcode', { success: false });
+    }
+  };
 
   return (
     <Layout controlSpacing={false}>
@@ -57,10 +87,20 @@ const GameIndexPage: NextPage<Props> = ({ game }) => {
       </ul>
 
       <div className='px-4 mt-4'>
-        <Link href={`/games/${id}/teams`}>
-          <button className='w-full text-white btn btn-primary'>Select Team & Join Game</button>
-        </Link>
+        <button
+          disabled={isLoading}
+          onClick={onClick}
+          className={`w-full text-white btn ${isLoading ? 'btn-disabled' : 'btn-primary'}`}>
+          Select Team & Join Game
+        </button>
       </div>
+
+      <InputGamePassModal
+        isOpen={openModal}
+        setIsOpen={setOpenModal}
+        verifyPass={verifyPass}
+        key={game.id}
+      />
     </Layout>
   );
 };
