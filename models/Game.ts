@@ -7,6 +7,9 @@ export type Game = {
   id: string;
   name: string;
   image: string | null;
+  is_solo: boolean;
+  allow_user_create_team: boolean;
+  has_password: boolean;
   password: string | null;
   start_time: string | null;
   updated_at: string;

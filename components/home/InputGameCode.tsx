@@ -32,11 +32,10 @@ export default function InputGameCode() {
     if (!game) {
       toast.dismiss();
       toast.error('Ups, invalid code');
+      finish();
     } else {
       router.push(`/games/${game.id}`);
     }
-
-    finish();
   });
 
   return (

@@ -35,7 +35,7 @@ const Login: NextPage = () => {
       router.push('/');
     }
 
-    finish();
+    finish('Logged in');
   });
 
   return (

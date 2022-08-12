@@ -4,5 +4,6 @@ export type GameTeam = {
   game_id: string;
   id: string;
   name: string;
+  color: string;
   updated_at: string;
 };
