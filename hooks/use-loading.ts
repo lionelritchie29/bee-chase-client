@@ -15,8 +15,13 @@ export default function useLoading(initLoadingState: boolean, initMessage: strin
     setMessage(message);
   }
 
-  function finish() {
+  function finish(message: string = '', { success = true } = {}) {
     setIsLoading(false);
+    if (message) {
+      toast.dismiss();
+      if (success) toast.success(message);
+      else toast.error(message);
+    }
     setMessage('');
   }
 

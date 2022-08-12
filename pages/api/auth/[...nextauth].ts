@@ -19,7 +19,6 @@ export const authOptions: NextAuthOptions = {
             throw new Error('Username and password must be filled');
           }
 
-          console.log('tot');
           const BASE_API_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
           const API_URL = `${BASE_API_URL}/auth/login`;
           const response = await axios.post(API_URL, { username, password });

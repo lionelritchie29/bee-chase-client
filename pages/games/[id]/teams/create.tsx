@@ -59,7 +59,7 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
 
     await toast.promise(gameTeamService.create(dto), {
       success: (createdTeam) => {
-        console.log({ createdTeam });
+        router.replace(`/games/${game.id}/teams`);
         return 'Team created!';
       },
       loading: 'Creating team...',
