@@ -1,11 +1,21 @@
 import { LockClosedIcon, PlayIcon, StopIcon } from '@heroicons/react/outline';
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
+import { unstable_getServerSession } from 'next-auth';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import GameDetailHeader from '../../../components/games/GameDetailHeader';
+import { redirectToHome, redirectToLogin } from '../../../lib/server-redirect-helper';
+import { Game } from '../../../models/Game';
+import { SessionUser } from '../../../models/SessionUser';
+import { GameService } from '../../../services/GameService';
 import Layout from '../../../widgets/Layout';
+import { authOptions } from '../../api/auth/[...nextauth]';
 
-const GameIndexPage: NextPage = () => {
+type Props = {
+  game: Game;
+};
+
+const GameIndexPage: NextPage<Props> = ({ game }) => {
   const router = useRouter();
   const { id } = router.query;
 
@@ -13,26 +23,26 @@ const GameIndexPage: NextPage = () => {
     {
       id: 1,
       title: 'START',
-      value: 'TBD',
+      value: game.start_time ?? 'TBD',
       icon: <PlayIcon className='w-5 h-5'></PlayIcon>,
     },
     {
       id: 2,
       title: 'END',
-      value: 'TBD',
+      value: game.end_time || 'TBD',
       icon: <StopIcon className='w-5 h-5'></StopIcon>,
     },
     {
       id: 3,
       title: 'PASSWORD',
-      value: 'ON',
+      value: game?.password ? 'ON' : 'OFF',
       icon: <LockClosedIcon className='w-5 h-5'></LockClosedIcon>,
     },
   ];
 
   return (
     <Layout controlSpacing={false}>
-      <GameDetailHeader />
+      <GameDetailHeader game={game} />
 
       <ul className='flex flex-col divide-y'>
         {items.map((item) => (
@@ -53,6 +63,24 @@ const GameIndexPage: NextPage = () => {
       </div>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res, params }) => {
+  const session = await unstable_getServerSession(req, res, authOptions);
+  if (!session) return redirectToLogin();
+
+  const { id } = params as any;
+  const user = session.user as SessionUser;
+  const gameService = new GameService(user.access_token);
+  const game = await gameService.get(id);
+
+  if (!game) return redirectToHome();
+
+  return {
+    props: {
+      game,
+    },
+  };
 };
 
 export default GameIndexPage;

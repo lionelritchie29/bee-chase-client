@@ -10,4 +10,12 @@ export class GameService extends BaseService {
     );
     return response.data;
   }
+
+  public async get(id: string) {
+    const response: AxiosResponse<Game> = await axios.get(
+      `${this.API_URL}/games/${id}`,
+      this.headerWithToken(),
+    );
+    return response.data;
+  }
 }
