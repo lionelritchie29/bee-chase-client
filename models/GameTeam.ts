@@ -5,5 +5,6 @@ export type GameTeam = {
   id: string;
   name: string;
   color: string;
+  has_access_code: boolean;
   updated_at: string;
 };

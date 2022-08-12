@@ -53,9 +53,8 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
     const dto: CreateGameTeamDto = {
       game_id: game.id,
       name,
+      access_code: code ? code.toString() : null,
     };
-
-    if (code) dto.access_code = code.toString();
 
     await toast.promise(gameTeamService.create(dto), {
       success: (createdTeam) => {
