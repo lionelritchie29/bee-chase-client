@@ -1,5 +1,5 @@
 export type CreateGameTeamDto = {
-  game_id: string;
+  color: string | null;
   name: string;
   access_code: string | null;
 };

@@ -4,9 +4,9 @@ import { GameTeam } from '../models/GameTeam';
 import { BaseService } from './BaseService';
 
 export class GameTeamService extends BaseService {
-  public async create(dto: CreateGameTeamDto) {
+  public async create(gameId: string, dto: CreateGameTeamDto) {
     const response: AxiosResponse<GameTeam> = await axios.post(
-      `${this.API_URL}/games/${dto.game_id}/game_teams`,
+      `${this.API_URL}/games/${gameId}/game_teams`,
       dto,
       this.headerWithToken(),
     );

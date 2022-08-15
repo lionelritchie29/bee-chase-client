@@ -40,10 +40,13 @@ const GameTeamsPage: NextPage<Props> = ({ game, gameTeams }) => {
 
   const verifyTeam = (teamId: string) => {
     const team = gameTeams.find((t) => t.id === teamId);
-    if (!team) toast('Ups, team does not exist');
+    if (!team) {
+      toast('Ups, team does not exist');
+      return;
+    }
 
-    setSelectedTeamId(team!.id);
-    if (team!.access_code) {
+    setSelectedTeamId(team.id);
+    if (team.has_access_code) {
       setOpenModal(true);
     } else {
       joinTeam(teamId, null);

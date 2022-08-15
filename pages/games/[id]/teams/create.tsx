@@ -51,12 +51,12 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
 
   const onSubmit = handleSubmit(async ({ name, code }) => {
     const dto: CreateGameTeamDto = {
-      game_id: game.id,
+      color: null,
       name,
       access_code: code ? code.toString() : null,
     };
 
-    await toast.promise(gameTeamService.create(dto), {
+    await toast.promise(gameTeamService.create(game.id, dto), {
       success: (createdTeam) => {
         router.replace(`/games/${game.id}/teams`);
         return 'Team created!';
