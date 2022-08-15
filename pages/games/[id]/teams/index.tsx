@@ -25,6 +25,7 @@ type Props = {
 };
 
 const GameTeamsPage: NextPage<Props> = ({ game, gameTeams }) => {
+  console.log({ gameTeams });
   const router = useRouter();
   const { id } = router.query;
 

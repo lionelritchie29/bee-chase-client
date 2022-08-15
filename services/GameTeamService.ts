@@ -29,4 +29,13 @@ export class GameTeamService extends BaseService {
     );
     return response.data;
   }
+
+  public async verifyCode(gameId: string, teamId: string, accessCode: string) {
+    const response: AxiosResponse<any> = await axios.post(
+      `${this.API_URL}/games/${gameId}/game_teams/${teamId}/verify`,
+      { access_code: accessCode },
+      this.headerWithToken(),
+    );
+    return response.data;
+  }
 }

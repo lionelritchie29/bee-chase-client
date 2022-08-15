@@ -2,6 +2,10 @@ import { GameTeam } from '../../models/GameTeam';
 import { Transition, Dialog } from '@headlessui/react';
 import { Dispatch, Fragment, SetStateAction, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useSession } from 'next-auth/react';
+import { SessionUser } from '../../models/SessionUser';
+import { GameTeamService } from '../../services/GameTeamService';
+import useLoading from '../../hooks/use-loading';
 
 type Props = {
   selectedTeam: GameTeam;
@@ -15,10 +19,15 @@ type FormData = {
 };
 
 export default function InputTeamCodeModal({ isOpen, setIsOpen, selectedTeam, joinTeam }: Props) {
+  console.log({ selectedTeam });
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const teamService = new GameTeamService(user?.access_token);
+  const [{ load, finish, isLoading }] = useLoading(false);
+
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<FormData>();
 
@@ -27,7 +36,18 @@ export default function InputTeamCodeModal({ isOpen, setIsOpen, selectedTeam, jo
   };
 
   const onSubmit = handleSubmit(async ({ accessCode }) => {
-    joinTeam(selectedTeam.id, accessCode.toString());
+    load('Veriying...');
+    const isCorrect = await teamService.verifyCode(
+      selectedTeam.game_id,
+      selectedTeam.id,
+      accessCode.toString(),
+    );
+    if (isCorrect) {
+      finish('Access code correct');
+      joinTeam(selectedTeam.id, accessCode.toString());
+    } else {
+      finish('Wrong access code', { success: false });
+    }
   });
 
   return (

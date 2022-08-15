@@ -56,7 +56,7 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
       access_code: code ? code.toString() : null,
     };
 
-    await toast.promise(gameTeamService.create(game.id, dto), {
+    await toast.promise(createTeamAndJoin(dto), {
       success: (createdTeam) => {
         router.replace(`/games/${game.id}/teams`);
         return 'Team created!';
@@ -67,6 +67,11 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
       },
     });
   });
+
+  const createTeamAndJoin = async (dto: CreateGameTeamDto) => {
+    const createdTeam = await gameTeamService.create(game.id, dto);
+    await gameTeamService.join(game.id, createdTeam.id, dto.access_code);
+  };
 
   return (
     <Layout controlSpacing={false}>
