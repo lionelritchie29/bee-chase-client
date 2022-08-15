@@ -40,28 +40,18 @@ const GameTeamsPage: NextPage<Props> = ({ game, gameTeams }) => {
   const selectedTeam = gameTeams.find((t) => t.id === selectedTeamId);
 
   const verifyTeam = (teamId: string) => {
-    const team = gameTeams.find((t) => t.id === teamId);
-    if (!team) {
-      toast('Ups, team does not exist');
-      return;
-    }
-
-    setSelectedTeamId(team.id);
-    if (team.has_access_code) {
-      setOpenModal(true);
-    } else {
-      joinTeam(teamId, null);
-    }
+    setSelectedTeamId(teamId);
+    setOpenModal(true);
   };
 
   const joinTeam = async (teamId: string, accessCode: string | null) => {
     try {
       const team = gameTeams.find((t) => t.id === teamId);
-      if (team && confirm(`Are you sure you want to join ${team?.name} ?`)) {
-        load('Assigning you to the team...');
-        await teamService.join(team!.game_id, team!.id, accessCode);
+      if (team) {
+        await teamService.join(team.game_id, team.id, accessCode);
         setOpenModal(false);
-        finish('Assign success!');
+        router.push(`/games/${game.id}/play`);
+        finish();
       }
     } catch (e: any) {
       console.log(e);

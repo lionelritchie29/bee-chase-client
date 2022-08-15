@@ -1,11 +1,12 @@
 import { GameTeam } from '../../models/GameTeam';
 import { Transition, Dialog } from '@headlessui/react';
-import { Dispatch, Fragment, SetStateAction, useState } from 'react';
+import { Dispatch, Fragment, SetStateAction, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
 import { GameTeamService } from '../../services/GameTeamService';
 import useLoading from '../../hooks/use-loading';
+import { useRouter } from 'next/router';
 
 type Props = {
   selectedTeam: GameTeam;
@@ -15,12 +16,13 @@ type Props = {
 };
 
 type FormData = {
-  accessCode: number;
+  accessCode: number | null;
 };
 
 export default function InputTeamCodeModal({ isOpen, setIsOpen, selectedTeam, joinTeam }: Props) {
   console.log({ selectedTeam });
   const session = useSession();
+  const router = useRouter();
   const user = session?.data?.user as SessionUser;
   const teamService = new GameTeamService(user?.access_token);
   const [{ load, finish, isLoading }] = useLoading(false);
@@ -28,25 +30,42 @@ export default function InputTeamCodeModal({ isOpen, setIsOpen, selectedTeam, jo
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormData>();
+
+  useEffect(() => {
+    if (!selectedTeam?.has_access_code) {
+      setValue('accessCode', null);
+    }
+  }, [selectedTeam]);
 
   const close = () => {
     setIsOpen(false);
   };
 
   const onSubmit = handleSubmit(async ({ accessCode }) => {
-    load('Veriying...');
-    const isCorrect = await teamService.verifyCode(
-      selectedTeam.game_id,
-      selectedTeam.id,
-      accessCode.toString(),
-    );
-    if (isCorrect) {
-      finish('Access code correct');
-      joinTeam(selectedTeam.id, accessCode.toString());
+    if (selectedTeam?.has_access_code) {
+      load('Veriying...');
+      if (accessCode == null) {
+        finish('Access code must be filled', { success: false });
+        return;
+      }
+
+      const isCorrect = await teamService.verifyCode(
+        selectedTeam.game_id,
+        selectedTeam.id,
+        accessCode.toString(),
+      );
+      if (isCorrect) {
+        load('Joining...');
+        await joinTeam(selectedTeam.id, accessCode.toString());
+      } else {
+        finish('Wrong access code', { success: false });
+      }
     } else {
-      finish('Wrong access code', { success: false });
+      load('Joining...');
+      await joinTeam(selectedTeam.id, null);
     }
   });
 
@@ -76,35 +95,61 @@ export default function InputTeamCodeModal({ isOpen, setIsOpen, selectedTeam, jo
                 leaveFrom='opacity-100 scale-100'
                 leaveTo='opacity-0 scale-95'>
                 <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
-                  <Dialog.Title as='h3' className='text-lg font-medium leading-6 text-gray-900'>
-                    Input Team Access Code
+                  <Dialog.Title as='h3' className='font-medium leading-6 text-gray-900'>
+                    Join <b>{selectedTeam?.name}</b>
                   </Dialog.Title>
-                  <form onSubmit={onSubmit} className='mt-2'>
-                    <input
-                      {...register('accessCode', {
-                        valueAsNumber: true,
-                        required: true,
-                        validate: (val) => {
-                          return val >= 1000 && val <= 9999;
-                        },
-                      })}
-                      type='number'
-                      placeholder='Access Code'
-                      className='input input-bordered w-full max-w-xs'
-                    />
-                    {errors?.accessCode?.type === 'required' && (
-                      <small className='text-red-300'>Access code is required</small>
+
+                  <div className='border rounded-t mt-4 p-3 bg-gray-200 text-sm'>Members</div>
+                  <ul className=''>
+                    {selectedTeam?.members.length === 0 && (
+                      <li className='text-sm border-r border-l border-b p-2'>
+                        This team currently has no member.
+                      </li>
                     )}
-                    {errors?.accessCode?.type === 'validate' && (
-                      <small className='text-red-300'>Access code must be 4 characters long</small>
+                    {selectedTeam?.members.map((member) => (
+                      <li className='text-sm border-r border-l border-b p-2' key={member.id}>
+                        {member.user_username} - {member.user_name}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <form onSubmit={onSubmit} className='mt-4'>
+                    {selectedTeam?.has_access_code && (
+                      <>
+                        <h2 className='text-sm mb-1'>Input Access Code</h2>
+                        <input
+                          {...register('accessCode', {
+                            valueAsNumber: true,
+                            required: true,
+                            validate: (val) => {
+                              if (!selectedTeam?.has_access_code) return true;
+                              return val !== null && val >= 1000 && val <= 9999;
+                            },
+                          })}
+                          type='number'
+                          placeholder='Access Code'
+                          className='input input-bordered w-full max-w-xs'
+                        />
+                        {errors?.accessCode?.type === 'required' && (
+                          <small className='text-red-300'>Access code is required</small>
+                        )}
+                        {errors?.accessCode?.type === 'validate' && (
+                          <small className='text-red-300'>
+                            Access code must be 4 characters long
+                          </small>
+                        )}
+                      </>
                     )}
 
                     <div className='mt-4'>
                       <button
                         type='submit'
-                        className='btn btn-primary text-white w-full'
+                        disabled={isLoading}
+                        className={`btn ${
+                          isLoading ? 'btn-disabled' : 'btn-primary'
+                        } text-white w-full`}
                         onClick={() => {}}>
-                        ENTER
+                        {selectedTeam?.has_access_code ? 'ENTER' : 'JOIN'}
                       </button>
                     </div>
                   </form>
