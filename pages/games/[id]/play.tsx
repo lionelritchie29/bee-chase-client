@@ -8,6 +8,14 @@ import LeaderboardList from '../../../components/games/LeaderboardList';
 import MissionList from '../../../components/games/MissionList';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
+import { GameService } from '../../../services/GameService';
+import { SessionUser } from '../../../models/SessionUser';
+import { GameTeamService } from '../../../services/GameTeamService';
+import {
+  redirectToHome,
+  redirectToPlay,
+  redirectToTeamPage,
+} from '../../../lib/server-redirect-helper';
 
 const PlayGamePage: NextPage = () => {
   const bottomNavItems: BottomNavbarItem[] = [
@@ -53,7 +61,7 @@ const PlayGamePage: NextPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res, params }) => {
   const session = await unstable_getServerSession(req, res, authOptions);
 
   if (!session) {
@@ -65,8 +73,23 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     };
   }
 
+  const { id } = params as any;
+
+  const user = session?.user as SessionUser;
+  const gameService = new GameService(user.access_token);
+  const teamService = new GameTeamService(user.access_token);
+
+  const game = await gameService.get(id);
+  if (!game) redirectToHome();
+
+  const alreadyInTeam = await teamService.checkUserAlreadyInTeam(game.id);
+  console.log({ alreadyInTeam });
+  if (!alreadyInTeam) return redirectToTeamPage(game.id);
+
   return {
-    props: {},
+    props: {
+      game,
+    },
   };
 };
 

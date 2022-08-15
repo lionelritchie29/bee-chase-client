@@ -9,10 +9,15 @@ import toast from 'react-hot-toast';
 import GameDetailHeader from '../../../components/games/GameDetailHeader';
 import InputGamePassModal from '../../../components/games/InputGamePassModal';
 import useLoading from '../../../hooks/use-loading';
-import { redirectToHome, redirectToLogin } from '../../../lib/server-redirect-helper';
+import {
+  redirectToHome,
+  redirectToLogin,
+  redirectToPlay,
+} from '../../../lib/server-redirect-helper';
 import { Game } from '../../../models/Game';
 import { SessionUser } from '../../../models/SessionUser';
 import { GameService } from '../../../services/GameService';
+import { GameTeamService } from '../../../services/GameTeamService';
 import Layout from '../../../widgets/Layout';
 import { authOptions } from '../../api/auth/[...nextauth]';
 
@@ -112,9 +117,13 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
   const { id } = params as any;
   const user = session.user as SessionUser;
   const gameService = new GameService(user.access_token);
+  const teamService = new GameTeamService(user.access_token);
   const game = await gameService.get(id);
 
   if (!game) return redirectToHome();
+
+  const alreadyInTeam = await teamService.checkUserAlreadyInTeam(game.id);
+  if (alreadyInTeam) return redirectToPlay(game.id);
 
   return {
     props: {

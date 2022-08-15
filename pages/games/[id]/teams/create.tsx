@@ -6,7 +6,11 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useLoading from '../../../../hooks/use-loading';
-import { redirectToHome, redirectToLogin } from '../../../../lib/server-redirect-helper';
+import {
+  redirectToHome,
+  redirectToLogin,
+  redirectToPlay,
+} from '../../../../lib/server-redirect-helper';
 import { CreateGameTeamDto } from '../../../../models/dto/game-teams/create-team.dto';
 import { Game } from '../../../../models/Game';
 import { SessionUser } from '../../../../models/SessionUser';
@@ -139,9 +143,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
   const { id } = params as any;
   const user = session.user as SessionUser;
   const gameService = new GameService(user.access_token);
+  const teamService = new GameTeamService(user.access_token);
+
   const game = await gameService.get(id);
 
   if (!game || !game.allow_user_create_team) return redirectToHome();
+
+  const alreadyInTeam = await teamService.checkUserAlreadyInTeam(game.id);
+  if (alreadyInTeam) return redirectToPlay(game.id);
 
   return {
     props: {
