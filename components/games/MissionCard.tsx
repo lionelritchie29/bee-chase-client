@@ -37,7 +37,7 @@ export default function MissionCard({ className, mission }: Props) {
       onClick={() => router.push(`/games/${mission.game_id}/missions/${mission.id}`)}>
       <div className={`mb-3 pb-3 ${className} border-b bg-white`}>
         <div className='mx-3 flex'>
-          <div className='border-2 border-orange-300 w-24 h-24 flex items-center justify-center'>
+          <div className='border-2 border-orange-300 rounded w-24 h-24 flex items-center justify-center'>
             {getIcon()}
           </div>
 
@@ -45,7 +45,7 @@ export default function MissionCard({ className, mission }: Props) {
             <div className='flex justify-between'>
               <div className='font-bold'>{mission.name}</div>
               <div className='text-gray-400 font-semibold flex items-center'>
-                <span className='block'>{mission.point_value}pts</span>
+                <span className='badge badge-outline'>{mission.point_value}pts</span>
                 {/* <ChevronRightIcon className='w-4 h-4 ml-2 text-orange-400' /> */}
               </div>
             </div>

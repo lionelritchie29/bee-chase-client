@@ -1,17 +1,18 @@
+import { GameTeam } from '../../models/GameTeam';
 import LeaderboardCard from './LeaderboardCard';
 
-export default function LeaderboardList() {
+type Props = {
+  teams: GameTeam[];
+};
+
+export default function LeaderboardList({ teams }: Props) {
   return (
     <ul>
-      <li>
-        <LeaderboardCard />
-      </li>
-      <li>
-        <LeaderboardCard />
-      </li>
-      <li>
-        <LeaderboardCard />
-      </li>
+      {teams.map((team) => (
+        <li key={team.id}>
+          <LeaderboardCard />
+        </li>
+      ))}
     </ul>
   );
 }

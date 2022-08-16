@@ -19,13 +19,15 @@ import {
 import { GameMissionService } from '../../../services/GameMissionService';
 import { Game } from '../../../models/Game';
 import { GameMission } from '../../../models/GameMission';
+import { GameTeam } from '../../../models/GameTeam';
 
 type Props = {
   game: Game;
   missions: GameMission[];
+  teams: GameTeam[];
 };
 
-const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
+const PlayGamePage: NextPage<Props> = ({ game, missions, teams }) => {
   console.log({ game, missions });
   const bottomNavItems: BottomNavbarItem[] = [
     {
@@ -59,7 +61,7 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
           />
         );
       case 2:
-        return <LeaderboardList />;
+        return <LeaderboardList teams={teams} />;
       default:
         return 'hehe';
     }
@@ -104,11 +106,13 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
   if (!alreadyInTeam) return redirectToTeamPage(game.id);
 
   const missions = await missionService.getByGame(game.id);
+  const teams = await teamService.getByGameId(game.id);
 
   return {
     props: {
       game,
       missions,
+      teams,
     },
   };
 };
