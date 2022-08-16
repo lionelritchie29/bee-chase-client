@@ -16,8 +16,17 @@ import {
   redirectToPlay,
   redirectToTeamPage,
 } from '../../../lib/server-redirect-helper';
+import { GameMissionService } from '../../../services/GameMissionService';
+import { Game } from '../../../models/Game';
+import { GameMission } from '../../../models/GameMission';
 
-const PlayGamePage: NextPage = () => {
+type Props = {
+  game: Game;
+  missions: GameMission[];
+};
+
+const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
+  console.log({ game, missions });
   const bottomNavItems: BottomNavbarItem[] = [
     {
       id: 1,
@@ -78,17 +87,20 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
   const user = session?.user as SessionUser;
   const gameService = new GameService(user.access_token);
   const teamService = new GameTeamService(user.access_token);
+  const missionService = new GameMissionService(user.access_token);
 
   const game = await gameService.get(id);
   if (!game) redirectToHome();
 
   const alreadyInTeam = await teamService.checkUserAlreadyInTeam(game.id);
-  console.log({ alreadyInTeam });
   if (!alreadyInTeam) return redirectToTeamPage(game.id);
+
+  const missions = await missionService.getByGame(game.id);
 
   return {
     props: {
       game,
+      missions,
     },
   };
 };

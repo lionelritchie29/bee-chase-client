@@ -1,4 +1,5 @@
 import { LockClosedIcon, PlayIcon, StopIcon } from '@heroicons/react/outline';
+import { format } from 'date-fns';
 import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
@@ -39,13 +40,13 @@ const GameIndexPage: NextPage<Props> = ({ game }) => {
     {
       id: 1,
       title: 'START',
-      value: game.start_time ?? 'TBD',
+      value: game.start_time ? format(new Date(game.start_time!), 'dd MMM yyyy, kk:mm') : 'TBD',
       icon: <PlayIcon className='w-5 h-5'></PlayIcon>,
     },
     {
       id: 2,
       title: 'END',
-      value: game.end_time || 'TBD',
+      value: game.start_time ? format(new Date(game.end_time!), 'dd MMM yyyy, kk:mm') : 'TBD',
       icon: <StopIcon className='w-5 h-5'></StopIcon>,
     },
     {
@@ -79,7 +80,9 @@ const GameIndexPage: NextPage<Props> = ({ game }) => {
     <Layout controlSpacing={false}>
       <GameDetailHeader game={game} />
 
-      <ul className='flex flex-col divide-y'>
+      <div className='text-sm mt-4 px-4 -mt-6'>{game.description}</div>
+
+      <ul className='flex flex-col divide-y mt-4'>
         {items.map((item) => (
           <li key={item.id} className='flex justify-between w-full px-4 py-3'>
             <div className='font-semibold text-gray-400 flex items-center'>
