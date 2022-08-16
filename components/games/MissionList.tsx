@@ -1,7 +1,13 @@
 import { useState } from 'react';
+import { GameMission } from '../../models/GameMission';
 import MissionCard from './MissionCard';
 
-export default function MissionList() {
+type Props = {
+  remainingMissions: GameMission[];
+  completedMissions: GameMission[];
+};
+
+export default function MissionList({ remainingMissions, completedMissions }: Props) {
   const tabs = [
     {
       id: 1,
@@ -15,12 +21,12 @@ export default function MissionList() {
 
   const [activeTabId, setActiveTabId] = useState(1);
 
-  const renderContent = () => {
+  const getMissions = () => {
     switch (activeTabId) {
       case 1:
-        return 'Remaining';
+        return remainingMissions;
       case 2:
-        return 'Completed';
+        return completedMissions;
     }
   };
 
@@ -41,15 +47,16 @@ export default function MissionList() {
 
       <div className='mt-4'>
         <ul className='grid grid-cols-1 md:grid-cols-2'>
-          <li>
-            <MissionCard />
-          </li>
-          <li>
-            <MissionCard />
-          </li>
-          <li>
-            <MissionCard />
-          </li>
+          {getMissions()?.length === 0 && (
+            <li className='text-center'>
+              No {activeTabId === 1 ? 'remaining' : 'completed'} mission.
+            </li>
+          )}
+          {getMissions()?.map((mission) => (
+            <li key={mission.id}>
+              <MissionCard mission={mission} />
+            </li>
+          ))}
         </ul>
       </div>
     </div>

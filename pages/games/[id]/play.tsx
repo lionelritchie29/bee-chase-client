@@ -46,10 +46,18 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
   ];
   const [activeNavItemId, setActiveNavItemId] = useState(1);
 
+  const remainingMissions = missions.filter((mission) => mission.submissions.length === 0);
+  const completedMissions = missions.filter((mission) => mission.submissions.length > 0);
+
   const renderContent = () => {
     switch (activeNavItemId) {
       case 1:
-        return <MissionList />;
+        return (
+          <MissionList
+            remainingMissions={remainingMissions}
+            completedMissions={completedMissions}
+          />
+        );
       case 2:
         return <LeaderboardList />;
       default:

@@ -1,34 +1,58 @@
-import { CameraIcon, ChevronRightIcon } from '@heroicons/react/outline';
+import {
+  CameraIcon,
+  ChevronRightIcon,
+  DocumentTextIcon,
+  LocationMarkerIcon,
+  QuestionMarkCircleIcon,
+} from '@heroicons/react/outline';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { AnswerType } from '../../constants/answer-type';
+import { GameMission } from '../../models/GameMission';
 
 type Props = {
   className?: string;
+  mission: GameMission;
 };
 
-export default function MissionCard({ className }: Props) {
+export default function MissionCard({ className, mission }: Props) {
+  const router = useRouter();
+
+  const getIcon = () => {
+    switch (mission.answer_type) {
+      case AnswerType.IMAGE:
+        return <CameraIcon className='w-12 h-12 text-orange-300' />;
+      case AnswerType.TEXT:
+        return <DocumentTextIcon className='w-12 h-12 text-orange-300' />;
+      case AnswerType.GPS:
+        return <LocationMarkerIcon className='w-12 h-12 text-orange-300' />;
+      default:
+        return <QuestionMarkCircleIcon className='w-12 h-12 text-orange-300' />;
+    }
+  };
+
   return (
-    <Link href='/games/123/missions/123'>
+    <div
+      className='w-full'
+      onClick={() => router.push(`/games/${mission.game_id}/missions/${mission.id}`)}>
       <div className={`mb-3 pb-3 ${className} border-b bg-white`}>
         <div className='mx-3 flex'>
           <div className='border-2 border-orange-300 w-24 h-24 flex items-center justify-center'>
-            <CameraIcon className='w-12 h-12 text-orange-300' />
+            {getIcon()}
           </div>
 
           <div className='ml-3 flex-1'>
             <div className='flex justify-between'>
-              <div className='font-bold'>Brilliant!</div>
+              <div className='font-bold'>{mission.name}</div>
               <div className='text-gray-400 font-semibold flex items-center'>
-                <span className='block'>400pts</span>
+                <span className='block'>{mission.point_value}pts</span>
                 {/* <ChevronRightIcon className='w-4 h-4 ml-2 text-orange-400' /> */}
               </div>
             </div>
-            <div className='text-gray-400 text-sm'>
-              Snap a shot of a teammate standing under a lightbulb as if coming up with a brilliant
-              idea.
-            </div>
+            <div className='text-gray-400 text-sm'>{mission.description}</div>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

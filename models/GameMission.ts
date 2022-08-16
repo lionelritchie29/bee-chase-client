@@ -14,4 +14,5 @@ export interface GameMission extends BaseModel {
   name: string;
   point_value: number;
   shown_in_feed: boolean;
+  submissions: any[]; // TODO: Change to submission modele
 }

@@ -37,7 +37,7 @@ export default function Layout({
       <div className='min-h-screen'>
         {showNavbar && <Navbar />}
 
-        <main style={style} className={`${controlSpacing ? 'px-4' : ''} ${className}`}>
+        <main style={style} className={`${controlSpacing ? 'px-4' : ''} ${className} pb-8`}>
           {children}
         </main>
       </div>
