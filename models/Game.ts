@@ -1,4 +1,6 @@
-export type Game = {
+import { BaseModel } from './BaseModel';
+
+export interface Game extends BaseModel {
   access_code: string;
   admins: any[];
   allow_user_create_team: boolean;
@@ -11,7 +13,4 @@ export type Game = {
   name: string;
   password: string | null;
   start_time: string | null;
-  created_at: string;
-  deleted_at: string | null;
-  updated_at: string;
-};
+}

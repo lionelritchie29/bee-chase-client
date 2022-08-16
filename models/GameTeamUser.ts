@@ -1,10 +1,9 @@
-export type GameTeamUser = {
-  created_at: string;
-  deleted_at: string | null;
+import { BaseModel } from './BaseModel';
+
+export interface GameTeamUser extends BaseModel {
   game_team_id: string;
   id: string;
-  updated_at: string;
   user_id: string;
   user_name: string;
   user_username: string;
-};
+}

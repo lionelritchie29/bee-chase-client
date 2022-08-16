@@ -1,8 +1,9 @@
+import { BaseModel } from './BaseModel';
 import { Game } from './Game';
 import { GameTeamUser } from './GameTeamUser';
 import { SessionUser } from './SessionUser';
 
-export type GameTeam = {
+export interface GameTeam extends BaseModel {
   game_id: string;
   game: Game;
   has_access_code: boolean;
@@ -10,7 +11,4 @@ export type GameTeam = {
   name: string;
   color: string | null;
   members: GameTeamUser[];
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
-};
+}
