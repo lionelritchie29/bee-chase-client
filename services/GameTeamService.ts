@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { CreateGameTeamDto } from '../models/dto/game-teams/create-team.dto';
 import { GameTeam } from '../models/GameTeam';
+import { GameTeamUser } from '../models/GameTeamUser';
 import { BaseService } from './BaseService';
 
 export class GameTeamService extends BaseService {
@@ -40,8 +41,8 @@ export class GameTeamService extends BaseService {
   }
 
   public async checkUserAlreadyInTeam(gameId: string) {
-    const response: AxiosResponse<boolean> = await axios.get(
-      `${this.API_URL}/games/${gameId}/checkTeam`,
+    const response: AxiosResponse<GameTeamUser> = await axios.get(
+      `${this.API_URL}/games/${gameId}/myTeam`,
       this.headerWithToken(),
     );
     return response.data;
