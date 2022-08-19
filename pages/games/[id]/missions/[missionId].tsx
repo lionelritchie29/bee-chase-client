@@ -3,6 +3,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import MissionCard from '../../../../components/games/MissionCard';
+import InputFileAnswer from '../../../../components/missions/InputFileAnswer';
 import InputLocationAnswer from '../../../../components/missions/InputLocationAnswer';
 import InputTextAnswer from '../../../../components/missions/InputTextAnswer';
 import { AnswerType } from '../../../../constants/answer-type';
@@ -58,12 +59,7 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
     if (mission.answer_type === AnswerType.TEXT) {
       return <InputTextAnswer isLoading={isLoading} teamUser={teamUser} submit={submitAnswer} />;
     } else if (mission.answer_type === AnswerType.IMAGE) {
-      return (
-        <div>
-          <input type='text' placeholder='Caption' className='input input-bordered w-full' />
-          <button className='btn btn-primary text-white w-full shadow mt-2'>Submit Evidence</button>
-        </div>
-      );
+      return <InputFileAnswer isLoading={isLoading} teamUser={teamUser} submit={submitAnswer} />;
     } else if (mission.answer_type === AnswerType.GPS) {
       return (
         <InputLocationAnswer
