@@ -40,11 +40,6 @@ const PlayGamePage: NextPage<Props> = ({ game, missions, teams }) => {
       title: 'Leaderboards',
       icon: <ChartBarIcon className='w-5 h-5' />,
     },
-    {
-      id: 3,
-      title: 'Notifications',
-      icon: <BellIcon className='w-5 h-5' />,
-    },
   ];
   const [activeNavItemId, setActiveNavItemId] = useState(1);
 
