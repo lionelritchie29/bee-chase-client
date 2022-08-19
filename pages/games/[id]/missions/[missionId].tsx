@@ -1,8 +1,9 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MissionCard from '../../../../components/games/MissionCard';
+import InputLocationAnswer from '../../../../components/missions/InputLocationAnswer';
 import InputTextAnswer from '../../../../components/missions/InputTextAnswer';
 import { AnswerType } from '../../../../constants/answer-type';
 import useLoading from '../../../../hooks/use-loading';
@@ -26,10 +27,26 @@ type Props = {
 };
 
 const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
+  console.log({ mission });
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const submissionService = new SubmissionService(user?.access_token);
   const [{ isLoading, finish, load }] = useLoading(false);
+
+  const [sourceLatitude, setSourceLatitude] = useState(0);
+  const [sourceLongitude, setSourceLongitude] = useState(0);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        console.log(position);
+        setSourceLatitude(position.coords.latitude);
+        setSourceLongitude(position.coords.longitude);
+      });
+    } else {
+      alert('Geolocation is not supported by this browser.');
+    }
+  }, []);
 
   const submitAnswer = async (dto: CreateSubmissionDto) => {
     load('Submitting your answer...');
@@ -49,10 +66,13 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
       );
     } else if (mission.answer_type === AnswerType.GPS) {
       return (
-        <div>
-          <input type='text' placeholder='Caption' className='input input-bordered w-full' />
-          <button className='btn btn-primary text-white w-full shadow mt-2'>Submit Location</button>
-        </div>
+        <InputLocationAnswer
+          position={{ lat: sourceLatitude, long: sourceLongitude }}
+          isLoading={isLoading}
+          mission={mission}
+          teamUser={teamUser}
+          submit={submitAnswer}
+        />
       );
     } else {
       return <div className='px-3'>No suitable input</div>;
