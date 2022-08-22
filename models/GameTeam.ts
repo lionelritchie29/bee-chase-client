@@ -12,3 +12,9 @@ export interface GameTeam extends BaseModel {
   color: string | null;
   members: GameTeamUser[];
 }
+
+export interface GameTeamRank {
+  submissions_count: number;
+  rank: number;
+  missions_sum_point_value: number;
+}

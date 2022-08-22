@@ -1,16 +1,16 @@
-import { GameTeam } from '../../models/GameTeam';
+import { GameTeam, GameTeamRank } from '../../models/GameTeam';
 import LeaderboardCard from './LeaderboardCard';
 
 type Props = {
-  teams: GameTeam[];
+  teamRanks: (GameTeam & GameTeamRank)[];
 };
 
-export default function LeaderboardList({ teams }: Props) {
+export default function LeaderboardList({ teamRanks }: Props) {
   return (
     <ul>
-      {teams.map((team) => (
-        <li key={team.id}>
-          <LeaderboardCard />
+      {teamRanks.map((teamRank) => (
+        <li key={teamRank.id}>
+          <LeaderboardCard teamRank={teamRank} />
         </li>
       ))}
     </ul>
