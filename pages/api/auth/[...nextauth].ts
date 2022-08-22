@@ -1,8 +1,8 @@
 import axios from 'axios';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import jwt_decode from 'jwt-decode';
 import { SessionUser } from '../../../models/SessionUser';
+import { AuthService } from '../../../services/AuthService';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -41,13 +41,23 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token = { ...token, ...user };
       }
+
+      await validateAccessToken(token as SessionUser);
+
       return token;
     },
     async session({ session, token }) {
       session.user = token;
+      await validateAccessToken(token as SessionUser);
       return session;
     },
   },
 };
+
+async function validateAccessToken(user: SessionUser) {
+  const accessToken = user.access_token;
+  const authService = new AuthService(accessToken);
+  return await authService.getCurrentUser();
+}
 
 export default NextAuth(authOptions);
