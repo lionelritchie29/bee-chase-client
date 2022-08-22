@@ -59,7 +59,14 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
     if (mission.answer_type === AnswerType.TEXT) {
       return <InputTextAnswer isLoading={isLoading} teamUser={teamUser} submit={submitAnswer} />;
     } else if (mission.answer_type === AnswerType.IMAGE) {
-      return <InputFileAnswer isLoading={isLoading} teamUser={teamUser} submit={submitAnswer} />;
+      return (
+        <InputFileAnswer
+          mission={mission}
+          isLoading={isLoading}
+          teamUser={teamUser}
+          submit={submitAnswer}
+        />
+      );
     } else if (mission.answer_type === AnswerType.GPS) {
       return (
         <InputLocationAnswer
