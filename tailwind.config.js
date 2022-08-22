@@ -16,6 +16,7 @@ module.exports = {
         light: {
           ...require('daisyui/src/colors/themes')['[data-theme=winter]'],
           primary: '#00a9e2',
+          secondary: '#fb923c',
         },
       },
     ],
