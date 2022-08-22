@@ -17,8 +17,8 @@ type Props = {
 
 type FormData = {
   caption: string;
-  latitude: string;
-  longitude: string;
+  latitude: number;
+  longitude: number;
 };
 
 export default function InputLocationAnswer({
@@ -28,9 +28,10 @@ export default function InputLocationAnswer({
   position,
   mission,
 }: Props) {
-  const {
-    location: { latitude, longitude },
-  } = JSON.parse(mission.mission_data) as LocationMissionData;
+  const { latitude, longitude, radius, description } = JSON.parse(
+    mission.mission_data,
+  ) as LocationMissionData;
+
   const MapWithNoSSR = dynamic(() => import('../shared/Map'), {
     ssr: false,
   });
@@ -38,8 +39,12 @@ export default function InputLocationAnswer({
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormData>();
+
+  setValue('latitude', position.lat);
+  setValue('longitude', position.long);
 
   const onSubmit = handleSubmit(async ({ latitude, longitude, caption }) => {
     console.log({ latitude, longitude, caption });

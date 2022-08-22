@@ -21,21 +21,8 @@ const Map = ({ targetLatitude, targetLongitude, sourceLatitude, sourceLongitude 
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
       />
-      <Circle
-        center={[targetLatitude, targetLongitude]}
-        radius={100}
-        pathOptions={{ color: 'blue' }}
-      />
-      <Marker position={[targetLatitude, targetLongitude]}>
-        <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
-        </Popup>
-      </Marker>
-
       <Marker position={[sourceLatitude, sourceLongitude]}>
-        <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
-        </Popup>
+        <Popup>Your location</Popup>
       </Marker>
     </MapContainer>
   );
