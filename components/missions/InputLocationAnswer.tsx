@@ -47,13 +47,19 @@ export default function InputLocationAnswer({
   setValue('longitude', position.long);
 
   const onSubmit = handleSubmit(async ({ latitude, longitude, caption }) => {
-    console.log({ latitude, longitude, caption });
+    const dto: CreateSubmissionDto = {
+      caption: caption ?? null,
+      game_team_id: teamUser.game_team_id,
+      answer_data: { latitude, longitude },
+    };
+    await submit(dto);
   });
 
   return (
     <form onSubmit={onSubmit}>
       <div className='w-full h-72' id='map'>
         <MapWithNoSSR
+          radius={radius}
           targetLatitude={latitude}
           targetLongitude={longitude}
           sourceLatitude={position.lat}

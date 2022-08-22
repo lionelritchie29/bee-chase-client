@@ -50,9 +50,13 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
   }, []);
 
   const submitAnswer = async (dto: CreateSubmissionDto) => {
-    load('Submitting your answer...');
-    const answer = await submissionService.create(game.id, mission.id, dto);
-    finish('Answer submitted!');
+    try {
+      load('Submitting your answer...');
+      await submissionService.create(game.id, mission.id, dto);
+      finish('Answer submitted!');
+    } catch (e: any) {
+      finish(e.response.data, { success: false });
+    }
   };
 
   const renderInput = () => {

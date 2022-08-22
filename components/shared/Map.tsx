@@ -8,9 +8,16 @@ type Props = {
   targetLongitude: number;
   sourceLatitude: number;
   sourceLongitude: number;
+  radius: number;
 };
 
-const Map = ({ targetLatitude, targetLongitude, sourceLatitude, sourceLongitude }: Props) => {
+const Map = ({
+  targetLatitude,
+  targetLongitude,
+  sourceLatitude,
+  sourceLongitude,
+  radius,
+}: Props) => {
   return (
     <MapContainer
       style={{ height: '100%', width: '100%' }}
@@ -21,6 +28,7 @@ const Map = ({ targetLatitude, targetLongitude, sourceLatitude, sourceLongitude 
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
       />
+      <Circle radius={radius} center={[targetLatitude, targetLongitude]} />
       <Marker position={[sourceLatitude, sourceLongitude]}>
         <Popup>Your location</Popup>
       </Marker>
