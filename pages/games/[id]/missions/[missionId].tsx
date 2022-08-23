@@ -68,6 +68,7 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
           mission={mission}
           isLoading={isLoading}
           teamUser={teamUser}
+          game={game}
           submit={submitAnswer}
         />
       );

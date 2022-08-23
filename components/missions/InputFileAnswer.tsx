@@ -1,27 +1,42 @@
 import { CameraIcon, VideoCameraIcon } from '@heroicons/react/outline';
-import { ChangeEvent, ChangeEventHandler, Dispatch, SetStateAction, useState } from 'react';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { MediaType } from '../../constants/media-type';
 import { SubmissionSource } from '../../constants/submission-source';
 import useLoading from '../../hooks/use-loading';
 import { CreateSubmissionDto } from '../../models/dto/submissions/create-submission.dto';
+import { Game } from '../../models/Game';
 import { GameMission } from '../../models/GameMission';
 import { GameTeamUser } from '../../models/GameTeamUser';
 import { FileMissionData } from '../../models/mission-data/FileMissionData';
+import { SessionUser } from '../../models/SessionUser';
+import {
+  OnedriveService,
+  OnedriveUploadBytesParams,
+  OnedriveUploadSessionParams,
+} from '../../services/OnedriveService';
 
 type Props = {
   submit: (dto: CreateSubmissionDto) => void;
   teamUser: GameTeamUser;
   isLoading: boolean;
   mission: GameMission;
+  game: Game;
 };
 
 type FormData = {
   caption: string;
 };
 
-export default function InputFileAnswer({ submit, teamUser, isLoading, mission }: Props) {
+export default function InputFileAnswer({ submit, teamUser, isLoading, mission, game }: Props) {
   const { media_type, submission_source } = JSON.parse(mission.mission_data) as FileMissionData;
+
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const onedriveService = new OnedriveService(user?.access_token);
 
   const {
     register,
@@ -57,7 +72,46 @@ export default function InputFileAnswer({ submit, teamUser, isLoading, mission }
 
   const onSubmit = handleSubmit(async ({ caption }) => {
     if (!file) return;
-    console.log({ file, caption });
+
+    const tokenToast = toast('Getting token...', { icon: '🔄' });
+    const apiUrl = `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/onedrive-token`;
+    const { token } = await axios.get(apiUrl).then((res) => res.data);
+    toast.dismiss(tokenToast);
+
+    const params: OnedriveUploadSessionParams = {
+      file,
+      gameId: game.id,
+      gameTeamId: teamUser.game_team_id,
+      token,
+      uploader: user.username,
+    };
+
+    const uploadSessToast = toast('Creating upload session...', { icon: '🔄' });
+    const { uploadUrl } = await onedriveService.createUploadSession(params);
+    toast.dismiss(uploadSessToast);
+
+    const uploadParams: OnedriveUploadBytesParams = {
+      file,
+      rangeSize: 10 * 1024 * 1024,
+      token,
+      uploadUrl,
+    };
+
+    const uploadFileToast = toast('Uploading file..', { icon: '🔄' });
+    const fileAnswerData = await onedriveService.uploadBytes(uploadParams);
+    toast.dismiss(uploadFileToast);
+
+    setTimeout(() => {
+      toast.success('Upload success!');
+    }, 500);
+
+    const dto: CreateSubmissionDto = {
+      game_team_id: teamUser.game_team_id,
+      answer_data: fileAnswerData,
+      caption,
+    };
+
+    await submit(dto);
   });
 
   return (

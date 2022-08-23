@@ -1,5 +1,8 @@
 export interface FileAnswerData {
-  fileUrl: string;
+  downloadURL: string;
+  lastModifiedDateTime: string;
+  hash: string;
   fileName: string;
-  type: 'video' | 'image';
+  mimeType: string;
+  size: number;
 }
