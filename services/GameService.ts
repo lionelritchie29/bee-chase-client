@@ -36,4 +36,12 @@ export class GameService extends BaseService {
     );
     return response.data;
   }
+
+  public async getCurrentJoinedGames() {
+    const response: AxiosResponse<Game[]> = await axios.get(
+      `${this.API_URL}/games?player=true`,
+      this.headerWithToken(),
+    );
+    return response.data;
+  }
 }

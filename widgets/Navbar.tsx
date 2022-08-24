@@ -1,11 +1,23 @@
+import { PlusIcon } from '@heroicons/react/outline';
+import { useRouter } from 'next/router';
+
 export default function Navbar() {
+  const router = useRouter();
+
   return (
     <nav className='navbar bg-primary border-b text-white'>
       <div className='flex-1'>
-        {/* <Image src={binusLogo} width={50} height={30} alt='logo' /> */}
         <a className='btn btn-ghost normal-case text-xl'>BeeChase</a>
       </div>
       <div className='flex-none'>
+        <button
+          tabIndex={0}
+          onClick={() => {
+            router.push('/join');
+          }}
+          className='btn btn-square btn-ghost'>
+          <PlusIcon className='w-5 h-5' />
+        </button>
         <div className='dropdown dropdown-end'>
           <label tabIndex={0} className='btn btn-square btn-ghost'>
             <svg

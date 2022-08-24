@@ -1,20 +1,21 @@
 import Link from 'next/link';
+import { Game } from '../../models/Game';
 import GameCard from '../shared/GameCard';
 
-export default function GameList() {
+type Props = {
+  games: Game[];
+};
+
+export default function GameList({ games }: Props) {
   return (
     <section>
-      <h1 className='font-bold border mb-2 rounded py-2 px-4 mt-2'>Available Games</h1>
+      <h1 className='font-bold border mb-2 rounded py-2 px-4 mt-2'>Joined Games</h1>
       <ul className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        <li>
-          <GameCard key={1} />
-        </li>
-        <li>
-          <GameCard key={2} />
-        </li>
-        <li>
-          <GameCard key={3} />
-        </li>
+        {games.map((game) => (
+          <li key={game.id}>
+            <GameCard game={game} />
+          </li>
+        ))}
       </ul>
     </section>
   );
