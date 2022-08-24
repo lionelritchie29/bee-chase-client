@@ -1,23 +1,26 @@
 import { CameraIcon, VideoCameraIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { MediaType } from '../../constants/media-type';
 import { SubmissionSource } from '../../constants/submission-source';
 import useLoading from '../../hooks/use-loading';
+import { FileAnswerData } from '../../models/answer-data/FileAnswerData';
 import { CreateSubmissionDto } from '../../models/dto/submissions/create-submission.dto';
 import { Game } from '../../models/Game';
 import { GameMission } from '../../models/GameMission';
 import { GameTeamUser } from '../../models/GameTeamUser';
 import { FileMissionData } from '../../models/mission-data/FileMissionData';
 import { SessionUser } from '../../models/SessionUser';
+import { Submission } from '../../models/Submission';
 import {
   OnedriveService,
   OnedriveUploadBytesParams,
   OnedriveUploadSessionParams,
 } from '../../services/OnedriveService';
+import OnedriveImage from '../shared/OnedriveImage';
 
 type Props = {
   submit: (dto: CreateSubmissionDto) => void;
@@ -25,13 +28,21 @@ type Props = {
   isLoading: boolean;
   mission: GameMission;
   game: Game;
+  submission: Submission | null;
 };
 
 type FormData = {
   caption: string;
 };
 
-export default function InputFileAnswer({ submit, teamUser, isLoading, mission, game }: Props) {
+export default function InputFileAnswer({
+  submit,
+  teamUser,
+  isLoading,
+  mission,
+  game,
+  submission,
+}: Props) {
   const { media_type, submission_source } = JSON.parse(mission.mission_data) as FileMissionData;
 
   const session = useSession();
@@ -115,88 +126,94 @@ export default function InputFileAnswer({ submit, teamUser, isLoading, mission, 
   });
 
   return (
-    <form onSubmit={onSubmit} encType='multipart/form-data'>
-      <div className='grid grid-cols-2 gap-2'>
-        {shouldRenderCameraBtn() && (
-          <label htmlFor='cameraInput' className={`${getCameraBtnColSpan()}`}>
-            <span className='btn w-full btn-secondary text-white'>
-              Take Photo <CameraIcon className='ml-2 w-5 h-5' />
-            </span>
+    <>
+      {submission ? (
+        <OnedriveImage submission={submission} />
+      ) : (
+        <form onSubmit={onSubmit} encType='multipart/form-data'>
+          <div className='grid grid-cols-2 gap-2'>
+            {shouldRenderCameraBtn() && (
+              <label htmlFor='cameraInput' className={`${getCameraBtnColSpan()}`}>
+                <span className='btn w-full btn-secondary text-white'>
+                  Take Photo <CameraIcon className='ml-2 w-5 h-5' />
+                </span>
 
-            <input
-              onChange={onFileChange}
-              id='cameraInput'
-              className='hidden'
-              type='file'
-              accept='image/*'
-              capture='environment'
-            />
-          </label>
-        )}
+                <input
+                  onChange={onFileChange}
+                  id='cameraInput'
+                  className='hidden'
+                  type='file'
+                  accept='image/*'
+                  capture='environment'
+                />
+              </label>
+            )}
 
-        {shouldRenderVideoBtn() && (
-          <label htmlFor='videoInput' className={`${getVideoBtnColSpan()}`}>
-            <span className='btn w-full btn-secondary text-white'>
-              Take Video <VideoCameraIcon className='ml-2 w-5 h-5' />
-            </span>
+            {shouldRenderVideoBtn() && (
+              <label htmlFor='videoInput' className={`${getVideoBtnColSpan()}`}>
+                <span className='btn w-full btn-secondary text-white'>
+                  Take Video <VideoCameraIcon className='ml-2 w-5 h-5' />
+                </span>
 
-            <input
-              onChange={onFileChange}
-              id='videoInput'
-              className='hidden'
-              type='file'
-              accept='video/*'
-              capture='environment'
-            />
-          </label>
-        )}
+                <input
+                  onChange={onFileChange}
+                  id='videoInput'
+                  className='hidden'
+                  type='file'
+                  accept='video/*'
+                  capture='environment'
+                />
+              </label>
+            )}
 
-        {submission_source === SubmissionSource.LIVE_CAPTURE_AND_LIBRARY && (
-          <label htmlFor='fileInput' className='col-span-2'>
-            <span className='btn w-full btn-secondary text-white'>Select From Gallery</span>
+            {submission_source === SubmissionSource.LIVE_CAPTURE_AND_LIBRARY && (
+              <label htmlFor='fileInput' className='col-span-2'>
+                <span className='btn w-full btn-secondary text-white'>Select From Gallery</span>
 
-            <input
-              onChange={onFileChange}
-              id='fileInput'
-              className='hidden'
-              type='file'
-              accept='image/*, video/*'
-              capture='environment'
-            />
-          </label>
-        )}
-      </div>
-      {!file && <small className='text-red-400'>Photo/video is required.</small>}
+                <input
+                  onChange={onFileChange}
+                  id='fileInput'
+                  className='hidden'
+                  type='file'
+                  accept='image/*, video/*'
+                  capture='environment'
+                />
+              </label>
+            )}
+          </div>
+          {!file && <small className='text-red-400'>Photo/video is required.</small>}
 
-      {file && (
-        <div className='mt-2 bg-white p-2'>
-          {file.type.includes('image') && (
-            <div>
-              <img src={fileSource} className='rounded' alt='Uploaded Photo' width='100%' />
+          {file && (
+            <div className='mt-2 bg-white p-2'>
+              {file.type.includes('image') && (
+                <div>
+                  <img src={fileSource} className='rounded' alt='Uploaded Photo' width='100%' />
+                </div>
+              )}
+              {file.type.includes('video') && (
+                <div>
+                  <video src={fileSource} controls width='100%' />
+                </div>
+              )}
             </div>
           )}
-          {file.type.includes('video') && (
-            <div>
-              <video src={fileSource} controls width='100%' />
-            </div>
-          )}
-        </div>
+
+          <input
+            {...register('caption')}
+            type='text'
+            placeholder='Caption (optional)'
+            className='input input-bordered w-full mt-2'
+          />
+          <button
+            type='submit'
+            disabled={isLoading}
+            className={`btn ${
+              isLoading ? 'btn-disabled' : 'btn-primary'
+            } text-white w-full shadow mt-3`}>
+            Submit Answer
+          </button>
+        </form>
       )}
-
-      <input
-        {...register('caption')}
-        type='text'
-        placeholder='Caption (optional)'
-        className='input input-bordered w-full mt-2'
-      />
-      <button
-        type='submit'
-        disabled={isLoading}
-        className={`btn ${
-          isLoading ? 'btn-disabled' : 'btn-primary'
-        } text-white w-full shadow mt-3`}>
-        Submit Answer
-      </button>
-    </form>
+    </>
   );
 }

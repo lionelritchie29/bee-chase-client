@@ -80,6 +80,7 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
           teamUser={teamUser}
           game={game}
           submit={submitAnswer}
+          submission={submission}
         />
       );
     } else if (mission.answer_type === AnswerType.GPS) {

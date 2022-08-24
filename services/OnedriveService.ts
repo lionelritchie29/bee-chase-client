@@ -111,4 +111,14 @@ export class OnedriveService extends BaseService {
       }
     }
   }
+
+  public async getOneDriveFileUrl(downloadUrl: string, token: string) {
+    return await axios
+      .get(downloadUrl, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => res.data);
+  }
 }
