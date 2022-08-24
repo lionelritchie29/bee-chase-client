@@ -1,8 +1,8 @@
 export interface FileAnswerData {
-  downloadURL: string;
-  lastModifiedDateTime: string;
+  download_url: string;
+  last_modified_date_time: string;
   hash: string;
-  fileName: string;
-  mimeType: string;
+  file_name: string;
+  mime_type: string;
   size: number;
 }

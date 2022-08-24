@@ -98,17 +98,25 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
   const game = await gameService.get(id);
   if (!game) redirectToHome();
 
-  const alreadyInTeam = await teamService.checkUserAlreadyInTeam(game.id);
-  if (!alreadyInTeam) return redirectToTeamPage(game.id);
+  const currentTeam = await teamService.checkUserAlreadyInTeam(game.id);
+  if (!currentTeam) return redirectToTeamPage(game.id);
 
   const missions = await missionService.getByGame(game.id);
   const teams = await teamService.getByGameId(game.id);
   const leaderboard = await gameService.getLeaderboard(game.id);
 
+  const missionsWithFilteredSubmissions = missions.map((mission) => {
+    const filteredSub = mission.submissions.filter(
+      (s) => s.game_team_id == currentTeam.game_team_id,
+    );
+    mission.submissions = filteredSub;
+    return mission;
+  });
+
   return {
     props: {
       game,
-      missions,
+      missions: missionsWithFilteredSubmissions,
       teams,
       leaderboard,
     },

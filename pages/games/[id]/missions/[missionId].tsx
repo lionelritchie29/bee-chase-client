@@ -14,6 +14,7 @@ import { Game } from '../../../../models/Game';
 import { GameMission } from '../../../../models/GameMission';
 import { GameTeamUser } from '../../../../models/GameTeamUser';
 import { SessionUser } from '../../../../models/SessionUser';
+import { Submission } from '../../../../models/Submission';
 import { GameMissionService } from '../../../../services/GameMissionService';
 import { GameService } from '../../../../services/GameService';
 import { GameTeamService } from '../../../../services/GameTeamService';
@@ -33,26 +34,28 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
   const user = session?.data?.user as SessionUser;
   const submissionService = new SubmissionService(user?.access_token);
   const [{ isLoading, finish, load }] = useLoading(false);
+  const [submission, setSubmission] = useState<Submission | null>(
+    mission.submissions.length > 0 ? mission.submissions[0] : null,
+  );
 
   const [sourceLatitude, setSourceLatitude] = useState(0);
   const [sourceLongitude, setSourceLongitude] = useState(0);
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position);
+  if (typeof navigator !== 'undefined' && navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
         setSourceLatitude(position.coords.latitude);
         setSourceLongitude(position.coords.longitude);
-      });
-    } else {
-      alert('Geolocation is not supported by this browser.');
-    }
-  }, []);
+      },
+      (e) => alert('Geolocation is not supported by this browser.'),
+    );
+  }
 
   const submitAnswer = async (dto: CreateSubmissionDto) => {
     try {
       load('Submitting your answer...');
-      await submissionService.create(game.id, mission.id, dto);
+      const sub = await submissionService.create(game.id, mission.id, dto);
+      setSubmission(sub);
       finish('Answer submitted!');
     } catch (e: any) {
       finish(e.response.data, { success: false });
@@ -61,7 +64,14 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
 
   const renderInput = () => {
     if (mission.answer_type === AnswerType.TEXT) {
-      return <InputTextAnswer isLoading={isLoading} teamUser={teamUser} submit={submitAnswer} />;
+      return (
+        <InputTextAnswer
+          submission={submission}
+          isLoading={isLoading}
+          teamUser={teamUser}
+          submit={submitAnswer}
+        />
+      );
     } else if (mission.answer_type === AnswerType.IMAGE) {
       return (
         <InputFileAnswer
@@ -75,6 +85,7 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
     } else if (mission.answer_type === AnswerType.GPS) {
       return (
         <InputLocationAnswer
+          submission={submission}
           position={{ lat: sourceLatitude, long: sourceLongitude }}
           isLoading={isLoading}
           mission={mission}
@@ -122,6 +133,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
 
   const mission = await missionService.get(game.id, missionId);
   if (!mission) return redirectToPlay(game.id);
+
+  mission.submissions = mission.submissions.filter(
+    (sub) => sub.game_team_id === teamUser.game_team_id,
+  );
 
   return {
     props: {

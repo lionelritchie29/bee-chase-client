@@ -1,11 +1,12 @@
 import dynamic from 'next/dynamic';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import useLoading from '../../hooks/use-loading';
+import { LocationAnswerData } from '../../models/answer-data/LocationAnswerData';
 import { CreateSubmissionDto } from '../../models/dto/submissions/create-submission.dto';
 import { GameMission } from '../../models/GameMission';
 import { GameTeamUser } from '../../models/GameTeamUser';
 import { LocationMissionData } from '../../models/mission-data/LocationMissionData';
+import { Submission } from '../../models/Submission';
 
 type Props = {
   submit: (dto: CreateSubmissionDto) => void;
@@ -13,6 +14,7 @@ type Props = {
   isLoading: boolean;
   position: { lat: number; long: number };
   mission: GameMission;
+  submission: Submission | null;
 };
 
 type FormData = {
@@ -27,6 +29,7 @@ export default function InputLocationAnswer({
   isLoading,
   position,
   mission,
+  submission,
 }: Props) {
   const { latitude, longitude, radius, description } = JSON.parse(
     mission.mission_data,
@@ -43,8 +46,17 @@ export default function InputLocationAnswer({
     formState: { errors },
   } = useForm<FormData>();
 
-  setValue('latitude', position.lat);
-  setValue('longitude', position.long);
+  useEffect(() => {
+    if (submission) {
+      const ans = JSON.parse(submission.answer_data) as LocationAnswerData;
+      setValue('caption', submission.caption);
+      setValue('latitude', ans.latitude);
+      setValue('longitude', ans.longitude);
+    } else {
+      setValue('latitude', position.lat);
+      setValue('longitude', position.long);
+    }
+  }, [submission, setValue, position]);
 
   const onSubmit = handleSubmit(async ({ latitude, longitude, caption }) => {
     const dto: CreateSubmissionDto = {
@@ -70,16 +82,17 @@ export default function InputLocationAnswer({
       <input
         {...register('caption')}
         type='text'
+        disabled={submission != null}
         placeholder='Caption (optional)'
         className='input input-bordered w-full mt-2'
       />
       <button
         type='submit'
-        disabled={isLoading}
+        disabled={isLoading || submission != null}
         className={`btn ${
-          isLoading ? 'btn-disabled' : 'btn-primary'
+          isLoading || submission ? 'btn-disabled' : 'btn-primary'
         } text-white w-full shadow mt-3`}>
-        Submit Answer
+        {submission ? 'Answered' : 'Submit Answer'}
       </button>
     </form>
   );

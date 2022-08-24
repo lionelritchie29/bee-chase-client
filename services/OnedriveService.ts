@@ -101,11 +101,11 @@ export class OnedriveService extends BaseService {
         const hash = response['file']['hashes']['quickXorHash'];
         const fileName = response['name'];
         return {
-          downloadURL,
-          lastModifiedDateTime,
+          download_url: downloadURL,
+          last_modified_date_time: lastModifiedDateTime,
           hash,
-          fileName,
-          mimeType: response['file']['mimeType'],
+          file_name: fileName,
+          mime_type: response['file']['mimeType'],
           size: response['size'],
         };
       }
