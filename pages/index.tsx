@@ -7,14 +7,19 @@ import { authOptions } from './api/auth/[...nextauth]';
 import { SessionUser } from '../models/SessionUser';
 import { GameService } from '../services/GameService';
 import { Game } from '../models/Game';
+import { useSession } from 'next-auth/react';
 
 type Props = {
   games: Game[];
 };
 
 const Home: NextPage<Props> = ({ games }) => {
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+
   return (
     <Layout>
+      <div className='mt-3 font-semibold text-orange-400'>Welcome, {user?.name}</div>
       <GameList games={games} />
     </Layout>
   );
