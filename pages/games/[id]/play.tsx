@@ -1,5 +1,5 @@
 import { GetServerSideProps, NextPage } from 'next';
-import { ChartBarIcon, ClipboardListIcon, BellIcon } from '@heroicons/react/outline';
+import { ChartBarIcon, ClipboardListIcon } from '@heroicons/react/outline';
 import Layout from '../../../widgets/Layout';
 import GameBottomNavbar from '../../../widgets/BottomNavbar';
 import { BottomNavbarItem } from '../../../models/view/BottomNavbarItem';
@@ -11,24 +11,17 @@ import { authOptions } from '../../api/auth/[...nextauth]';
 import { GameService } from '../../../services/GameService';
 import { SessionUser } from '../../../models/SessionUser';
 import { GameTeamService } from '../../../services/GameTeamService';
-import {
-  redirectToHome,
-  redirectToPlay,
-  redirectToTeamPage,
-} from '../../../lib/server-redirect-helper';
+import { redirectToHome, redirectToTeamPage } from '../../../lib/server-redirect-helper';
 import { GameMissionService } from '../../../services/GameMissionService';
 import { Game } from '../../../models/Game';
 import { GameMission } from '../../../models/GameMission';
-import { GameTeam, GameTeamRank } from '../../../models/GameTeam';
 
 type Props = {
   game: Game;
   missions: GameMission[];
-  teams: GameTeam[];
-  leaderboard: (GameTeam & GameTeamRank)[];
 };
 
-const PlayGamePage: NextPage<Props> = ({ game, missions, teams, leaderboard }) => {
+const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
   console.log({ game, missions });
   const bottomNavItems: BottomNavbarItem[] = [
     {
@@ -57,7 +50,7 @@ const PlayGamePage: NextPage<Props> = ({ game, missions, teams, leaderboard }) =
           />
         );
       case 2:
-        return <LeaderboardList teamRanks={leaderboard} />;
+        return <LeaderboardList gameId={game.id} />;
       default:
         return 'hehe';
     }
@@ -102,8 +95,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
   if (!currentTeam) return redirectToTeamPage(game.id);
 
   const missions = await missionService.getByGame(game.id);
-  const teams = await teamService.getByGameId(game.id);
-  const leaderboard = await gameService.getLeaderboard(game.id);
 
   const missionsWithFilteredSubmissions = missions.map((mission) => {
     const filteredSub = mission.submissions.filter(
@@ -117,8 +108,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
     props: {
       game,
       missions: missionsWithFilteredSubmissions,
-      teams,
-      leaderboard,
     },
   };
 };
