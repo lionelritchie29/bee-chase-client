@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, PlusIcon, UserCircleIcon } from '@heroicons/react/outline';
+import { ChevronLeftIcon, PlusIcon, RefreshIcon, UserCircleIcon } from '@heroicons/react/outline';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { SessionUser } from '../models/SessionUser';
@@ -13,6 +13,13 @@ export default function Navbar() {
     '/games/[id]',
     '/games/[id]/teams',
     '/games/[id]/teams/create',
+  ];
+
+  const refreshBtnAllowedRoutes = [
+    '/games/[id]/play',
+    '/games/[id]/missions/[missionId]',
+    '/games/[id]',
+    '/games/[id]/teams',
   ];
 
   const joinBtnAllowedRoutes = ['/'];
@@ -48,6 +55,17 @@ export default function Navbar() {
             }}
             className='btn btn-square btn-ghost'>
             <PlusIcon className='w-5 h-5' />
+          </button>
+        )}
+
+        {refreshBtnAllowedRoutes.includes(router.pathname) && (
+          <button
+            tabIndex={0}
+            onClick={() => {
+              router.replace(router.asPath);
+            }}
+            className='btn btn-square btn-ghost'>
+            <RefreshIcon className='w-5 h-5' />
           </button>
         )}
 

@@ -63,7 +63,7 @@ export default function MissionList({ remainingMissions, completedMissions, game
 
   if (gameStatus) {
     return (
-      <div className='h-full p-8 flex justify-center flex-col'>
+      <div className='h-full p-8 flex justify-center flex-col mt-40'>
         <div className='mx-auto'>
           <ExclamationCircleIcon className='w-12 h-12' />
         </div>

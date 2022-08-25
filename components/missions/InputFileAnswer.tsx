@@ -66,7 +66,10 @@ export default function InputFileAnswer({
   };
 
   const shouldRenderCameraBtn = () => {
-    return media_type === MediaType.PHOTO_ONLY || media_type === MediaType.PHOTO_AND_VIDEO;
+    return (
+      (media_type as number) === MediaType.PHOTO_ONLY ||
+      (media_type as number) === MediaType.PHOTO_AND_VIDEO
+    );
   };
 
   const shouldRenderVideoBtn = () => {
