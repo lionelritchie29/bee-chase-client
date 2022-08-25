@@ -41,9 +41,10 @@ export default function MissionList({ remainingMissions, completedMissions, game
       return 'The game has been stopped or has not been started yet, please wait or contact admin.';
 
     const currDate = new Date();
-    if (currDate.getTime() < new Date(game.start_time).getTime())
-      return `The game will start at <b>${format(currDate, 'kk:mm')}</b> on <b>${format(
-        currDate,
+    const startDate = new Date(game.start_time);
+    if (currDate.getTime() < startDate.getTime())
+      return `The game will start at <b>${format(startDate, 'kk:mm')}</b> on <b>${format(
+        startDate,
         'MMM dd, yyyy',
       )}</b>`;
 
