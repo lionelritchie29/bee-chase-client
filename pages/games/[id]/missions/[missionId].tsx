@@ -29,7 +29,6 @@ type Props = {
 };
 
 const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
-  console.log({ mission });
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const submissionService = new SubmissionService(user?.access_token);
@@ -63,6 +62,12 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
   };
 
   const renderInput = () => {
+    const currDate = new Date();
+    const endDate = new Date(game.end_time!);
+    if (currDate.getTime() >= endDate.getTime()) {
+      return <div className='justify-center flex mt-8'>The game has been ended.</div>;
+    }
+
     if (mission.answer_type === AnswerType.TEXT) {
       return (
         <InputTextAnswer
@@ -127,7 +132,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
   const missionService = new GameMissionService(user.access_token);
 
   const game = await gameService.get(id);
+  const currDate = new Date();
   if (!game) return redirectToHome();
+  if (!game.start_time || !game.end_time) return redirectToPlay(game.id);
+  if (currDate.getTime() < new Date(game.start_time).getTime()) return redirectToPlay(game.id);
 
   const teamUser = await teamService.checkUserAlreadyInTeam(game.id);
   if (!teamUser) return redirectToPlay(game.id);

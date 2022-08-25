@@ -1,5 +1,5 @@
 import { GetServerSideProps, NextPage } from 'next';
-import { ChartBarIcon, ClipboardListIcon } from '@heroicons/react/outline';
+import { ChartBarIcon, ClipboardListIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import Layout from '../../../widgets/Layout';
 import GameBottomNavbar from '../../../widgets/BottomNavbar';
 import { BottomNavbarItem } from '../../../models/view/BottomNavbarItem';
@@ -15,6 +15,7 @@ import { redirectToHome, redirectToTeamPage } from '../../../lib/server-redirect
 import { GameMissionService } from '../../../services/GameMissionService';
 import { Game } from '../../../models/Game';
 import { GameMission } from '../../../models/GameMission';
+import { useRouter } from 'next/router';
 
 type Props = {
   game: Game;
@@ -22,7 +23,6 @@ type Props = {
 };
 
 const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
-  console.log({ game, missions });
   const bottomNavItems: BottomNavbarItem[] = [
     {
       id: 1,
@@ -35,6 +35,7 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
       icon: <ChartBarIcon className='w-5 h-5' />,
     },
   ];
+  const router = useRouter();
   const [activeNavItemId, setActiveNavItemId] = useState(1);
 
   const remainingMissions = missions.filter((mission) => mission.submissions.length === 0);
@@ -45,6 +46,7 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
       case 1:
         return (
           <MissionList
+            game={game}
             remainingMissions={remainingMissions}
             completedMissions={completedMissions}
           />

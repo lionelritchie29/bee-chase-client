@@ -1,13 +1,18 @@
+import { ExclamationCircleIcon } from '@heroicons/react/outline';
+import { format } from 'date-fns';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { Game } from '../../models/Game';
 import { GameMission } from '../../models/GameMission';
 import MissionCard from './MissionCard';
 
 type Props = {
   remainingMissions: GameMission[];
   completedMissions: GameMission[];
+  game: Game;
 };
 
-export default function MissionList({ remainingMissions, completedMissions }: Props) {
+export default function MissionList({ remainingMissions, completedMissions, game }: Props) {
   const tabs = [
     {
       id: 1,
@@ -20,6 +25,7 @@ export default function MissionList({ remainingMissions, completedMissions }: Pr
   ];
 
   const [activeTabId, setActiveTabId] = useState(1);
+  const router = useRouter();
 
   const getMissions = () => {
     switch (activeTabId) {
@@ -29,6 +35,40 @@ export default function MissionList({ remainingMissions, completedMissions }: Pr
         return completedMissions;
     }
   };
+
+  const getGameStatus = () => {
+    if (!game.start_time || !game.end_time)
+      return 'The game has been stopped or has not been started yet, please wait or contact admin.';
+
+    const currDate = new Date();
+    if (currDate.getTime() < new Date(game.start_time).getTime())
+      return `The game will start at <b>${format(currDate, 'kk:mm')}</b> on <b>${format(
+        currDate,
+        'MMM dd, yyyy',
+      )}</b>`;
+
+    return '';
+  };
+
+  const gameStatus = getGameStatus();
+
+  if (gameStatus) {
+    return (
+      <div className='h-full p-8 flex justify-center flex-col'>
+        <div className='mx-auto'>
+          <ExclamationCircleIcon className='w-12 h-12' />
+        </div>
+        <div className='mt-4 text-center' dangerouslySetInnerHTML={{ __html: gameStatus }}></div>
+        <button
+          onClick={() => {
+            router.replace(`/games/${game.id}/play`);
+          }}
+          className='btn btn-primary text-white mt-4'>
+          Refresh game state
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div>

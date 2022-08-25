@@ -23,7 +23,7 @@ export default function LeaderboardCard({ teamRank }: Props) {
         <div className='ml-3'>
           <span className='block font-bold'>{teamRank.name}</span>
           <span className='block font-semibold text-gray-400 text-sm'>
-            {teamRank.missions_sum_point_value} pts
+            {teamRank.missions_sum_point_value ?? '0'} pts
           </span>
         </div>
       </div>
