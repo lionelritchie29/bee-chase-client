@@ -9,9 +9,13 @@ import Image from 'next/image';
 type Props = { game: Game };
 
 export default function GameCard({ game }: Props) {
+  const getTruncatedDescription = (text: string, length: number) => {
+    return text.length > length ? `${text.substring(0, length)}...` : text;
+  };
+
   return (
     <Link href={`/games/${game.id}`}>
-      <div className='border rounded p-2'>
+      <div className='border rounded p-2 shadow-sm'>
         <div className='mb-2 pb-3 border-b flex'>
           <div className='w-1/3'>
             <div className='border rounded'>
@@ -21,9 +25,9 @@ export default function GameCard({ game }: Props) {
           <div className='w-2/3 ml-4'>
             <h2 className='font-bold flex justify-between'>
               <span>{game.name}</span>
-              {game.has_password && <LockClosedIcon className='w-4 h-4' />}
+              {game.has_password && <LockClosedIcon className='w-4 h-4 text-orange-400' />}
             </h2>
-            <p className='text-sm'>{game.description}</p>
+            <p className='text-sm'>{getTruncatedDescription(game.description, 96)}</p>
           </div>
         </div>
 
