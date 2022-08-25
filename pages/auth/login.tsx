@@ -28,14 +28,14 @@ const Login: NextPage = () => {
   const onSubmit = handleSubmit(async ({ username, password }) => {
     load('Signing in...');
     const response = await signIn('credentials', { redirect: false, username, password });
+    toast.dismiss();
 
-    if (response?.error) {
-      toast.error(response.error);
+    if (!response?.ok) {
+      finish(response?.error as any, { success: false });
     } else {
       router.push('/');
+      finish('Logged in');
     }
-
-    finish('Logged in');
   });
 
   return (
