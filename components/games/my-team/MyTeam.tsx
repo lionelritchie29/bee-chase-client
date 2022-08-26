@@ -1,3 +1,4 @@
+import { COLORS } from '../../../constants/color';
 import { GameTeam, GameTeamRank } from '../../../models/GameTeam';
 import { PaginatedSubmission } from '../../../models/PaginatedSubmissions';
 import FeedList from '../feeds/FeedList';
@@ -10,7 +11,7 @@ type Props = {
 export default function MyTeam({ teamRank, submissions }: Props) {
   return (
     <section className='mt-6'>
-      <div className='flex justify-around items-center text-center'>
+      <div className='flex justify-around items-center text-center border rounded mx-3 pt-4'>
         <div className='w-1/3'>
           {teamRank ? (
             <span className='block'>{teamRank.missions_sum_point_value}</span>
@@ -22,7 +23,10 @@ export default function MyTeam({ teamRank, submissions }: Props) {
         </div>
 
         <div className='w-1/3'>
-          <div className='rounded-full w-24 h-24 border bg-gray-300 mx-auto'></div>
+          <div
+            className='rounded-full w-24 h-24 border mx-auto'
+            style={{ backgroundColor: teamRank?.color || COLORS.TEAM_DEFAULT }}></div>
+
           {teamRank ? (
             <span className='block mt-2 text-lg font-bold'>{teamRank.name}</span>
           ) : (

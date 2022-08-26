@@ -1,5 +1,6 @@
 import { ChevronRightIcon } from '@heroicons/react/outline';
 import { Dispatch, SetStateAction } from 'react';
+import { COLORS } from '../../constants/color';
 import { GameTeam } from '../../models/GameTeam';
 
 type Props = {
@@ -15,7 +16,7 @@ export default function TeamCard({ team, verifyTeam }: Props) {
       <div className='flex items-center text-orange-400'>
         <div
           className='w-6 h-6 rounded-full mr-2'
-          style={{ backgroundColor: team.color ?? '#fff' }}
+          style={{ backgroundColor: team.color ?? COLORS.TEAM_DEFAULT }}
         />
         <span className='block font-semibold'>{team.name}</span>
       </div>

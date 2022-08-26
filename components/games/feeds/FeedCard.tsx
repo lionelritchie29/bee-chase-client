@@ -8,6 +8,7 @@ import { FileAnswerData } from '../../../models/answer-data/FileAnswerData';
 import OnedriveImage from '../../shared/OnedriveImage';
 import dynamic from 'next/dynamic';
 import { LocationAnswerData } from '../../../models/answer-data/LocationAnswerData';
+import { COLORS } from '../../../constants/color';
 
 type Props = {
   submission: Submission & { mission: GameMission } & { game_team: GameTeam };
@@ -54,7 +55,7 @@ export default function FeedCard({ submission }: Props) {
       <div className='flex items-center'>
         <div
           className='h-12 w-14 rounded-full border'
-          style={{ backgroundColor: submission.game_team.color || '#fff' }}></div>
+          style={{ backgroundColor: submission.game_team.color || COLORS.TEAM_DEFAULT }}></div>
 
         <div className='ml-2 w-full'>
           <div className='flex justify-between'>
