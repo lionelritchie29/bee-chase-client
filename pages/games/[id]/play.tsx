@@ -8,7 +8,7 @@ import {
 import Layout from '../../../widgets/Layout';
 import GameBottomNavbar from '../../../widgets/BottomNavbar';
 import { BottomNavbarItem } from '../../../models/view/BottomNavbarItem';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LeaderboardList from '../../../components/games/LeaderboardList';
 import MissionList from '../../../components/games/MissionList';
 import { unstable_getServerSession } from 'next-auth';
@@ -22,6 +22,8 @@ import { Game } from '../../../models/Game';
 import { GameMission } from '../../../models/GameMission';
 import { useRouter } from 'next/router';
 import FeedList from '../../../components/games/feeds/FeedList';
+import { GameTeam, GameTeamRank } from '../../../models/GameTeam';
+import { useSession } from 'next-auth/react';
 
 type Props = {
   game: Game;
@@ -51,11 +53,24 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
       icon: <UserGroupIcon className='w-5 h-5' />,
     },
   ];
-  const router = useRouter();
-  const [activeNavItemId, setActiveNavItemId] = useState(1);
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const gameService = new GameService(user?.access_token);
 
   const remainingMissions = missions.filter((mission) => mission.submissions.length === 0);
   const completedMissions = missions.filter((mission) => mission.submissions.length > 0);
+
+  const [activeNavItemId, setActiveNavItemId] = useState(1);
+  const [teamRanks, setTeamRanks] = useState<(GameTeam & GameTeamRank)[]>([]);
+
+  useEffect(() => {
+    const fetchLeaderboards = async () => {
+      const result = await gameService.getLeaderboard(game.id);
+      setTeamRanks(result);
+    };
+
+    fetchLeaderboards();
+  }, []);
 
   const renderContent = () => {
     switch (activeNavItemId) {
@@ -68,7 +83,7 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
           />
         );
       case 2:
-        return <LeaderboardList key={game.id} gameId={game.id} />;
+        return <LeaderboardList teamRanks={teamRanks} setTeamRanks={setTeamRanks} key={game.id} />;
       case 3:
         return <FeedList key={game.id} gameId={game.id} />;
       default:

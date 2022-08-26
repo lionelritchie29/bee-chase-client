@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/react';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import useLoading from '../../hooks/use-loading';
 import { GameTeam, GameTeamRank } from '../../models/GameTeam';
 import { SessionUser } from '../../models/SessionUser';
@@ -8,25 +8,11 @@ import LeaderboardCard from './LeaderboardCard';
 import LeaderboardSkeleton from './LeaderboardSkeleton';
 
 type Props = {
-  gameId: string;
+  teamRanks: (GameTeam & GameTeamRank)[];
+  setTeamRanks: Dispatch<SetStateAction<(GameTeam & GameTeamRank)[]>>;
 };
 
-function LeaderboardList({ gameId }: Props) {
-  const session = useSession();
-  const user = session?.data?.user as SessionUser;
-  const gameService = new GameService(user?.access_token);
-
-  const [teamRanks, setTeamRanks] = useState<(GameTeam & GameTeamRank)[]>([]);
-
-  useEffect(() => {
-    const fetchLeaderboards = async () => {
-      const result = await gameService.getLeaderboard(gameId);
-      setTeamRanks(result);
-    };
-
-    fetchLeaderboards();
-  }, []);
-
+function LeaderboardList({ teamRanks, setTeamRanks }: Props) {
   if (teamRanks.length === 0) return <LeaderboardSkeleton />;
   return (
     <ul>
