@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-}
+  basePath: '/beechase',
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
