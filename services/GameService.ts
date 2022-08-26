@@ -1,6 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
+import PaginateResponseDto from '../models/dto/paginate-response.dto';
 import { Game } from '../models/Game';
+import { GameMission } from '../models/GameMission';
 import { GameTeam, GameTeamRank } from '../models/GameTeam';
+import { Submission } from '../models/Submission';
 import { BaseService } from './BaseService';
 
 export class GameService extends BaseService {
@@ -42,6 +45,13 @@ export class GameService extends BaseService {
       `${this.API_URL}/games?player=true`,
       this.headerWithToken(),
     );
+    return response.data;
+  }
+
+  public async getAllSubmissions(gameId: string) {
+    const response: AxiosResponse<
+      PaginateResponseDto<Submission & { game_team: GameTeam } & { mission: GameMission }>
+    > = await axios.get(`${this.API_URL}/games/${gameId}/submissions`, this.headerWithToken());
     return response.data;
   }
 }

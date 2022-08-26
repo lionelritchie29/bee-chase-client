@@ -1,5 +1,10 @@
 import { GetServerSideProps, NextPage } from 'next';
-import { ChartBarIcon, ClipboardListIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
+import {
+  ChartBarIcon,
+  ClipboardListIcon,
+  DocumentTextIcon,
+  UserGroupIcon,
+} from '@heroicons/react/outline';
 import Layout from '../../../widgets/Layout';
 import GameBottomNavbar from '../../../widgets/BottomNavbar';
 import { BottomNavbarItem } from '../../../models/view/BottomNavbarItem';
@@ -16,6 +21,7 @@ import { GameMissionService } from '../../../services/GameMissionService';
 import { Game } from '../../../models/Game';
 import { GameMission } from '../../../models/GameMission';
 import { useRouter } from 'next/router';
+import FeedList from '../../../components/games/feeds/FeedList';
 
 type Props = {
   game: Game;
@@ -33,6 +39,16 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
       id: 2,
       title: 'Leaderboards',
       icon: <ChartBarIcon className='w-5 h-5' />,
+    },
+    {
+      id: 3,
+      title: 'Feeds',
+      icon: <DocumentTextIcon className='w-5 h-5' />,
+    },
+    {
+      id: 4,
+      title: 'My Team',
+      icon: <UserGroupIcon className='w-5 h-5' />,
     },
   ];
   const router = useRouter();
@@ -52,7 +68,9 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
           />
         );
       case 2:
-        return <LeaderboardList gameId={game.id} />;
+        return <LeaderboardList key={game.id} gameId={game.id} />;
+      case 3:
+        return <FeedList key={game.id} gameId={game.id} />;
       default:
         return 'hehe';
     }

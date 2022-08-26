@@ -35,9 +35,15 @@ export default function OnedriveImage({ submission }: Props) {
   return (
     <>
       {!url ? (
-        <Image src={defaultPlaceholder} alt='Placeholder Image' width={600} height={800} />
+        <Image
+          src={defaultPlaceholder}
+          className='object-cover'
+          alt='Placeholder Image'
+          width={600}
+          height={400}
+        />
       ) : (
-        <img src={url} className='w-full h-auto' alt='Uploaded File' />
+        <img src={url} className='min-h-[12rem] w-full h-auto' alt='Uploaded File' />
       )}
     </>
   );

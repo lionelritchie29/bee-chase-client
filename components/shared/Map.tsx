@@ -9,6 +9,7 @@ type Props = {
   sourceLatitude: number;
   sourceLongitude: number;
   radius: number;
+  dragging?: boolean;
 };
 
 const Map = ({
@@ -17,9 +18,11 @@ const Map = ({
   sourceLatitude,
   sourceLongitude,
   radius,
+  dragging = true,
 }: Props) => {
   return (
     <MapContainer
+      dragging={dragging}
       style={{ height: '100%', width: '100%' }}
       center={[sourceLatitude, sourceLongitude]}
       zoom={18}
@@ -28,7 +31,9 @@ const Map = ({
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
       />
-      <Circle radius={radius} center={[targetLatitude, targetLongitude]} />
+      {targetLatitude && targetLongitude && radius && (
+        <Circle radius={radius} center={[targetLatitude, targetLongitude]} />
+      )}
       <Marker position={[sourceLatitude, sourceLongitude]}>
         <Popup>Your location</Popup>
       </Marker>
