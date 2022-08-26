@@ -24,15 +24,17 @@ import { useRouter } from 'next/router';
 import FeedList from '../../../components/games/feeds/FeedList';
 import { GameTeam, GameTeamRank } from '../../../models/GameTeam';
 import { useSession } from 'next-auth/react';
-import { Submission } from '../../../models/Submission';
-import PaginateResponseDto from '../../../models/dto/paginate-response.dto';
+import MyTeam from '../../../components/games/my-team/MyTeam';
+import { GameTeamUser } from '../../../models/GameTeamUser';
+import { PaginatedSubmission } from '../../../models/PaginatedSubmissions';
 
 type Props = {
   game: Game;
   missions: GameMission[];
+  currentTeam: GameTeamUser;
 };
 
-const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
+const PlayGamePage: NextPage<Props> = ({ game, missions, currentTeam }) => {
   const bottomNavItems: BottomNavbarItem[] = [
     {
       id: 1,
@@ -60,15 +62,19 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const gameService = new GameService(user?.access_token);
+  const teamService = new GameTeamService(user?.access_token);
 
   const remainingMissions = missions.filter((mission) => mission.submissions.length === 0);
   const completedMissions = missions.filter((mission) => mission.submissions.length > 0);
 
   const [activeNavItemId, setActiveNavItemId] = useState(1);
   const [teamRanks, setTeamRanks] = useState<(GameTeam & GameTeamRank)[]>([]);
-  const [submissionsPaginated, setSubmissionsPaginated] = useState<PaginateResponseDto<
-    Submission & { game_team: GameTeam } & { mission: GameMission }
-  > | null>(null);
+  const [submissionsPaginated, setSubmissionsPaginated] = useState<PaginatedSubmission | null>(
+    null,
+  );
+  const [currentTeamSubmissionsPaginated, setCurrentTeamSubmissionsPaginated] =
+    useState<PaginatedSubmission | null>(null);
+  const currentTeamRanks = teamRanks.find((rank) => rank.id === currentTeam.game_team_id) ?? null;
 
   useEffect(() => {
     const fetchLeaderboards = async () => {
@@ -81,8 +87,14 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
       setSubmissionsPaginated(subs);
     };
 
+    const fetchCurrentTeamSubmissions = async () => {
+      const subs = await teamService.getAllSubmissions(game.id, currentTeam.game_team_id);
+      setCurrentTeamSubmissionsPaginated(subs);
+    };
+
     fetchLeaderboards();
     fetchSubmissions();
+    fetchCurrentTeamSubmissions();
   }, []);
 
   const renderContent = () => {
@@ -99,6 +111,14 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
         return <LeaderboardList teamRanks={teamRanks} key={game.id} />;
       case 3:
         return <FeedList key={game.id} submissionsPaginated={submissionsPaginated} />;
+      case 4:
+        return (
+          <MyTeam
+            teamRank={currentTeamRanks}
+            submissions={currentTeamSubmissionsPaginated}
+            key={game.id}
+          />
+        );
       default:
         return 'hehe';
     }
@@ -156,6 +176,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
     props: {
       game,
       missions: missionsWithFilteredSubmissions,
+      currentTeam,
     },
   };
 };

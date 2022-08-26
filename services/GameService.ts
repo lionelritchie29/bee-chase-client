@@ -1,9 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
-import PaginateResponseDto from '../models/dto/paginate-response.dto';
 import { Game } from '../models/Game';
-import { GameMission } from '../models/GameMission';
 import { GameTeam, GameTeamRank } from '../models/GameTeam';
-import { Submission } from '../models/Submission';
+import { PaginatedSubmission } from '../models/PaginatedSubmissions';
 import { BaseService } from './BaseService';
 
 export class GameService extends BaseService {
@@ -49,9 +47,10 @@ export class GameService extends BaseService {
   }
 
   public async getAllSubmissions(gameId: string) {
-    const response: AxiosResponse<
-      PaginateResponseDto<Submission & { game_team: GameTeam } & { mission: GameMission }>
-    > = await axios.get(`${this.API_URL}/games/${gameId}/submissions`, this.headerWithToken());
+    const response: AxiosResponse<PaginatedSubmission> = await axios.get(
+      `${this.API_URL}/games/${gameId}/submissions`,
+      this.headerWithToken(),
+    );
     return response.data;
   }
 }

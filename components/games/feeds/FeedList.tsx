@@ -32,7 +32,7 @@ export default function FeedList({ submissionsPaginated }: Props) {
   }
 
   return (
-    <section className='mx-3'>
+    <section className='mx-3 pb-12'>
       <Pagination
         pagination={submissionsPaginated}
         currentPage={Number(page)}
