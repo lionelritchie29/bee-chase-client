@@ -24,6 +24,8 @@ import { useRouter } from 'next/router';
 import FeedList from '../../../components/games/feeds/FeedList';
 import { GameTeam, GameTeamRank } from '../../../models/GameTeam';
 import { useSession } from 'next-auth/react';
+import { Submission } from '../../../models/Submission';
+import PaginateResponseDto from '../../../models/dto/paginate-response.dto';
 
 type Props = {
   game: Game;
@@ -53,6 +55,8 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
       icon: <UserGroupIcon className='w-5 h-5' />,
     },
   ];
+
+  const router = useRouter();
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const gameService = new GameService(user?.access_token);
@@ -62,6 +66,9 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
 
   const [activeNavItemId, setActiveNavItemId] = useState(1);
   const [teamRanks, setTeamRanks] = useState<(GameTeam & GameTeamRank)[]>([]);
+  const [submissionsPaginated, setSubmissionsPaginated] = useState<PaginateResponseDto<
+    Submission & { game_team: GameTeam } & { mission: GameMission }
+  > | null>(null);
 
   useEffect(() => {
     const fetchLeaderboards = async () => {
@@ -69,7 +76,13 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
       setTeamRanks(result);
     };
 
+    const fetchSubmissions = async () => {
+      const subs = await gameService.getAllSubmissions(game.id);
+      setSubmissionsPaginated(subs);
+    };
+
     fetchLeaderboards();
+    fetchSubmissions();
   }, []);
 
   const renderContent = () => {
@@ -83,9 +96,9 @@ const PlayGamePage: NextPage<Props> = ({ game, missions }) => {
           />
         );
       case 2:
-        return <LeaderboardList teamRanks={teamRanks} setTeamRanks={setTeamRanks} key={game.id} />;
+        return <LeaderboardList teamRanks={teamRanks} key={game.id} />;
       case 3:
-        return <FeedList key={game.id} gameId={game.id} />;
+        return <FeedList key={game.id} submissionsPaginated={submissionsPaginated} />;
       default:
         return 'hehe';
     }

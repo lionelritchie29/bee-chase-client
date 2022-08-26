@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import PaginateResponseDto from '../../../models/dto/paginate-response.dto';
 import { GameMission } from '../../../models/GameMission';
 import { GameTeam } from '../../../models/GameTeam';
@@ -12,28 +12,14 @@ import FeedCard from './FeedCard';
 import FeedCardSkeleton from './FeedCardSkeleton';
 
 type Props = {
-  gameId: string;
+  submissionsPaginated: PaginateResponseDto<
+    Submission & { game_team: GameTeam } & { mission: GameMission }
+  > | null;
 };
 
-export default function FeedList({ gameId }: Props) {
-  const session = useSession();
-  const user = session?.data?.user as SessionUser;
-  const gameService = new GameService(user?.access_token);
+export default function FeedList({ submissionsPaginated }: Props) {
   const router = useRouter();
-
-  const [submissionsPaginated, setSubmissionsPaginated] = useState<PaginateResponseDto<
-    Submission & { game_team: GameTeam } & { mission: GameMission }
-  > | null>(null);
   const page = router.query.page ?? 1;
-
-  useEffect(() => {
-    const fetchSubmissions = async () => {
-      const subs = await gameService.getAllSubmissions(gameId);
-      setSubmissionsPaginated(subs);
-    };
-
-    fetchSubmissions();
-  }, []);
 
   if (!submissionsPaginated) {
     return (
