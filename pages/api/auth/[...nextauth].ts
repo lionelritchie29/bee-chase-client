@@ -26,6 +26,7 @@ export const authOptions: NextAuthOptions = {
 
           return user;
         } catch (e: any) {
+          console.log(e.response);
           throw new Error(e.response.data.errors.API);
         }
       },

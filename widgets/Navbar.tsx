@@ -3,7 +3,11 @@ import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { SessionUser } from '../models/SessionUser';
 
-export default function Navbar() {
+type Props = {
+  title?: string;
+};
+
+export default function Navbar({ title }: Props) {
   const router = useRouter();
 
   const backBtnAllowedRoutes = [
@@ -96,7 +100,7 @@ export default function Navbar() {
     <nav className='navbar bg-primary border-b text-white'>
       {getLeftWidgets()}
       <div className='flex-1'>
-        <a className='btn btn-ghost normal-case text-xl'>BeeChase</a>
+        <a className='btn btn-ghost normal-case text-xl'>{title ?? 'BeeChase'}</a>
       </div>
       <div className='flex-none'>{getRightWidgets()}</div>
     </nav>

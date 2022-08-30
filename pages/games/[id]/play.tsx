@@ -27,6 +27,7 @@ import { useSession } from 'next-auth/react';
 import MyTeam from '../../../components/games/my-team/MyTeam';
 import { GameTeamUser } from '../../../models/GameTeamUser';
 import { PaginatedSubmission } from '../../../models/PaginatedSubmissions';
+import { isGameExpired } from '../../../lib/game-utils';
 
 type Props = {
   game: Game;
@@ -125,7 +126,13 @@ const PlayGamePage: NextPage<Props> = ({ game, missions, currentTeam }) => {
   };
 
   return (
-    <Layout controlSpacing={false}>
+    <Layout controlSpacing={false} title={game.name}>
+      {!isGameExpired(game) && (
+        <div className='border border-blue-300 p-2 m-2 rounded text-sm text-center bg-blue-100'>
+          Game Code: <b>{game.access_code}</b>
+        </div>
+      )}
+
       {renderContent()}
 
       <GameBottomNavbar

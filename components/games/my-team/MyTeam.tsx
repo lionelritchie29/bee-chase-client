@@ -11,7 +11,7 @@ type Props = {
 export default function MyTeam({ teamRank, submissions }: Props) {
   return (
     <section className='mt-6'>
-      <div className='flex justify-around items-center text-center border rounded mx-3 pt-4'>
+      <div className='flex justify-around items-center text-center border rounded mx-3 py-4'>
         <div className='w-1/3'>
           {teamRank ? (
             <span className='block'>{teamRank.missions_sum_point_value}</span>

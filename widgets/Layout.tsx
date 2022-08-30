@@ -10,6 +10,7 @@ type Props = {
   style?: any;
   showNavbar?: boolean;
   controlSpacing?: boolean;
+  title?: string;
 };
 
 export default function Layout({
@@ -18,6 +19,7 @@ export default function Layout({
   style = {},
   showNavbar = true,
   controlSpacing = true,
+  title = undefined,
 }: Props) {
   const size = useWindowSize();
 
@@ -35,7 +37,7 @@ export default function Layout({
         <title>BeeChase</title>
       </Head>
       <div className='min-h-screen'>
-        {showNavbar && <Navbar />}
+        {showNavbar && <Navbar title={title} />}
 
         <main style={style} className={`${controlSpacing ? 'px-4' : ''} ${className} pb-8`}>
           {children}

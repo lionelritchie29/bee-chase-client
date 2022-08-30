@@ -2,6 +2,7 @@ import { ExclamationCircleIcon } from '@heroicons/react/outline';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { isGameExpired } from '../../lib/game-utils';
 import { Game } from '../../models/Game';
 import { GameMission } from '../../models/GameMission';
 import MissionCard from './MissionCard';
@@ -51,14 +52,6 @@ export default function MissionList({ remainingMissions, completedMissions, game
     return '';
   };
 
-  const isGameExpired = () => {
-    if (!game.start_time || !game.end_time) return false;
-
-    const currDate = new Date();
-    const endDate = new Date(game.end_time);
-    return currDate.getTime() >= endDate.getTime();
-  };
-
   const gameStatus = getGameStatus();
 
   if (gameStatus) {
@@ -81,7 +74,7 @@ export default function MissionList({ remainingMissions, completedMissions, game
 
   return (
     <div>
-      {isGameExpired() && (
+      {isGameExpired(game) && (
         <div className='border border-red-300 p-2 m-2 rounded text-sm text-center bg-red-100'>
           The game has been ended.
         </div>

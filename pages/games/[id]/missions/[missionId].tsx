@@ -105,7 +105,7 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
   };
 
   return (
-    <Layout controlSpacing={false} className='bg-gray-100'>
+    <Layout controlSpacing={false} title={game.name} className='bg-gray-100'>
       <MissionCard mission={mission} className='pt-3' />
 
       <div className='px-3'>{renderInput()}</div>

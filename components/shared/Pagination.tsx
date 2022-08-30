@@ -20,7 +20,7 @@ const Pagination = <T extends unknown>({
     <>
       <section className='my-4 grid grid-cols-1 gap-4' {...rest}>
         {pagination.data.length === 0 && (
-          <div className='card col-span-full shadow-xl'>
+          <div className='card-bordered border-gray-200 rounded col-span-full'>
             <div className='card-body'>
               <h2 className='font-lg text-center font-medium'>No data.</h2>
             </div>
