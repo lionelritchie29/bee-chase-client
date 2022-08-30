@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useLoading from '../../../../hooks/use-loading';
+import { isGameExpired } from '../../../../lib/game-utils';
 import {
   redirectToHome,
   redirectToLogin,
@@ -148,6 +149,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
   const game = await gameService.get(id);
 
   if (!game || !game.allow_user_create_team) return redirectToHome();
+  if (isGameExpired(game)) return redirectToHome();
 
   const alreadyInTeam = await teamService.checkUserAlreadyInTeam(game.id);
   if (alreadyInTeam) return redirectToPlay(game.id);

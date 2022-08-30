@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useLoading from '../../hooks/use-loading';
 import { useRouter } from 'next/router';
+import { isGameExpired } from '../../lib/game-utils';
 
 type FormData = {
   code: string;
@@ -29,11 +30,13 @@ export default function InputGameCode() {
     load('Searching game...');
     const game = await gameService.getByCode(code);
 
+    toast.dismiss();
     if (!game) {
-      toast.dismiss();
-      toast.error('Ups, invalid code');
-      finish();
+      finish('Ups, invalid code', { success: false });
+    } else if (isGameExpired(game)) {
+      finish('Ups, game has already ended', { success: false });
     } else {
+      finish('Game found! Redirecting...');
       router.push(`/games/${game.id}`);
     }
   });

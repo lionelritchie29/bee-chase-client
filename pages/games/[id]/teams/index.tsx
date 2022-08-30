@@ -5,11 +5,11 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 import GameDetailHeader from '../../../../components/games/GameDetailHeader';
 import InputTeamCodeModal from '../../../../components/teams/InputTeamCodeModal';
 import TeamCard from '../../../../components/teams/TeamCard';
 import useLoading from '../../../../hooks/use-loading';
+import { isGameExpired } from '../../../../lib/game-utils';
 import {
   redirectToHome,
   redirectToLogin,
@@ -122,9 +122,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
 
   const game = await gameService.get(id);
   if (!game) return redirectToHome();
+  if (isGameExpired(game)) return redirectToHome();
 
   const alreadyInTeam = await teamService.checkUserAlreadyInTeam(game.id);
-  console.log({ alreadyInTeam });
   if (alreadyInTeam) return redirectToPlay(game.id);
 
   const teams = await teamService.getByGameId(game.id);

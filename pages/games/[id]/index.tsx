@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import GameDetailHeader from '../../../components/games/GameDetailHeader';
 import InputGamePassModal from '../../../components/games/InputGamePassModal';
 import useLoading from '../../../hooks/use-loading';
+import { isGameExpired } from '../../../lib/game-utils';
 import {
   redirectToHome,
   redirectToLogin,
@@ -124,6 +125,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
   const game = await gameService.get(id);
 
   if (!game) return redirectToHome();
+  if (isGameExpired(game)) return redirectToHome();
 
   const alreadyInTeam = await teamService.checkUserAlreadyInTeam(game.id);
   if (alreadyInTeam) return redirectToPlay(game.id);
