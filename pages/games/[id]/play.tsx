@@ -109,7 +109,7 @@ const PlayGamePage: NextPage<Props> = ({ game, missions, currentTeam }) => {
           />
         );
       case 2:
-        return <LeaderboardList teamRanks={teamRanks} key={game.id} />;
+        return <LeaderboardList currentTeam={currentTeam} teamRanks={teamRanks} key={game.id} />;
       case 3:
         return <FeedList key={game.id} submissionsPaginated={submissionsPaginated} />;
       case 4:

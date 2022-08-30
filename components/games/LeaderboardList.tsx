@@ -1,19 +1,21 @@
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { GameTeam, GameTeamRank } from '../../models/GameTeam';
+import { GameTeamUser } from '../../models/GameTeamUser';
 import LeaderboardCard from './LeaderboardCard';
 import LeaderboardSkeleton from './LeaderboardSkeleton';
 
 type Props = {
   teamRanks: (GameTeam & GameTeamRank)[];
+  currentTeam: GameTeamUser;
 };
 
-function LeaderboardList({ teamRanks }: Props) {
+function LeaderboardList({ teamRanks, currentTeam }: Props) {
   if (teamRanks.length === 0) return <LeaderboardSkeleton />;
   return (
     <ul>
       {teamRanks.map((teamRank) => (
         <li key={teamRank.id}>
-          <LeaderboardCard teamRank={teamRank} />
+          <LeaderboardCard currentTeam={currentTeam} teamRank={teamRank} />
         </li>
       ))}
     </ul>

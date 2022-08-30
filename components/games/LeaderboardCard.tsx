@@ -1,10 +1,12 @@
 import { GameTeam, GameTeamRank } from '../../models/GameTeam';
+import { GameTeamUser } from '../../models/GameTeamUser';
 
 type Props = {
   teamRank: GameTeam & GameTeamRank;
+  currentTeam: GameTeamUser;
 };
 
-export default function LeaderboardCard({ teamRank }: Props) {
+export default function LeaderboardCard({ teamRank, currentTeam }: Props) {
   const getRank = () => {
     if (teamRank.rank === 1) return '1st';
     else if (teamRank.rank === 2) return '2nd';
@@ -13,7 +15,10 @@ export default function LeaderboardCard({ teamRank }: Props) {
   };
 
   return (
-    <div className='flex items-center justify-between p-2 border-b'>
+    <div
+      className={`flex items-center justify-between p-2 border-b ${
+        teamRank.id === currentTeam.game_team_id ? 'bg-yellow-200' : ''
+      }`}>
       <div className='flex'>
         <div className='avatar'>
           <div
