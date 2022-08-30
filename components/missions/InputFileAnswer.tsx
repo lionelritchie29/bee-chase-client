@@ -1,13 +1,11 @@
 import { CameraIcon, VideoCameraIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { MediaType } from '../../constants/media-type';
 import { SubmissionSource } from '../../constants/submission-source';
-import useLoading from '../../hooks/use-loading';
-import { FileAnswerData } from '../../models/answer-data/FileAnswerData';
 import { CreateSubmissionDto } from '../../models/dto/submissions/create-submission.dto';
 import { Game } from '../../models/Game';
 import { GameMission } from '../../models/GameMission';

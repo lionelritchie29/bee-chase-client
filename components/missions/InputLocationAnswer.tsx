@@ -46,17 +46,15 @@ export default function InputLocationAnswer({
     formState: { errors },
   } = useForm<FormData>();
 
-  useEffect(() => {
-    if (submission) {
-      const ans = JSON.parse(submission.answer_data) as LocationAnswerData;
-      setValue('caption', submission.caption);
-      setValue('latitude', ans.latitude);
-      setValue('longitude', ans.longitude);
-    } else {
-      setValue('latitude', position.lat);
-      setValue('longitude', position.long);
-    }
-  }, [submission, setValue, position]);
+  if (submission) {
+    const ans = JSON.parse(submission.answer_data) as LocationAnswerData;
+    setValue('caption', submission.caption);
+    setValue('latitude', ans.latitude);
+    setValue('longitude', ans.longitude);
+  } else {
+    setValue('latitude', position.lat);
+    setValue('longitude', position.long);
+  }
 
   const onSubmit = handleSubmit(async ({ latitude, longitude, caption }) => {
     const dto: CreateSubmissionDto = {

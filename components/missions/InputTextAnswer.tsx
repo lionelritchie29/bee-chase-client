@@ -25,13 +25,11 @@ export default function InputTextAnswer({ submit, teamUser, isLoading, submissio
     formState: { errors },
   } = useForm<FormData>();
 
-  useEffect(() => {
-    if (submission) {
-      const answer = JSON.parse(submission.answer_data) as TextAnswerData;
-      setValue('caption', submission.caption);
-      setValue('text', answer.text);
-    }
-  }, [submission, setValue]);
+  if (submission) {
+    const answer = JSON.parse(submission.answer_data) as TextAnswerData;
+    setValue('caption', submission.caption);
+    setValue('text', answer.text);
+  }
 
   const onSubmit = handleSubmit(async ({ text, caption }) => {
     const dto: CreateSubmissionDto = {
