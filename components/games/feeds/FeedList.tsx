@@ -1,23 +1,18 @@
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import PaginateResponseDto from '../../../models/dto/paginate-response.dto';
-import { GameMission } from '../../../models/GameMission';
-import { GameTeam } from '../../../models/GameTeam';
-import { SessionUser } from '../../../models/SessionUser';
-import { Submission } from '../../../models/Submission';
-import { GameService } from '../../../services/GameService';
+
+import { GameTeamUser } from '../../../models/GameTeamUser';
+import { PaginatedSubmission } from '../../../models/PaginatedSubmissions';
+
 import Pagination from '../../shared/Pagination';
 import FeedCard from './FeedCard';
 import FeedCardSkeleton from './FeedCardSkeleton';
 
 type Props = {
-  submissionsPaginated: PaginateResponseDto<
-    Submission & { game_team: GameTeam } & { mission: GameMission }
-  > | null;
+  submissionsPaginated: PaginatedSubmission | null;
+  currentTeam: GameTeamUser;
 };
 
-export default function FeedList({ submissionsPaginated }: Props) {
+export default function FeedList({ submissionsPaginated, currentTeam }: Props) {
   const router = useRouter();
   const page = router.query.page ?? 1;
 
@@ -36,7 +31,9 @@ export default function FeedList({ submissionsPaginated }: Props) {
       <Pagination
         pagination={submissionsPaginated}
         currentPage={Number(page)}
-        render={(submission) => <FeedCard submission={submission} key={submission.id} />}
+        render={(submission) => (
+          <FeedCard currentTeam={currentTeam} submission={submission} key={submission.id} />
+        )}
       />
     </section>
   );

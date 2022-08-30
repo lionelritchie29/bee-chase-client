@@ -9,22 +9,25 @@ import OnedriveImage from '../../shared/OnedriveImage';
 import dynamic from 'next/dynamic';
 import { LocationAnswerData } from '../../../models/answer-data/LocationAnswerData';
 import { COLORS } from '../../../constants/color';
+import { GameTeamUser } from '../../../models/GameTeamUser';
 
 type Props = {
   submission: Submission & { mission: GameMission } & { game_team: GameTeam };
+  currentTeam: GameTeamUser;
 };
 
-export default function FeedCard({ submission }: Props) {
+export default function FeedCard({ submission, currentTeam }: Props) {
+  const getTextAnswer = (answer: TextAnswerData) => {
+    if (submission.game_team_id === currentTeam.game_team_id) return <b>{answer.text}</b>;
+    return <span className='text-gray-400'>Hidden</span>;
+  };
+
   const renderContent = () => {
     let answer = null;
     switch (submission.mission.answer_type) {
       case AnswerType.TEXT:
         answer = JSON.parse(submission.answer_data) as TextAnswerData;
-        return (
-          <div key={submission.id}>
-            Answered: <b>{answer.text}</b>
-          </div>
-        );
+        return <div key={submission.id}>Answered: {getTextAnswer(answer)}</div>;
       case AnswerType.IMAGE:
         answer = JSON.parse(submission.answer_data) as FileAnswerData;
         return <OnedriveImage submission={submission} key={submission.id} />;
