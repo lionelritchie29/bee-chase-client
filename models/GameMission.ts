@@ -11,7 +11,7 @@ export interface GameMission extends BaseModel {
   description: string;
   game_id: string;
   id: string;
-  mission_data: string; // Type: FileMissionData | LocationMissionData // TextMissionData;
+  mission_data: string; // Type: FileMissionData | LocationMissionData | TextMissionData | MultipleChoiceAnswerData ;
   name: string;
   point_value: number;
   shown_in_feed: boolean;

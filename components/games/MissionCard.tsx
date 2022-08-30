@@ -1,5 +1,6 @@
 import {
   CameraIcon,
+  CheckCircleIcon,
   ChevronRightIcon,
   DocumentTextIcon,
   LocationMarkerIcon,
@@ -26,6 +27,8 @@ export default function MissionCard({ className, mission }: Props) {
         return <DocumentTextIcon className='w-12 h-12 text-orange-300' />;
       case AnswerType.GPS:
         return <LocationMarkerIcon className='w-12 h-12 text-orange-300' />;
+      case AnswerType.MULTIPLE_CHOICE:
+        return <CheckCircleIcon className='w-12 h-12 text-orange-300' />;
       default:
         return <QuestionMarkCircleIcon className='w-12 h-12 text-orange-300' />;
     }

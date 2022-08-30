@@ -76,6 +76,7 @@ export default function InputLocationAnswer({
           targetLongitude={longitude}
           sourceLatitude={position.lat}
           sourceLongitude={position.long}
+          dragging={!submission}
         />
       </div>
 
