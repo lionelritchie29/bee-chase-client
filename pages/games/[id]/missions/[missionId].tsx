@@ -9,6 +9,7 @@ import InputMultipleChoiceAnswer from '../../../../components/missions/InputMult
 import InputTextAnswer from '../../../../components/missions/InputTextAnswer';
 import { AnswerType } from '../../../../constants/answer-type';
 import useLoading from '../../../../hooks/use-loading';
+import { isGameExpired } from '../../../../lib/game-utils';
 import { redirectToHome, redirectToPlay } from '../../../../lib/server-redirect-helper';
 import { CreateSubmissionDto } from '../../../../models/dto/submissions/create-submission.dto';
 import { Game } from '../../../../models/Game';
@@ -30,7 +31,6 @@ type Props = {
 };
 
 const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
-  console.log({ mission });
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const submissionService = new SubmissionService(user?.access_token);
@@ -64,9 +64,7 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
   };
 
   const renderInput = () => {
-    const currDate = new Date();
-    const endDate = new Date(game.end_time!);
-    if (currDate.getTime() >= endDate.getTime()) {
+    if (isGameExpired(game) && !submission) {
       return <div className='justify-center flex mt-8'>The game has been ended.</div>;
     }
 
