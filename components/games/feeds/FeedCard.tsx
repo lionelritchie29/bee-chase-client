@@ -10,6 +10,8 @@ import dynamic from 'next/dynamic';
 import { LocationAnswerData } from '../../../models/answer-data/LocationAnswerData';
 import { COLORS } from '../../../constants/color';
 import { GameTeamUser } from '../../../models/GameTeamUser';
+import { MultipleChoiceAnswerData } from '../../../models/answer-data/MultipleChoiceAnswerData';
+import { CheckIcon } from '@heroicons/react/outline';
 
 type Props = {
   submission: Submission & { mission: GameMission } & { game_team: GameTeam };
@@ -20,6 +22,20 @@ export default function FeedCard({ submission, currentTeam }: Props) {
   const getTextAnswer = (answer: TextAnswerData) => {
     if (submission.game_team_id === currentTeam.game_team_id) return <b>{answer.text}</b>;
     return <span className='text-gray-400'>Hidden</span>;
+  };
+
+  const getMultipleChoiceAnswers = (answer: MultipleChoiceAnswerData) => {
+    if (submission.game_team_id !== currentTeam.game_team_id)
+      return <span className='text-gray-400'>Hidden</span>;
+    return (
+      <ul>
+        {answer.answers.map((ans) => (
+          <li className='font-bold flex items-center' key={ans}>
+            <CheckIcon className='w-5 h-5 mr-2' /> {ans}
+          </li>
+        ))}
+      </ul>
+    );
   };
 
   const renderContent = () => {
@@ -48,6 +64,9 @@ export default function FeedCard({ submission, currentTeam }: Props) {
             />
           </div>
         );
+      case AnswerType.MULTIPLE_CHOICE:
+        answer = JSON.parse(submission.answer_data) as MultipleChoiceAnswerData;
+        return <ul>Answered: {getMultipleChoiceAnswers(answer)}</ul>;
       default:
         return <div className='text-sm text-gray-400'>Answer cant be displayed.</div>;
     }
