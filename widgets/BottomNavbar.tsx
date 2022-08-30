@@ -9,7 +9,7 @@ type Props = {
 
 export default function GameBottomNavbar({ items, activeItemId, setActiveItemId }: Props) {
   return (
-    <div className='btm-nav btm-nav-sm'>
+    <div className='btm-nav btm-nav-sm z-50'>
       {items.map((item) => (
         <button
           onClick={() => setActiveItemId(item.id)}

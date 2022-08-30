@@ -125,9 +125,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
   const game = await gameService.get(id);
 
   if (!game) return redirectToHome();
-  if (isGameExpired(game)) return redirectToHome();
 
   const alreadyInTeam = await teamService.checkUserAlreadyInTeam(game.id);
+  if (isGameExpired(game) && !alreadyInTeam) return redirectToHome();
   if (alreadyInTeam) return redirectToPlay(game.id);
 
   return {

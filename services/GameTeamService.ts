@@ -32,6 +32,14 @@ export class GameTeamService extends BaseService {
     return response.data;
   }
 
+  public async getById(gameId: string, teamId: string) {
+    const response: AxiosResponse<GameTeam> = await axios.get(
+      `${this.API_URL}/games/${gameId}/game_teams/${teamId}`,
+      this.headerWithToken(),
+    );
+    return response.data;
+  }
+
   public async verifyCode(gameId: string, teamId: string, accessCode: string) {
     const response: AxiosResponse<boolean> = await axios.post(
       `${this.API_URL}/games/${gameId}/game_teams/${teamId}/verify`,
