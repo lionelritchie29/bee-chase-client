@@ -1,14 +1,16 @@
 import { COLORS } from '../../../constants/color';
 import { GameTeam, GameTeamRank } from '../../../models/GameTeam';
+import { GameTeamUser } from '../../../models/GameTeamUser';
 import { PaginatedSubmission } from '../../../models/PaginatedSubmissions';
 import FeedList from '../feeds/FeedList';
 
 type Props = {
   teamRank: (GameTeam & GameTeamRank) | null;
   submissions: PaginatedSubmission | null;
+  currentTeam: GameTeamUser;
 };
 
-export default function MyTeam({ teamRank, submissions }: Props) {
+export default function MyTeam({ teamRank, submissions, currentTeam }: Props) {
   return (
     <section className='mt-6'>
       <div className='flex justify-around items-center text-center border rounded mx-3 py-4'>
@@ -46,7 +48,7 @@ export default function MyTeam({ teamRank, submissions }: Props) {
 
       <div className='divider mx-3'></div>
 
-      <FeedList submissionsPaginated={submissions} />
+      <FeedList currentTeam={currentTeam} submissionsPaginated={submissions} />
     </section>
   );
 }

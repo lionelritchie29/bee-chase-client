@@ -121,6 +121,7 @@ const PlayGamePage: NextPage<Props> = ({ game, missions, currentTeam }) => {
       case 4:
         return (
           <MyTeam
+            currentTeam={currentTeam}
             teamRank={currentTeamRanks}
             submissions={currentTeamSubmissionsPaginated}
             key={game.id}
