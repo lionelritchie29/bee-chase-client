@@ -80,14 +80,14 @@ export default function FeedCard({ submission, currentTeam }: Props) {
           style={{ backgroundColor: submission.game_team.color || COLORS.TEAM_DEFAULT }}></div>
 
         <div className='ml-2 w-full'>
-          <div className='flex justify-between'>
-            <div className='font-bold truncate'>{submission.game_team.name}</div>
+          <div className='flex justify-between whitespace-pre-wrap'>
+            <div className='font-bold w-2/3'>{submission.game_team.name}</div>
             <div className='text-xs'>
               {formatDistanceToNow(new Date(submission.created_at))} ago
             </div>
           </div>
-          <div className='text-sm font-normal'>
-            <span className='font-semibold truncate'>{submission.mission.name}</span> &#x2022;{' '}
+          <div className='text-sm font-normal whitespace-pre-wrap'>
+            <span className='font-semibold'>{submission.mission.name}</span> &#x2022;{' '}
             <span>{submission.mission.point_value} points</span>
           </div>
         </div>
