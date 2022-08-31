@@ -99,8 +99,8 @@ export default function Navbar({ title }: Props) {
   return (
     <nav className='navbar bg-primary border-b text-white'>
       {getLeftWidgets()}
-      <div className='flex-1'>
-        <a className='btn btn-ghost normal-case text-xl truncate'>{title ?? 'BeeChase'}</a>
+      <div className='flex-1 truncate'>
+        <a className='btn btn-ghost normal-case text-xl'>{title ?? 'BeeChase'}</a>
       </div>
       <div className='flex-none'>{getRightWidgets()}</div>
     </nav>
