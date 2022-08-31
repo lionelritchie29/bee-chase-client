@@ -39,19 +39,6 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
     mission.submissions.length > 0 ? mission.submissions[0] : null,
   );
 
-  const [sourceLatitude, setSourceLatitude] = useState(0);
-  const [sourceLongitude, setSourceLongitude] = useState(0);
-
-  if (typeof navigator !== 'undefined' && navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setSourceLatitude(position.coords.latitude);
-        setSourceLongitude(position.coords.longitude);
-      },
-      (e) => alert('Geolocation is not supported by this browser.'),
-    );
-  }
-
   const submitAnswer = async (dto: CreateSubmissionDto) => {
     try {
       load('Submitting your answer...');
@@ -92,7 +79,6 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
       return (
         <InputLocationAnswer
           submission={submission}
-          position={{ lat: sourceLatitude, long: sourceLongitude }}
           isLoading={isLoading}
           mission={mission}
           teamUser={teamUser}

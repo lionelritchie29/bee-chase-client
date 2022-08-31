@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { LocationAnswerData } from '../../models/answer-data/LocationAnswerData';
 import { CreateSubmissionDto } from '../../models/dto/submissions/create-submission.dto';
@@ -12,7 +12,6 @@ type Props = {
   submit: (dto: CreateSubmissionDto) => void;
   teamUser: GameTeamUser;
   isLoading: boolean;
-  position: { lat: number; long: number };
   mission: GameMission;
   submission: Submission | null;
 };
@@ -27,7 +26,6 @@ export default function InputLocationAnswer({
   submit,
   teamUser,
   isLoading,
-  position,
   mission,
   submission,
 }: Props) {
@@ -46,14 +44,27 @@ export default function InputLocationAnswer({
     formState: { errors },
   } = useForm<FormData>();
 
+  const [sourceLatitude, setSourceLatitude] = useState(0);
+  const [sourceLongitude, setSourceLongitude] = useState(0);
+
+  if (typeof navigator !== 'undefined' && navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setSourceLatitude(position.coords.latitude);
+        setSourceLongitude(position.coords.longitude);
+      },
+      (e) => alert('Geolocation is not supported by this browser.'),
+    );
+  }
+
   if (submission) {
     const ans = JSON.parse(submission.answer_data) as LocationAnswerData;
     setValue('caption', submission.caption);
     setValue('latitude', ans.latitude);
     setValue('longitude', ans.longitude);
   } else {
-    setValue('latitude', position.lat);
-    setValue('longitude', position.long);
+    setValue('latitude', sourceLatitude);
+    setValue('longitude', sourceLongitude);
   }
 
   const onSubmit = handleSubmit(async ({ latitude, longitude, caption }) => {
@@ -72,8 +83,8 @@ export default function InputLocationAnswer({
           radius={radius}
           targetLatitude={latitude}
           targetLongitude={longitude}
-          sourceLatitude={position.lat}
-          sourceLongitude={position.long}
+          sourceLatitude={sourceLatitude}
+          sourceLongitude={sourceLongitude}
           dragging={!submission}
         />
       </div>
