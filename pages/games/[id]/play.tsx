@@ -93,10 +93,12 @@ const PlayGamePage: NextPage<Props> = ({ game, missions, currentTeam }) => {
       setCurrentTeamSubmissionsPaginated(subs);
     };
 
-    fetchLeaderboards();
-    fetchSubmissions();
-    fetchCurrentTeamSubmissions();
-  }, []);
+    if (user) {
+      fetchLeaderboards();
+      fetchSubmissions();
+      fetchCurrentTeamSubmissions();
+    }
+  }, [user]);
 
   const renderContent = () => {
     switch (activeNavItemId) {

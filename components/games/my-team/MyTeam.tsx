@@ -27,8 +27,8 @@ export default function MyTeam({ teamRank, submissions, currentTeam }: Props) {
       setMembers(team.members);
     };
 
-    if (teamRank) fetchTeams();
-  }, [teamRank]);
+    if (teamRank && user) fetchTeams();
+  }, [teamRank, user]);
 
   return (
     <section className='mt-6'>
