@@ -45,14 +45,13 @@ export default function MissionCard({ className, mission }: Props) {
           </div>
 
           <div className='ml-3 flex-1'>
-            <div className='flex justify-between'>
+            <div className='flex justify-between items-start'>
               <div className='font-bold'>{mission.name}</div>
               <div className='text-gray-400 font-semibold flex items-center'>
-                <span className='badge badge-outline'>{mission.point_value}pts</span>
-                {/* <ChevronRightIcon className='w-4 h-4 ml-2 text-orange-400' /> */}
+                <span className='badge badge-outline mt-1'>{mission.point_value}pts</span>
               </div>
             </div>
-            <div className='text-gray-400 text-sm'>{mission.description}</div>
+            <div className='text-gray-400 text-sm mt-1'>{mission.description}</div>
           </div>
         </div>
       </div>

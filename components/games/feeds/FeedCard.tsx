@@ -81,10 +81,7 @@ export default function FeedCard({ submission, currentTeam }: Props) {
 
         <div className='ml-2 w-full'>
           <div className='flex justify-between whitespace-pre-wrap'>
-            <div className='font-bold w-2/3'>{submission.game_team.name}</div>
-            <div className='text-xs'>
-              {formatDistanceToNow(new Date(submission.created_at))} ago
-            </div>
+            <div className='font-bold'>{submission.game_team.name}</div>
           </div>
           <div className='text-sm font-normal whitespace-pre-wrap'>
             <span className='font-semibold'>{submission.mission.name}</span> &#x2022;{' '}
@@ -96,6 +93,9 @@ export default function FeedCard({ submission, currentTeam }: Props) {
       <div className='mt-4'>{renderContent()}</div>
 
       {submission.caption && <div className='mt-2 text-gray-600'>{submission.caption}</div>}
+      <div className='text-xs text-right mt-2'>
+        {formatDistanceToNow(new Date(submission.created_at))} ago
+      </div>
     </div>
   );
 }
