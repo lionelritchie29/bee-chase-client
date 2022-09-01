@@ -29,6 +29,7 @@
     "react-hook-form": "^7.34.0",
     "react-hot-toast": "^2.3.0",
     "react-leaflet": "^4.0.1",
+    "react-tooltip": "^4.2.21",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

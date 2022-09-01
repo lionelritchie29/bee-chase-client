@@ -3,6 +3,7 @@ import {
   ChartBarIcon,
   ClipboardListIcon,
   DocumentTextIcon,
+  InformationCircleIcon,
   UserGroupIcon,
 } from '@heroicons/react/outline';
 import Layout from '../../../widgets/Layout';
@@ -28,6 +29,7 @@ import MyTeam from '../../../components/games/my-team/MyTeam';
 import { GameTeamUser } from '../../../models/GameTeamUser';
 import { PaginatedSubmission } from '../../../models/PaginatedSubmissions';
 import { isGameExpired } from '../../../lib/game-utils';
+import ReactTooltip from 'react-tooltip';
 
 type Props = {
   game: Game;
@@ -126,18 +128,19 @@ const PlayGamePage: NextPage<Props> = ({ game, missions, currentTeam }) => {
             currentTeam={currentTeam}
             teamRank={currentTeamRanks}
             submissions={currentTeamSubmissionsPaginated}
+            game={game}
             key={game.id}
           />
         );
       default:
-        return 'hehe';
+        return 'Content not supported';
     }
   };
 
   return (
     <Layout controlSpacing={false} title={game.name}>
       {!isGameExpired(game) && (
-        <div className='border border-blue-300 p-2 m-2 rounded text-sm text-center bg-blue-100'>
+        <div className='flex-1 border border-blue-300 p-2 m-2 rounded text-sm text-center bg-blue-100'>
           Game Code: <b>{game.access_code}</b>
         </div>
       )}

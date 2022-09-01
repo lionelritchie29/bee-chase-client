@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { COLORS } from '../../../constants/color';
+import { Game } from '../../../models/Game';
 import { GameTeam, GameTeamRank } from '../../../models/GameTeam';
 import { GameTeamUser } from '../../../models/GameTeamUser';
 import { PaginatedSubmission } from '../../../models/PaginatedSubmissions';
@@ -13,9 +14,10 @@ type Props = {
   teamRank: (GameTeam & GameTeamRank) | null;
   submissions: PaginatedSubmission | null;
   currentTeam: GameTeamUser;
+  game: Game;
 };
 
-export default function MyTeam({ teamRank, submissions, currentTeam }: Props) {
+export default function MyTeam({ teamRank, submissions, currentTeam, game }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const teamService = new GameTeamService(user?.access_token);
@@ -32,7 +34,11 @@ export default function MyTeam({ teamRank, submissions, currentTeam }: Props) {
 
   return (
     <section className='mt-6'>
-      <div className='border rounded mx-3 py-4'>
+      <div className='border rounded mx-3 p-4'>
+        <div className='font-bold'>Current game:</div>
+        <div>{game.name}</div>
+      </div>
+      <div className='border rounded mx-3 py-4 mt-4'>
         <div className='flex justify-around items-center text-center'>
           <div className='w-1/3'>
             {teamRank ? (
