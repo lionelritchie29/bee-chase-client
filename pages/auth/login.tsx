@@ -43,7 +43,7 @@ const Login: NextPage = () => {
       showNavbar={false}
       className='grid place-items-center bg-primary min-h-screen'
       style={{
-        backgroundImage: `url('/beechase/assets/login_backdrop.jpg')`,
+        backgroundImage: `url('${process.env.NEXT_PUBLIC_BASE_PATH}/assets/login_backdrop.jpg')`,
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',

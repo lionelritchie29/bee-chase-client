@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  basePath: '/beechase',
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH,
 };
 
 module.exports = nextConfig;

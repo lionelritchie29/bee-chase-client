@@ -11,7 +11,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
   }, []);
 
   return (
-    <SessionProvider session={session} basePath='/beechase/api/auth'>
+    <SessionProvider session={session} basePath={`${process.env.NEXT_PUBLIC_BASE_PATH}/api/auth`}>
       <Toaster />
       <NextNProgress color='#fb923c' />
       <Component {...pageProps} />
