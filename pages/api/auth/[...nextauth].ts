@@ -27,7 +27,15 @@ export const authOptions: NextAuthOptions = {
           return user;
         } catch (e: any) {
           console.log(e.response);
-          throw new Error(e.response.data.errors.API);
+          if (e.response?.data?.errors?.API) {
+            throw new Error(e.response.data.errors.API);
+          } else if (e.response?.data?.errors?.username) {
+            throw new Error(e.response.data.errors.username);
+          } else if (e.response?.data?.errors?.password) {
+            throw new Error(e.response.data.errors.password);
+          } else {
+            throw new Error('Something is wrong, please contact admin');
+          }
         }
       },
     }),
