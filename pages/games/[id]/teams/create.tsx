@@ -2,7 +2,6 @@ import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useLoading from '../../../../hooks/use-loading';
@@ -45,14 +44,12 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
     formState: { errors },
   } = useForm<FormData>();
 
-  useEffect(() => {
-    const MAX = 9999;
-    const MIN = 1000;
-    const randomAccessCode = Math.floor(Math.random() * (MAX - MIN)) + MIN;
+  const MAX = 9999;
+  const MIN = 1000;
+  const randomAccessCode = Math.floor(Math.random() * (MAX - MIN)) + MIN;
 
-    setValue('name', user?.name);
-    setValue('code', randomAccessCode);
-  }, [user, setValue]);
+  setValue('name', user?.name);
+  setValue('code', randomAccessCode);
 
   const onSubmit = handleSubmit(async ({ name, code }) => {
     const dto: CreateGameTeamDto = {
@@ -115,7 +112,6 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
             type='number'
             {...register('code', {
               validate: (value) => {
-                console.log({ value });
                 if (value) return value >= 1000 && value <= 9999;
                 else return true;
               },

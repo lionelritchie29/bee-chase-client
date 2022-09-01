@@ -44,7 +44,7 @@ export default function InputMultipleChoiceAnswer({
 
   const renderCheckboxes = () => {
     if (submission) {
-      return missionData.choices.map((choice, idx) => (
+      return missionData.choices?.map((choice, idx) => (
         <label key={choice} className='flex'>
           <input
             type='checkbox'
@@ -57,7 +57,7 @@ export default function InputMultipleChoiceAnswer({
         </label>
       ));
     } else {
-      return missionData.choices.map((choice, idx) => (
+      return missionData.choices?.map((choice, idx) => (
         <label key={choice} className='flex'>
           <input
             type='checkbox'
@@ -113,14 +113,16 @@ export default function InputMultipleChoiceAnswer({
         {errors?.selectedChoices && <small className='text-red-400'>Answer must be chosen</small>}
       </div>
 
-      <button
-        type='submit'
-        disabled={isLoading || submission != null}
-        className={`btn ${
-          isLoading || submission ? 'btn-disabled' : 'btn-primary'
-        } text-white w-full shadow mt-5`}>
-        {submission ? 'Answered' : 'Submit Answer'}
-      </button>
+      {missionData.choices && (
+        <button
+          type='submit'
+          disabled={isLoading || submission != null}
+          className={`btn ${
+            isLoading || submission ? 'btn-disabled' : 'btn-primary'
+          } text-white w-full shadow mt-5`}>
+          {submission ? 'Answered' : 'Submit Answer'}
+        </button>
+      )}
     </form>
   );
 }

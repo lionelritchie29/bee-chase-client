@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import MissionCard from '../../../../components/games/MissionCard';
 import InputFileAnswer from '../../../../components/missions/InputFileAnswer';
 import InputLocationAnswer from '../../../../components/missions/InputLocationAnswer';

@@ -94,7 +94,6 @@ export class OnedriveService extends BaseService {
       }
 
       if (response['id'] !== undefined) {
-        console.log({ response });
         const fileId = response['id'];
         const downloadURL = `https://graph.microsoft.com/v1.0/me/drive/items/${fileId}`;
         const lastModifiedDateTime = response['lastModifiedDateTime'];

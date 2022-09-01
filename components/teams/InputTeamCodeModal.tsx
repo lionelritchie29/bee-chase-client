@@ -20,7 +20,6 @@ type FormData = {
 };
 
 export default function InputTeamCodeModal({ isOpen, setIsOpen, selectedTeam, joinTeam }: Props) {
-  console.log({ selectedTeam });
   const session = useSession();
   const router = useRouter();
   const user = session?.data?.user as SessionUser;
