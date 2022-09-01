@@ -35,10 +35,43 @@ export default function InputMultipleChoiceAnswer({
   const missionData = JSON.parse(mission.mission_data) as MultipleChoiceMissionData;
 
   setValue('selectedChoices', []);
+
+  let answers: string[] = [];
   if (submission) {
-    const answers = JSON.parse(submission.answer_data) as MultipleChoiceAnswerData;
-    setValue('selectedChoices', answers.answers);
+    const ans = JSON.parse(submission.answer_data) as MultipleChoiceAnswerData;
+    answers = ans.answers;
   }
+
+  const renderCheckboxes = () => {
+    if (submission) {
+      return missionData.choices.map((choice, idx) => (
+        <label key={choice} className='flex'>
+          <input
+            type='checkbox'
+            disabled={true}
+            value={choice}
+            className='checkbox'
+            checked={answers.includes(choice)}
+          />
+          <div className='ml-3'>{choice}</div>
+        </label>
+      ));
+    } else {
+      return missionData.choices.map((choice, idx) => (
+        <label key={choice} className='flex'>
+          <input
+            type='checkbox'
+            disabled={submission != null}
+            value={choice}
+            className='checkbox'
+            {...register('selectedChoices', { validate: (val) => val.length > 0 })}
+            onChange={onChange}
+          />
+          <div className='ml-3'>{choice}</div>
+        </label>
+      ));
+    }
+  };
 
   const onChange = (e: any) => {
     const val = e.target.value;
@@ -75,19 +108,7 @@ export default function InputMultipleChoiceAnswer({
       </div>
 
       <div className='flex flex-col space-y-2'>
-        {missionData.choices.map((choice, idx) => (
-          <label key={choice} className='flex'>
-            <input
-              type='checkbox'
-              disabled={submission != null}
-              value={choice}
-              className='checkbox'
-              {...register('selectedChoices', { validate: (val) => val.length > 0 })}
-              onChange={onChange}
-            />
-            <div className='ml-3'>{choice}</div>
-          </label>
-        ))}
+        {renderCheckboxes()}
 
         {errors?.selectedChoices && <small className='text-red-400'>Answer must be chosen</small>}
       </div>
