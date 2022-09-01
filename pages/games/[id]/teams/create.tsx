@@ -22,6 +22,7 @@ import { authOptions } from '../../../api/auth/[...nextauth]';
 type FormData = {
   name: string;
   code: number;
+  color: string;
 };
 
 type Props = {
@@ -34,15 +35,14 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
   const gameTeamService = new GameTeamService(user?.access_token);
 
   const router = useRouter();
-  const { id } = router.query;
-  const [{ isLoading, load, finish }] = useLoading(false);
 
   const {
     register,
     handleSubmit,
+    watch,
     setValue,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<FormData>({ defaultValues: { color: '#00A0F0' } });
 
   const MAX = 9999;
   const MIN = 1000;
@@ -50,10 +50,11 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
 
   setValue('name', user?.name);
   setValue('code', randomAccessCode);
+  const currentSelectedColor = watch('color', '#00A0F0');
 
-  const onSubmit = handleSubmit(async ({ name, code }) => {
+  const onSubmit = handleSubmit(async ({ name, code, color }) => {
     const dto: CreateGameTeamDto = {
-      color: null,
+      color,
       name,
       access_code: code ? code.toString() : null,
     };
@@ -81,13 +82,29 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
         <div style={{ background: '#0394c4' }} className='h-32 -mt-1'></div>
         <div className='h-32'>
           <div className='absolute bottom-10 w-full'>
-            <div className='w-full rounded-full h-32 w-32 mx-auto bg-gray-300'></div>
+            <div
+              className='w-full rounded-full h-32 w-32 border border-gray-500 mx-auto'
+              style={{ backgroundColor: currentSelectedColor }}></div>
           </div>
         </div>
       </div>
 
       <form onSubmit={onSubmit} className='w-full px-4'>
         <div className='form-control w-full'>
+          <label className='label'>
+            <span className='label-text uppercase font-semibold uppercase text-gray-400'>
+              Team Color
+            </span>
+          </label>
+          <input
+            type='color'
+            {...register('color', { required: true })}
+            className='input input-bordered w-full input-md'
+          />
+          {errors?.name && <small className='text-red-300'>Team name must be filled</small>}
+        </div>
+
+        <div className='form-control w-full mt-4'>
           <label className='label'>
             <span className='label-text uppercase font-semibold uppercase text-gray-400'>
               Team Name
