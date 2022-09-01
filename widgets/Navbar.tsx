@@ -66,7 +66,7 @@ export default function Navbar({ title }: Props) {
           <button
             tabIndex={0}
             onClick={() => {
-              router.replace(router.asPath);
+              router.reload();
             }}
             className='btn btn-square btn-ghost'>
             <RefreshIcon className='w-5 h-5' />

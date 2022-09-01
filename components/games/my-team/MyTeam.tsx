@@ -42,7 +42,7 @@ export default function MyTeam({ teamRank, submissions, currentTeam, game }: Pro
         <div className='flex justify-around items-center text-center'>
           <div className='w-1/3'>
             {teamRank ? (
-              <span className='block'>{teamRank.missions_sum_point_value}</span>
+              <span className='block'>{teamRank.missions_sum_point_value ?? 0}</span>
             ) : (
               <div className='h-4 w-12 bg-gray-300 mx-auto rounded animate-pulse'></div>
             )}
