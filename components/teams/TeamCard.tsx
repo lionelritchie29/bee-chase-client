@@ -1,14 +1,16 @@
 import { ChevronRightIcon } from '@heroicons/react/outline';
-import { Dispatch, SetStateAction } from 'react';
 import { COLORS } from '../../constants/color';
+import { teamIsFull } from '../../lib/game-utils';
+import { Game } from '../../models/Game';
 import { GameTeam } from '../../models/GameTeam';
 
 type Props = {
   team: GameTeam;
   verifyTeam: (teamId: string) => void;
+  game: Game;
 };
 
-export default function TeamCard({ team, verifyTeam }: Props) {
+export default function TeamCard({ team, verifyTeam, game }: Props) {
   return (
     <button
       onClick={() => verifyTeam(team.id)}
@@ -19,6 +21,7 @@ export default function TeamCard({ team, verifyTeam }: Props) {
           style={{ backgroundColor: team.color ?? COLORS.TEAM_DEFAULT }}
         />
         <span className='block font-semibold'>{team.name}</span>
+        {teamIsFull(game, team) && <span className='badge badge-outline ml-3'>Full</span>}
       </div>
       <ChevronRightIcon className='w-5 h-5' />
     </button>

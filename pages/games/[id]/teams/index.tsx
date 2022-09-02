@@ -9,7 +9,7 @@ import GameDetailHeader from '../../../../components/games/GameDetailHeader';
 import InputTeamCodeModal from '../../../../components/teams/InputTeamCodeModal';
 import TeamCard from '../../../../components/teams/TeamCard';
 import useLoading from '../../../../hooks/use-loading';
-import { isGameExpired } from '../../../../lib/game-utils';
+import { isGameExpired, isIndividualGame } from '../../../../lib/game-utils';
 import {
   redirectToHome,
   redirectToLogin,
@@ -66,6 +66,11 @@ const GameTeamsPage: NextPage<Props> = ({ game, gameTeams }) => {
     <Layout controlSpacing={false}>
       <GameDetailHeader game={game} />
 
+      {isIndividualGame(game) && (
+        <div className='border border-blue-300 bg-blue-100 rounded p-2 mx-3 text-sm text-blue-400 mb-2'>
+          This is an individual game, each team will only consist of one member.
+        </div>
+      )}
       <div className='bg-gray-200 py-2 px-4 font-semibold uppercase text-sm'>Select Team</div>
       <ul>
         {game.allow_user_create_team && (
@@ -94,7 +99,7 @@ const GameTeamsPage: NextPage<Props> = ({ game, gameTeams }) => {
 
         {gameTeams.map((team) => (
           <li key={team.id}>
-            <TeamCard verifyTeam={verifyTeam} key={team.id} team={team} />
+            <TeamCard game={game} verifyTeam={verifyTeam} key={team.id} team={team} />
           </li>
         ))}
       </ul>
@@ -105,6 +110,7 @@ const GameTeamsPage: NextPage<Props> = ({ game, gameTeams }) => {
         isOpen={openModal}
         setIsOpen={setOpenModal}
         joinTeam={joinTeam}
+        game={game}
       />
     </Layout>
   );

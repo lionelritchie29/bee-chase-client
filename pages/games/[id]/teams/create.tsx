@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useLoading from '../../../../hooks/use-loading';
-import { isGameExpired } from '../../../../lib/game-utils';
+import { isGameExpired, isIndividualGame } from '../../../../lib/game-utils';
 import {
   redirectToHome,
   redirectToLogin,
@@ -48,8 +48,13 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
   const MIN = 1000;
   const randomAccessCode = Math.floor(Math.random() * (MAX - MIN)) + MIN;
 
-  setValue('name', user?.name);
-  setValue('code', randomAccessCode);
+  if (isIndividualGame(game)) {
+    setValue('name', `${user?.username} - ${user?.name}`);
+  } else {
+    setValue('name', `Team ${user?.name}`);
+    setValue('code', randomAccessCode);
+  }
+
   const currentSelectedColor = watch('color', '#00A0F0');
 
   const onSubmit = handleSubmit(async ({ name, code, color }) => {
@@ -112,6 +117,7 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
           </label>
           <input
             type='text'
+            disabled={isIndividualGame(game)}
             {...register('name', { required: true })}
             placeholder='Team Name'
             className='input input-bordered w-full input-md'
@@ -127,6 +133,7 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
           </label>
           <input
             type='number'
+            disabled={isIndividualGame(game)}
             {...register('code', {
               validate: (value) => {
                 if (value) return value >= 1000 && value <= 9999;

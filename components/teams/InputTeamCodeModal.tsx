@@ -6,22 +6,29 @@ import { useSession } from 'next-auth/react';
 import { SessionUser } from '../../models/SessionUser';
 import { GameTeamService } from '../../services/GameTeamService';
 import useLoading from '../../hooks/use-loading';
-import { useRouter } from 'next/router';
+import { Game } from '../../models/Game';
+import { teamIsFull } from '../../lib/game-utils';
 
 type Props = {
   selectedTeam: GameTeam;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   joinTeam: (teamId: string, accessCode: string | null) => void;
+  game: Game;
 };
 
 type FormData = {
   accessCode: number | null;
 };
 
-export default function InputTeamCodeModal({ isOpen, setIsOpen, selectedTeam, joinTeam }: Props) {
+export default function InputTeamCodeModal({
+  isOpen,
+  setIsOpen,
+  selectedTeam,
+  game,
+  joinTeam,
+}: Props) {
   const session = useSession();
-  const router = useRouter();
   const user = session?.data?.user as SessionUser;
   const teamService = new GameTeamService(user?.access_token);
   const [{ load, finish, isLoading }] = useLoading(false);
@@ -143,12 +150,12 @@ export default function InputTeamCodeModal({ isOpen, setIsOpen, selectedTeam, jo
                     <div className='mt-4'>
                       <button
                         type='submit'
-                        disabled={isLoading}
+                        disabled={isLoading || teamIsFull(game, selectedTeam)}
                         className={`btn ${
                           isLoading ? 'btn-disabled' : 'btn-primary'
                         } text-white w-full`}
                         onClick={() => {}}>
-                        {selectedTeam?.has_access_code ? 'ENTER' : 'JOIN'}
+                        {teamIsFull(game, selectedTeam) ? 'FULL' : 'JOIN'}
                       </button>
                     </div>
                   </form>
