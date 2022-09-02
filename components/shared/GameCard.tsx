@@ -18,7 +18,10 @@ export default function GameCard({ game }: Props) {
       <div className='border rounded p-2 shadow-sm'>
         <div className='mb-2 pb-3 border-b flex'>
           <div className='w-1/3'>
-            <div className='border rounded'>
+            <div className='flex justify-center -mb-7 mt-2 z-20 relative'>
+              <div className='font-bold badge badge-outline'>{game.access_code}</div>
+            </div>
+            <div className='border pt-3 rounded flex justify-center'>
               <Image src={binusLogo} alt='Game Image' width={100} height={100} />
             </div>
           </div>
