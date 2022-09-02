@@ -1,7 +1,14 @@
 import { Html5Qrcode } from 'html5-qrcode';
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
+import { UseFormSetValue } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
-export default function QrScanner() {
+type Props = {
+  setValue: UseFormSetValue<{ code: string }>;
+  setIsScanning: Dispatch<SetStateAction<boolean>>;
+};
+
+export default function QrScanner({ setValue, setIsScanning }: Props) {
   const qrCodeRegionId = 'html5qr-code-full-region';
 
   useEffect(() => {
@@ -10,8 +17,10 @@ export default function QrScanner() {
     qrCodeScanner.start(
       { facingMode: 'environment' },
       config,
-      (decodedText, decodedResult) => {
-        console.log({ decodedText });
+      (decodedText) => {
+        setValue('code', decodedText);
+        setIsScanning(false);
+        toast.success('Code scanned succesfully!');
       },
       (errorMessage) => {
         // parse error, ignore it.

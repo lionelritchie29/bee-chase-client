@@ -60,7 +60,7 @@ export default function InputVerificationAnswer({
           {!isScanningQr ? 'Scan QR' : 'Stop Scanning'}
         </button>
 
-        {isScanningQr && <QrScanner />}
+        {isScanningQr && <QrScanner setIsScanning={setIsScanningQr} setValue={setValue} />}
 
         <div className='divider'>Or</div>
 
