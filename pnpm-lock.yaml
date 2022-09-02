@@ -15,6 +15,7 @@ specifiers:
   date-fns: ^2.29.1
   eslint: 8.21.0
   eslint-config-next: 12.2.4
+  html5-qrcode: ^2.2.1
   jwt-decode: ^3.1.2
   leaflet: ^1.8.0
   leaflet-defaulticon-compatibility: ^0.1.1
@@ -42,6 +43,7 @@ dependencies:
   csstype: 3.1.0
   daisyui: 2.24.0_25hquoklqeoqwmt7fwvvcyxm5e
   date-fns: 2.29.2
+  html5-qrcode: 2.2.1
   jwt-decode: 3.1.2
   leaflet: 1.8.0
   leaflet-defaulticon-compatibility: 0.1.1
@@ -3121,6 +3123,10 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       function-bind: 1.1.1
+
+  /html5-qrcode/2.2.1:
+    resolution: {integrity: sha512-itYnSlSxC3gNRe825mUkKaMzlmevLc4hpH2XLlhCdiEYIE3aMdQUr1XjQ9/zk7NuRMcYRerlbCaMKM+Z66KpSg==}
+    dev: false
 
   /idb/7.0.2:
     resolution: {integrity: sha512-jjKrT1EnyZewQ/gCBb/eyiYrhGzws2FeY92Yx8qT9S9GeQAmo4JFVIiWRIfKW/6Ob9A+UDAOW9j9jn58fy2HIg==}

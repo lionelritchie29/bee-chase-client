@@ -7,6 +7,7 @@ import InputFileAnswer from '../../../../components/missions/InputFileAnswer';
 import InputLocationAnswer from '../../../../components/missions/InputLocationAnswer';
 import InputMultipleChoiceAnswer from '../../../../components/missions/InputMultipleChoiceAnswer';
 import InputTextAnswer from '../../../../components/missions/InputTextAnswer';
+import InputVerificationAnswer from '../../../../components/missions/InputVerificationAnswer';
 import { AnswerType } from '../../../../constants/answer-type';
 import useLoading from '../../../../hooks/use-loading';
 import { isGameExpired } from '../../../../lib/game-utils';
@@ -89,6 +90,15 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
       return (
         <InputMultipleChoiceAnswer
           mission={mission}
+          submission={submission}
+          isLoading={isLoading}
+          teamUser={teamUser}
+          submit={submitAnswer}
+        />
+      );
+    } else if (mission.answer_type === AnswerType.VERIFICATION) {
+      return (
+        <InputVerificationAnswer
           submission={submission}
           isLoading={isLoading}
           teamUser={teamUser}
