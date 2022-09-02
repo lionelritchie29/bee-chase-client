@@ -27,7 +27,11 @@ const Login: NextPage = () => {
 
   const onSubmit = handleSubmit(async ({ username, password }) => {
     load('Signing in...');
-    const response = await signIn('credentials', { redirect: false, username, password });
+    const response = await signIn('credentials', {
+      redirect: false,
+      username: `${username}@binus.ac.id`,
+      password,
+    });
     toast.dismiss();
 
     if (!response?.ok) {
@@ -58,12 +62,17 @@ const Login: NextPage = () => {
 
           <form onSubmit={onSubmit} className='card-body '>
             <div>
-              <input
-                type='text'
-                {...register('username', { required: true })}
-                placeholder='NIM'
-                className='input input-bordered w-full max-w-xs input-md'
-              />
+              <div className='flex'>
+                <input
+                  type='text'
+                  {...register('username', { required: true })}
+                  placeholder='Email'
+                  className='input input-bordered rounded-r-none w-full'
+                />
+                <div className='px-3 flex items-center justify-center bg-primary text-white rounded-r-md'>
+                  @binus.ac.id
+                </div>
+              </div>
               {errors?.username && <small className='text-red-300'>Username must be filled</small>}
             </div>
 
