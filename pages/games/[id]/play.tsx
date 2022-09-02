@@ -1,11 +1,10 @@
 import { GetServerSideProps, NextPage } from 'next';
 import {
   ChartBarIcon,
-  ClipboardListIcon,
+  ClipboardDocumentListIcon,
   DocumentTextIcon,
-  InformationCircleIcon,
   UserGroupIcon,
-} from '@heroicons/react/outline';
+} from '@heroicons/react/24/outline';
 import Layout from '../../../widgets/Layout';
 import GameBottomNavbar from '../../../widgets/BottomNavbar';
 import { BottomNavbarItem } from '../../../models/view/BottomNavbarItem';
@@ -42,7 +41,7 @@ const PlayGamePage: NextPage<Props> = ({ game, missions, currentTeam }) => {
     {
       id: 1,
       title: 'Mission',
-      icon: <ClipboardListIcon className='w-5 h-5' />,
+      icon: <ClipboardDocumentListIcon className='w-5 h-5' />,
     },
     {
       id: 2,

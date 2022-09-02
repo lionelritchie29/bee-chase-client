@@ -1,4 +1,4 @@
-import { ChevronRightIcon } from '@heroicons/react/outline';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { COLORS } from '../../constants/color';
 import { teamIsFull } from '../../lib/game-utils';
 import { Game } from '../../models/Game';

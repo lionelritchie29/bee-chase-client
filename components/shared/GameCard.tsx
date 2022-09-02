@@ -1,5 +1,5 @@
-import { PlayIcon, StopIcon } from '@heroicons/react/outline';
-import { LockClosedIcon } from '@heroicons/react/solid';
+import { PlayIcon, StopIcon } from '@heroicons/react/24/outline';
+import { LockClosedIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { Game } from '../../models/Game';

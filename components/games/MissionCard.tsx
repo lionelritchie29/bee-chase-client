@@ -1,11 +1,11 @@
 import {
   CameraIcon,
-  CheckCircleIcon,
-  ChevronRightIcon,
+  ListBulletIcon,
   DocumentTextIcon,
-  LocationMarkerIcon,
+  MapPinIcon,
   QuestionMarkCircleIcon,
-} from '@heroicons/react/outline';
+  ShieldCheckIcon,
+} from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { AnswerType } from '../../constants/answer-type';
@@ -26,9 +26,11 @@ export default function MissionCard({ className, mission }: Props) {
       case AnswerType.TEXT:
         return <DocumentTextIcon className='w-12 h-12 text-orange-300' />;
       case AnswerType.GPS:
-        return <LocationMarkerIcon className='w-12 h-12 text-orange-300' />;
+        return <MapPinIcon className='w-12 h-12 text-orange-300' />;
       case AnswerType.MULTIPLE_CHOICE:
-        return <CheckCircleIcon className='w-12 h-12 text-orange-300' />;
+        return <ListBulletIcon className='w-12 h-12 text-orange-300' />;
+      case AnswerType.VERIFICATION:
+        return <ShieldCheckIcon className='w-12 h-12 text-orange-300' />;
       default:
         return <QuestionMarkCircleIcon className='w-12 h-12 text-orange-300' />;
     }

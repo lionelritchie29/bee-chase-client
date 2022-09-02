@@ -1,4 +1,4 @@
-import { ExclamationCircleIcon } from '@heroicons/react/outline';
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import { useState } from 'react';

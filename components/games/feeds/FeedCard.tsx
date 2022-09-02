@@ -11,7 +11,7 @@ import { LocationAnswerData } from '../../../models/answer-data/LocationAnswerDa
 import { COLORS } from '../../../constants/color';
 import { GameTeamUser } from '../../../models/GameTeamUser';
 import { MultipleChoiceAnswerData } from '../../../models/answer-data/MultipleChoiceAnswerData';
-import { CheckIcon } from '@heroicons/react/outline';
+import { CheckIcon } from '@heroicons/react/24/outline';
 
 type Props = {
   submission: Submission & { mission: GameMission } & { game_team: GameTeam };

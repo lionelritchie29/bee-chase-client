@@ -1,4 +1,4 @@
-import { ChevronRightIcon, PlusCircleIcon } from '@heroicons/react/outline';
+import { ChevronRightIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';

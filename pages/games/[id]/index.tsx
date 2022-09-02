@@ -1,4 +1,4 @@
-import { LockClosedIcon, PlayIcon, StopIcon } from '@heroicons/react/outline';
+import { LockClosedIcon, PlayIcon, StopIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';

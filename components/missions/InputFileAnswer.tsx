@@ -1,4 +1,4 @@
-import { CameraIcon, VideoCameraIcon } from '@heroicons/react/outline';
+import { CameraIcon, VideoCameraIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { ChangeEvent, useState } from 'react';

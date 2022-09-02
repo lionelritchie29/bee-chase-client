@@ -1,4 +1,9 @@
-import { ChevronLeftIcon, PlusIcon, RefreshIcon, UserCircleIcon } from '@heroicons/react/outline';
+import {
+  ChevronLeftIcon,
+  PlusIcon,
+  ArrowPathIcon,
+  UserCircleIcon,
+} from '@heroicons/react/24/outline';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { SessionUser } from '../models/SessionUser';
@@ -69,7 +74,7 @@ export default function Navbar({ title }: Props) {
               router.reload();
             }}
             className='btn btn-square btn-ghost'>
-            <RefreshIcon className='w-5 h-5' />
+            <ArrowPathIcon className='w-5 h-5' />
           </button>
         )}
 

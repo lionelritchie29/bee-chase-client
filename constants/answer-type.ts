@@ -3,4 +3,5 @@ export enum AnswerType {
   TEXT = 1,
   GPS = 2,
   MULTIPLE_CHOICE = 3,
+  VERIFICATION = 4,
 }
