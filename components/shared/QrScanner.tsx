@@ -12,24 +12,26 @@ type Props = {
 export default function QrScanner({ setValue, setIsScanning, isScanning }: Props) {
   const qrCodeRegionId = 'html5qr-code-full-region';
 
-  const config: any = {};
-  const qrCodeScanner = new Html5Qrcode(qrCodeRegionId);
-  qrCodeScanner.start(
-    { facingMode: 'environment' },
-    config,
-    (decodedText) => {
-      setValue('code', decodedText);
-      setIsScanning(false);
-      toast.success('Code scanned succesfully!');
-    },
-    (errorMessage) => {
-      // parse error, ignore it.
-    },
-  );
+  useEffect(() => {
+    const config: any = {};
+    const qrCodeScanner = new Html5Qrcode(qrCodeRegionId);
+    qrCodeScanner.start(
+      { facingMode: 'environment' },
+      config,
+      (decodedText) => {
+        setValue('code', decodedText);
+        setIsScanning(false);
+        toast.success('Code scanned succesfully!');
+      },
+      (errorMessage) => {
+        // parse error, ignore it.
+      },
+    );
 
-  if (!isScanning) {
-    qrCodeScanner.stop();
-  }
+    if (!isScanning) {
+      qrCodeScanner.stop();
+    }
+  }, []);
 
   return <div className='w-full p-4' id={qrCodeRegionId} />;
 }
