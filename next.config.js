@@ -6,10 +6,10 @@ const withPWA = require('next-pwa')({
   disable: true,
 });
 
-const nextConfig = withPWA({
+const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   basePath: process.env.NEXT_PUBLIC_BASE_PATH,
-});
+};
 
 module.exports = nextConfig;
