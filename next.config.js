@@ -10,6 +10,9 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   basePath: process.env.NEXT_PUBLIC_BASE_PATH,
+  generateBuildId: async () => {
+    return 'beechase';
+  },
 };
 
 module.exports = nextConfig;
