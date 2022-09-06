@@ -66,7 +66,7 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
 
     await toast.promise(createTeamAndJoin(dto), {
       success: (createdTeam) => {
-        router.replace(`/games/${game.id}/teams`);
+        router.replace(`/games/${game.id}/play`);
         return 'Team created!';
       },
       loading: 'Creating team...',
