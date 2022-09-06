@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Game } from '../../models/Game';
 import GameCard from '../shared/GameCard';
 

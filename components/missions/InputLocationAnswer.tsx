@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { LocationAnswerData } from '../../models/answer-data/LocationAnswerData';
 import { CreateSubmissionDto } from '../../models/dto/submissions/create-submission.dto';
@@ -35,6 +35,7 @@ export default function InputLocationAnswer({
 
   const MapWithNoSSR = dynamic(() => import('../shared/Map'), {
     ssr: false,
+    loading: () => <div className='text-center'>Loading...</div>,
   });
 
   const {

@@ -50,6 +50,7 @@ export default function FeedCard({ submission, currentTeam }: Props) {
       case AnswerType.GPS:
         const MapWithNoSSR = dynamic(() => import('../../shared/Map'), {
           ssr: false,
+          loading: () => <div className='text-center'>Loading...</div>,
         });
         answer = JSON.parse(submission.answer_data) as LocationAnswerData;
         return (

@@ -4,7 +4,10 @@ import toast, { Toaster } from 'react-hot-toast';
 
 import { SessionProvider } from 'next-auth/react';
 import { useEffect } from 'react';
-import NextNProgress from 'nextjs-progressbar';
+import dynamic from 'next/dynamic';
+
+const NextNProgress = dynamic(() => import('nextjs-progressbar'));
+
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   useEffect(() => {
     toast.dismiss();

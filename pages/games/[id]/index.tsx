@@ -3,12 +3,10 @@ import { format } from 'date-fns';
 import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
-import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 import GameDetailHeader from '../../../components/games/GameDetailHeader';
-import InputGamePassModal from '../../../components/games/InputGamePassModal';
 import useLoading from '../../../hooks/use-loading';
 import { isGameExpired } from '../../../lib/game-utils';
 import {
@@ -22,6 +20,8 @@ import { GameService } from '../../../services/GameService';
 import { GameTeamService } from '../../../services/GameTeamService';
 import Layout from '../../../widgets/Layout';
 import { authOptions } from '../../api/auth/[...nextauth]';
+
+const InputGamePassModal = dynamic(() => import('../../../components/games/InputGamePassModal'));
 
 type Props = {
   game: Game;

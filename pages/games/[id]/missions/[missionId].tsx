@@ -1,13 +1,9 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import MissionCard from '../../../../components/games/MissionCard';
-import InputFileAnswer from '../../../../components/missions/InputFileAnswer';
-import InputLocationAnswer from '../../../../components/missions/InputLocationAnswer';
-import InputMultipleChoiceAnswer from '../../../../components/missions/InputMultipleChoiceAnswer';
-import InputTextAnswer from '../../../../components/missions/InputTextAnswer';
-import InputVerificationAnswer from '../../../../components/missions/InputVerificationAnswer';
 import { AnswerType } from '../../../../constants/answer-type';
 import useLoading from '../../../../hooks/use-loading';
 import { isGameExpired } from '../../../../lib/game-utils';
@@ -24,6 +20,31 @@ import { GameTeamService } from '../../../../services/GameTeamService';
 import { SubmissionService } from '../../../../services/SubmissionService';
 import Layout from '../../../../widgets/Layout';
 import { authOptions } from '../../../api/auth/[...nextauth]';
+
+const InputFileAnswer = dynamic(() => import('../../../../components/missions/InputFileAnswer'), {
+  loading: () => <div className='text-center'>Loading...</div>,
+});
+const InputLocationAnswer = dynamic(
+  () => import('../../../../components/missions/InputLocationAnswer'),
+  {
+    loading: () => <div className='text-center'>Loading...</div>,
+  },
+);
+const InputMultipleChoiceAnswer = dynamic(
+  () => import('../../../../components/missions/InputMultipleChoiceAnswer'),
+  {
+    loading: () => <div className='text-center'>Loading...</div>,
+  },
+);
+const InputTextAnswer = dynamic(() => import('../../../../components/missions/InputTextAnswer'), {
+  loading: () => <div className='text-center'>Loading...</div>,
+});
+const InputVerificationAnswer = dynamic(
+  () => import('../../../../components/missions/InputVerificationAnswer'),
+  {
+    loading: () => <div className='text-center'>Loading...</div>,
+  },
+);
 
 type Props = {
   game: Game;

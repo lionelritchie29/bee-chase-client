@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { TextAnswerData } from '../../models/answer-data/TextAnswerData';
 import { CreateSubmissionDto } from '../../models/dto/submissions/create-submission.dto';

@@ -6,6 +6,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import toast from 'react-hot-toast';
 import { SessionUser } from '../models/SessionUser';
 
 type Props = {
@@ -98,6 +99,7 @@ export default function Navbar({ title }: Props) {
 
   const logOut = async () => {
     await signOut({ redirect: false });
+    toast('Signing out...');
     router.push('/auth/login');
   };
 

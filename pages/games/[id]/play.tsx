@@ -6,11 +6,8 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
 import Layout from '../../../widgets/Layout';
-import GameBottomNavbar from '../../../widgets/BottomNavbar';
 import { BottomNavbarItem } from '../../../models/view/BottomNavbarItem';
 import { useEffect, useState } from 'react';
-import LeaderboardList from '../../../components/games/LeaderboardList';
-import MissionList from '../../../components/games/MissionList';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import { GameService } from '../../../services/GameService';
@@ -21,14 +18,26 @@ import { GameMissionService } from '../../../services/GameMissionService';
 import { Game } from '../../../models/Game';
 import { GameMission } from '../../../models/GameMission';
 import { useRouter } from 'next/router';
-import FeedList from '../../../components/games/feeds/FeedList';
 import { GameTeam, GameTeamRank } from '../../../models/GameTeam';
 import { useSession } from 'next-auth/react';
-import MyTeam from '../../../components/games/my-team/MyTeam';
 import { GameTeamUser } from '../../../models/GameTeamUser';
 import { PaginatedSubmission } from '../../../models/PaginatedSubmissions';
 import { isGameExpired } from '../../../lib/game-utils';
-import ReactTooltip from 'react-tooltip';
+import GameBottomNavbar from '../../../widgets/BottomNavbar';
+import dynamic from 'next/dynamic';
+
+const FeedList = dynamic(() => import('../../../components/games/feeds/FeedList'), {
+  loading: () => <div className='text-center'>Loading...</div>,
+});
+const MyTeam = dynamic(() => import('../../../components/games/my-team/MyTeam'), {
+  loading: () => <div className='text-center'>Loading...</div>,
+});
+const LeaderboardList = dynamic(() => import('../../../components/games/LeaderboardList'), {
+  loading: () => <div className='text-center'>Loading...</div>,
+});
+const MissionList = dynamic(() => import('../../../components/games/MissionList'), {
+  loading: () => <div className='text-center'>Loading...</div>,
+});
 
 type Props = {
   game: Game;

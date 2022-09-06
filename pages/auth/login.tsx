@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
+import LoginBackdrop from '../../public/assets/login_backdrop.jpg';
 
 type FormData = {
   username: string;
@@ -47,7 +48,7 @@ const Login: NextPage = () => {
       showNavbar={false}
       className='grid place-items-center bg-primary min-h-screen'
       style={{
-        backgroundImage: `url('${process.env.NEXT_PUBLIC_BASE_PATH}/assets/login_backdrop.jpg')`,
+        backgroundImage: `url('${LoginBackdrop.src}')`,
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',

@@ -4,7 +4,6 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import useLoading from '../../../../hooks/use-loading';
 import { isGameExpired, isIndividualGame } from '../../../../lib/game-utils';
 import {
   redirectToHome,

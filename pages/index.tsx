@@ -1,7 +1,5 @@
 import Layout from '../widgets/Layout';
-import InputGameCode from '../components/home/InputGameCode';
 import { GetServerSideProps, NextPage } from 'next';
-import GameList from '../components/home/GameList';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import { SessionUser } from '../models/SessionUser';
@@ -9,6 +7,9 @@ import { GameService } from '../services/GameService';
 import { Game } from '../models/Game';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
+
+const GameList = dynamic(() => import('../components/home/GameList'));
 
 type Props = {
   activeGames: Game[];

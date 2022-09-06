@@ -2,11 +2,11 @@ import { ChevronRightIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import GameDetailHeader from '../../../../components/games/GameDetailHeader';
-import InputTeamCodeModal from '../../../../components/teams/InputTeamCodeModal';
 import TeamCard from '../../../../components/teams/TeamCard';
 import useLoading from '../../../../hooks/use-loading';
 import { isGameExpired, isIndividualGame } from '../../../../lib/game-utils';
@@ -22,6 +22,8 @@ import { GameService } from '../../../../services/GameService';
 import { GameTeamService } from '../../../../services/GameTeamService';
 import Layout from '../../../../widgets/Layout';
 import { authOptions } from '../../../api/auth/[...nextauth]';
+
+const InputTeamCodeModal = dynamic(() => import('../../../../components/teams/InputTeamCodeModal'));
 
 type Props = {
   game: Game;
