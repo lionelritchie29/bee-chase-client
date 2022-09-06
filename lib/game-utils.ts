@@ -10,7 +10,7 @@ export const isGameExpired = (game: Game): boolean => {
 };
 
 export const teamIsFull = (game: Game, team: GameTeam): boolean => {
-  return game?.max_player_per_team === team?.members.length;
+  return game?.max_player_per_team === team?.members?.length;
 };
 
 export const isIndividualGame = (game: Game): boolean => {

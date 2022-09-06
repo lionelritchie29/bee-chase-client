@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { CreateGameTeamDto } from '../models/dto/game-teams/create-team.dto';
+import PaginateResponseDto from '../models/dto/paginate-response.dto';
 import { GameTeam } from '../models/GameTeam';
 import { GameTeamUser } from '../models/GameTeamUser';
 import { PaginatedSubmission } from '../models/PaginatedSubmissions';
@@ -24,9 +25,9 @@ export class GameTeamService extends BaseService {
     return response.data;
   }
 
-  public async getByGameId(gameId: string) {
-    const response: AxiosResponse<GameTeam[]> = await axios.get(
-      `${this.API_URL}/games/${gameId}/game_teams`,
+  public async getByGameId(gameId: string, page: number = 1) {
+    const response: AxiosResponse<PaginateResponseDto<GameTeam>> = await axios.get(
+      `${this.API_URL}/games/${gameId}/game_teams?page=${page}&limit=7`,
       this.headerWithToken(),
     );
     return response.data;
