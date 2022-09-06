@@ -7,6 +7,7 @@ export interface GameTeam extends BaseModel {
   game_id: string;
   game: Game;
   has_access_code: boolean;
+  access_code?: string;
   id: string;
   name: string;
   color: string | null;

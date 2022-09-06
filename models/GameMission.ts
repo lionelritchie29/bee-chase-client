@@ -16,4 +16,5 @@ export interface GameMission extends BaseModel {
   point_value: number;
   shown_in_feed: boolean;
   submissions: Submission[];
+  mission_index: number;
 }

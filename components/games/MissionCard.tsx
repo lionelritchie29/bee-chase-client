@@ -42,7 +42,10 @@ export default function MissionCard({ className, mission }: Props) {
       onClick={() => router.push(`/games/${mission.game_id}/missions/${mission.id}`)}>
       <div className={`mb-3 pb-3 ${className} border-b bg-white`}>
         <div className='mx-3 flex'>
-          <div className='border-2 border-orange-300 rounded w-24 h-24 flex items-center justify-center'>
+          <div className='border-2 border-orange-300 rounded w-24 h-24 flex items-center justify-center relative'>
+            <div className='border border-secondary text-gray-400 rounded-full w-5 h-5 text-center absolute top-1 left-1 text-xs'>
+              {mission.mission_index}
+            </div>
             {getIcon()}
           </div>
 

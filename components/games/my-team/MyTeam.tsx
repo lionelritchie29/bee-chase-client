@@ -34,11 +34,7 @@ export default function MyTeam({ teamRank, submissions, currentTeam, game }: Pro
 
   return (
     <section className='mt-6'>
-      <div className='border rounded mx-3 p-4'>
-        <div className='font-bold'>Current game:</div>
-        <div>{game.name}</div>
-      </div>
-      <div className='border rounded mx-3 py-4 mt-4'>
+      <div className='border rounded mx-3 py-4'>
         <div className='flex justify-around items-center text-center'>
           <div className='w-1/3'>
             {teamRank ? (
@@ -71,7 +67,21 @@ export default function MyTeam({ teamRank, submissions, currentTeam, game }: Pro
           ) : (
             <div className='h-4 w-24 mt-2 bg-gray-300 mx-auto rounded animate-pulse'></div>
           )}
+
+          <div className='flex justify-center items-center'>
+            <span className='block mr-1'>Access Code:</span>
+            {teamRank ? (
+              <span className='block font-bold'> {teamRank?.access_code}</span>
+            ) : (
+              <div className='h-4 w-24 mt-2 bg-gray-300 mx-auto rounded animate-pulse'></div>
+            )}
+          </div>
         </div>
+      </div>
+
+      <div className='border rounded mx-3 p-4 mt-4'>
+        <div className='font-bold'>Current game:</div>
+        <div>{game.name}</div>
       </div>
 
       <div className='mx-3'>
