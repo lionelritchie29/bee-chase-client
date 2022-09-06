@@ -5,7 +5,7 @@ import { BaseService } from './BaseService';
 export class GameMissionService extends BaseService {
   public async get(gameId: string, id: string) {
     const response: AxiosResponse<GameMission> = await axios.get(
-      `${this.API_URL}/games/${gameId}/missions/${id}`,
+      `${this.API_URL}/games/${gameId}/missions/${id}?withSubmissionsUser=true`,
       this.headerWithToken(),
     );
     return response.data;

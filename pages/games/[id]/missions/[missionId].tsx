@@ -116,14 +116,20 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
 
       <div className='px-3'>{renderInput()}</div>
       {submission && (
-        <div
-          className={`text-sm text-center mt-6 ${
-            submission.is_accepted == null || submission.is_accepted
-              ? 'text-green-600'
-              : 'text-red-400'
-          }`}>
-          Your answer is{' '}
-          {!submission.is_accepted == null || submission.is_accepted ? 'correct' : 'incorrect'}
+        <div className='text-center'>
+          <div
+            className={`text-sm mt-6 ${
+              submission.is_accepted == null || submission.is_accepted
+                ? 'text-green-600'
+                : 'text-red-400'
+            }`}>
+            Your answer is{' '}
+            {!submission.is_accepted == null || submission.is_accepted ? 'correct' : 'incorrect'}
+          </div>
+
+          <div>
+            Submitted by: <span className='font-bold'>{submission.user?.name}</span>
+          </div>
         </div>
       )}
     </Layout>
