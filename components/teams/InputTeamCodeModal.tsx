@@ -71,7 +71,7 @@ export default function InputTeamCodeModal({
       }
     } else {
       load('Joining...');
-      await joinTeam(selectedTeam, null);
+      await joinTeam(selectedTeam!, null);
     }
   });
 
