@@ -115,6 +115,17 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
       <MissionCard mission={mission} className='pt-3' />
 
       <div className='px-3'>{renderInput()}</div>
+      {submission && (
+        <div
+          className={`text-sm text-center mt-6 ${
+            submission.is_accepted == null || submission.is_accepted
+              ? 'text-green-600'
+              : 'text-red-400'
+          }`}>
+          Your answer is{' '}
+          {!submission.is_accepted == null || submission.is_accepted ? 'correct' : 'incorrect'}
+        </div>
+      )}
     </Layout>
   );
 };
