@@ -3,7 +3,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
+import useLoading from '../../../../hooks/use-loading';
 import { isGameExpired, isIndividualGame } from '../../../../lib/game-utils';
 import {
   redirectToHome,
@@ -34,6 +34,7 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
   const gameTeamService = new GameTeamService(user?.access_token);
 
   const router = useRouter();
+  const [{ finish, load, isLoading }] = useLoading(false);
 
   const {
     register,
@@ -63,16 +64,13 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
       access_code: code ? code.toString() : null,
     };
 
-    await toast.promise(createTeamAndJoin(dto), {
-      success: (createdTeam) => {
-        router.replace(`/games/${game.id}/play`);
-        return 'Team created!';
-      },
-      loading: 'Creating team...',
-      error: (e) => {
-        return e.response.data.message;
-      },
-    });
+    load('Creating team...');
+    try {
+      await createTeamAndJoin(dto);
+      finish('Team created!', { loading: true });
+    } catch (e: any) {
+      finish(e.response.data.message, { success: false });
+    }
   });
 
   const createTeamAndJoin = async (dto: CreateGameTeamDto) => {
