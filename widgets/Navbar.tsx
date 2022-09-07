@@ -98,9 +98,7 @@ export default function Navbar({ title }: Props) {
   };
 
   const logOut = async () => {
-    await signOut({ redirect: false });
-    toast('Signing out...');
-    router.push('/auth/login');
+    await signOut({ callbackUrl: '/auth/login' });
   };
 
   return (
