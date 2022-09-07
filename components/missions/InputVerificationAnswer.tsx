@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { Html5Qrcode } from 'html5-qrcode';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
+import { VerificationAnswerData } from '../../models/answer-data/VerificationAnswerData';
 import { CreateSubmissionDto } from '../../models/dto/submissions/create-submission.dto';
 import { GameTeamUser } from '../../models/GameTeamUser';
 import { Submission } from '../../models/Submission';
-import QrScanner from '../shared/QrScanner';
 
 type Props = {
   submit: (dto: CreateSubmissionDto) => void;
@@ -29,46 +31,79 @@ export default function InputVerificationAnswer({
     formState: { errors },
   } = useForm<FormData>();
 
-  const [isScanningQr, setIsScanningQr] = useState(false);
+  const qrCodeRegionId = 'html5qr-code-full-region';
+
+  const qrCodeRef = useRef<Html5Qrcode | null>(null);
+  const isScanningQr = useRef(false);
+
+  useEffect(() => {
+    if (window && !qrCodeRef.current) {
+      qrCodeRef.current = new Html5Qrcode(qrCodeRegionId);
+    }
+  }, []);
+
+  const onScanBtnClick = () => {
+    if (!qrCodeRef.current) return;
+
+    if (isScanningQr.current) {
+      isScanningQr.current = false;
+      qrCodeRef.current.stop();
+    } else {
+      isScanningQr.current = true;
+      qrCodeRef.current.start(
+        { facingMode: 'environment' },
+        {} as any,
+        handleQrSubmit,
+        handleQrError,
+      );
+    }
+  };
+
+  const handleQrSubmit = (decodedText: string) => {
+    setValue('code', decodedText);
+    toast.success('Code scanned succesfully!');
+    isScanningQr.current = false;
+    qrCodeRef.current?.stop();
+    submitAnswer({ code: decodedText });
+  };
+
+  const handleQrError = (errorMessage: string) => {
+    console.error(errorMessage);
+  };
 
   if (submission) {
-    // const answer = JSON.parse(submission.answer_data) as TextAnswerData;
-    // setValue('code', answer.text);
+    const answer = JSON.parse(submission.answer_data) as VerificationAnswerData;
+    setValue('code', answer.code);
   }
 
-  const onSubmit = handleSubmit(async ({ code }) => {
-    // const dto: CreateSubmissionDto = {
-    //   caption: caption ?? null,
-    //   game_team_id: teamUser.game_team_id,
-    //   answer_data: { text },
-    // };
-    // await submit(dto);
-  });
+  const submitAnswer = async ({ code }: { code: string }) => {
+    const dto: CreateSubmissionDto = {
+      caption: null,
+      game_team_id: teamUser.game_team_id,
+      answer_data: { code },
+    };
+    await submit(dto);
+  };
+
+  const onSubmit = handleSubmit(submitAnswer);
 
   return (
     <form onSubmit={onSubmit}>
-      <div className='text-red-400 text-sm mb-2'>
-        This feature is Still in development and not yet working.
-      </div>
       <div className='p-4 border border-gray-300 rounded'>
-        <button
-          type='button'
-          onClick={() => {
-            setIsScanningQr(!isScanningQr);
-          }}
-          className='btn btn-secondary text-white w-full shadow'>
-          {!isScanningQr ? 'Scan QR' : 'Stop Scanning'}
-        </button>
+        {!submission && (
+          <>
+            <button
+              type='button'
+              onClick={onScanBtnClick}
+              className='btn btn-secondary text-white w-full shadow'>
+              {!isScanningQr.current ? 'Scan QR' : 'Stop Scanning'}
+            </button>
 
-        {isScanningQr && (
-          <QrScanner
-            isScanning={isScanningQr}
-            setIsScanning={setIsScanningQr}
-            setValue={setValue}
-          />
+            <div className='w-full p-4' id={qrCodeRegionId} />
+
+            <div className='divider'>Or</div>
+          </>
         )}
-
-        <div className='divider'>Or</div>
 
         <input
           {...register('code', { required: true })}
