@@ -8,10 +8,12 @@ import { PaginatedSubmission } from '../../../models/PaginatedSubmissions';
 import { SessionUser } from '../../../models/SessionUser';
 import { GameService } from '../../../services/GameService';
 import { GameTeamService } from '../../../services/GameTeamService';
+import useSWRInfinite from 'swr/infinite';
 
 import Pagination from '../../shared/Pagination';
 import FeedCard from './FeedCard';
 import FeedCardSkeleton from './FeedCardSkeleton';
+import { InView } from 'react-intersection-observer';
 
 type Props = {
   currentTeam: GameTeamUser;
@@ -29,6 +31,25 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
   const teamService = new GameTeamService(user?.access_token);
   const [submissionsPaginated, setSubmissionsPaginated] = useState<PaginatedSubmission | null>(
     null,
+  );
+
+  const { data, size, setSize } = useSWRInfinite(
+    (pageIndex, previousPageData: PaginatedSubmission | null) => {
+      const page = pageIndex + 1;
+
+      if (previousPageData) {
+        const lastPage = previousPageData.last_page ?? previousPageData.meta?.last_page ?? -1;
+        if (page > lastPage) return null;
+      }
+
+      return ['feeds', pageIndex + 1];
+    },
+    async (_, page) => {
+      const subs = forMyTeam
+        ? await teamService.getAllSubmissions(game.id, currentTeam.game_team_id, page)
+        : await gameService.getAllSubmissions(game.id, page);
+      return subs;
+    },
   );
 
   useEffect(() => {
@@ -56,13 +77,19 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
 
   return (
     <section className='mx-3 pb-12'>
-      <Pagination
-        pagination={submissionsPaginated}
-        currentPage={Number(page)}
-        render={(submission) => (
-          <FeedCard currentTeam={currentTeam} submission={submission} key={submission.id} />
-        )}
-      />
+      <ul className='grid grid-cols-1 gap-4'>
+        {data
+          ?.flatMap((d) => d.data)
+          .map((submission) => (
+            <FeedCard currentTeam={currentTeam} submission={submission} key={submission.id} />
+          ))}
+      </ul>
+
+      <InView as='section' onChange={() => setSize(size + 1)} className='my-4 flex justify-center'>
+        <button onClick={() => setSize(size + 1)} className={`w-full text-white btn btn-secondary`}>
+          Load More
+        </button>
+      </InView>
     </section>
   );
 }

@@ -58,9 +58,14 @@ export class GameTeamService extends BaseService {
     return response.data;
   }
 
-  public async getAllSubmissions(gameId: string, teamId: string) {
+  public async getAllSubmissions(
+    gameId: string,
+    teamId: string,
+    page: number = 1,
+    limit: number = 5,
+  ) {
     const response: AxiosResponse<PaginatedSubmission> = await axios.get(
-      `${this.API_URL}/games/${gameId}/game_teams/${teamId}/submissions`,
+      `${this.API_URL}/games/${gameId}/game_teams/${teamId}/submissions?page=${page}&limit=${limit}`,
       this.headerWithToken(),
     );
     return response.data;
