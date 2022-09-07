@@ -11,8 +11,8 @@ export default function useLoading(initLoadingState: boolean, initMessage: strin
 
   function load(msg: string, { useToast = true }: LoadOptions = {}) {
     isLoading.current = true;
-    if (useToast) toast(msg, { icon: '🔄' });
-    message.current = msg;
+    if (useToast && msg) toast(msg, { icon: '🔄' });
+    if (msg) message.current = msg;
   }
 
   function finish(msg: string = '', { success = true, loading = false } = {}) {
