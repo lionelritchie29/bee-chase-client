@@ -68,6 +68,7 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
     try {
       await createTeamAndJoin(dto);
       finish('Team created!', { loading: true });
+      router.push(`/games/${game.id}/play`);
     } catch (e: any) {
       finish(e.response.data.message, { success: false });
     }

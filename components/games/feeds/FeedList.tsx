@@ -12,7 +12,6 @@ import useSWRInfinite from 'swr/infinite';
 
 import FeedCard from './FeedCard';
 import FeedCardSkeleton from './FeedCardSkeleton';
-import { InView } from 'react-intersection-observer';
 import useLoading from '../../../hooks/use-loading';
 
 type Props = {
@@ -90,14 +89,14 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
           ))}
       </ul>
 
-      <InView as='section' onChange={() => setSize(size + 1)} className='my-4 flex justify-center'>
-        <button
-          disabled={isLoading}
-          onClick={() => setSize(size + 1)}
-          className={`w-full text-white btn ${isLoading ? 'btn-disabled' : 'btn-secondary'}`}>
-          Load More
-        </button>
-      </InView>
+      {/* <InView as='section' onChange={() => setSize(size + 1)} className='my-4 flex justify-center'> */}
+      <button
+        disabled={isLoading}
+        onClick={() => setSize(size + 1)}
+        className={`w-full text-white btn mt-4 ${isLoading ? 'btn-disabled' : 'btn-secondary'}`}>
+        Load More
+      </button>
+      {/* </InView> */}
     </section>
   );
 }

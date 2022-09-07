@@ -22,7 +22,7 @@ export default function MyTeam({ currentTeam, game }: Props) {
   const [teamRank, setTeamRank] = useState<(GameTeam & GameTeamRank) | null>(null);
 
   useEffect(() => {
-    const fetchTeams = async () => {
+    const fetchTeam = async () => {
       const team = await teamService.getById(game.id, currentTeam.game_team_id);
       setMembers(team.members);
     };
@@ -33,8 +33,8 @@ export default function MyTeam({ currentTeam, game }: Props) {
     };
 
     if (user) {
+      fetchTeam();
       fetchCurrentLeaderboard();
-      fetchTeams();
     }
   }, [user]);
 
