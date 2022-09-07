@@ -12,6 +12,7 @@ import { COLORS } from '../../../constants/color';
 import { GameTeamUser } from '../../../models/GameTeamUser';
 import { MultipleChoiceAnswerData } from '../../../models/answer-data/MultipleChoiceAnswerData';
 import { CheckIcon } from '@heroicons/react/24/outline';
+import { VerificationAnswerData } from '../../../models/answer-data/VerificationAnswerData';
 
 type Props = {
   submission: Submission & { mission: GameMission } & { game_team: GameTeam };
@@ -21,6 +22,11 @@ type Props = {
 export default function FeedCard({ submission, currentTeam }: Props) {
   const getTextAnswer = (answer: TextAnswerData) => {
     if (submission.game_team_id === currentTeam.game_team_id) return <b>{answer.text}</b>;
+    return <span className='text-gray-400'>Hidden</span>;
+  };
+
+  const getVerificationAnswer = (answer: VerificationAnswerData) => {
+    if (submission.game_team_id === currentTeam.game_team_id) return <b>{answer.code}</b>;
     return <span className='text-gray-400'>Hidden</span>;
   };
 
@@ -47,6 +53,9 @@ export default function FeedCard({ submission, currentTeam }: Props) {
       case AnswerType.IMAGE:
         answer = JSON.parse(submission.answer_data) as FileAnswerData;
         return <OnedriveImage submission={submission} key={submission.id} />;
+      case AnswerType.VERIFICATION:
+        answer = JSON.parse(submission.answer_data) as VerificationAnswerData;
+        return getVerificationAnswer(answer);
       case AnswerType.GPS:
         const MapWithNoSSR = dynamic(() => import('../../shared/Map'), {
           ssr: false,

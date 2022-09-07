@@ -37,7 +37,7 @@ export default function InputVerificationAnswer({
   const isScanningQr = useRef(false);
 
   useEffect(() => {
-    if (window && !qrCodeRef.current) {
+    if (window && !qrCodeRef.current && !submission) {
       qrCodeRef.current = new Html5Qrcode(qrCodeRegionId);
     }
   }, []);

@@ -1,6 +1,4 @@
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import { Game } from '../../../models/Game';
 
 import { GameTeamUser } from '../../../models/GameTeamUser';
@@ -21,15 +19,10 @@ type Props = {
 };
 
 export default function FeedList({ currentTeam, game, forMyTeam = false }: Props) {
-  const router = useRouter();
-
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const gameService = new GameService(user?.access_token);
   const teamService = new GameTeamService(user?.access_token);
-  const [submissionsPaginated, setSubmissionsPaginated] = useState<PaginatedSubmission | null>(
-    null,
-  );
   const [{ isLoading, load, finish }] = useLoading(false);
 
   const { data, size, setSize } = useSWRInfinite(
@@ -41,7 +34,7 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
         if (page > lastPage) return null;
       }
 
-      return ['feeds', pageIndex + 1];
+      return forMyTeam ? ['my_team_feeds', pageIndex + 1] : ['feeds', pageIndex + 1];
     },
     async (_, page) => {
       load();
@@ -53,20 +46,7 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
     },
   );
 
-  useEffect(() => {
-    const fetchSubmissions = async () => {
-      const subs = forMyTeam
-        ? await teamService.getAllSubmissions(game.id, currentTeam.game_team_id)
-        : await gameService.getAllSubmissions(game.id);
-      setSubmissionsPaginated(subs);
-    };
-
-    if (user) {
-      fetchSubmissions();
-    }
-  }, [user]);
-
-  if (!submissionsPaginated) {
+  if (!data) {
     return (
       <ul className='grid grid-cols-1 gap-3 mx-3 mt-3 pb-12'>
         {[1, 2, 3].map((sub) => (
@@ -76,7 +56,7 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
     );
   }
 
-  if (data && data[0].data.length === 0)
+  if (data[0].data.length === 0)
     return <div className='border rounded p-4 mx-3 text-center'>No submissions yet...</div>;
 
   return (
@@ -89,14 +69,12 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
           ))}
       </ul>
 
-      {/* <InView as='section' onChange={() => setSize(size + 1)} className='my-4 flex justify-center'> */}
       <button
         disabled={isLoading}
         onClick={() => setSize(size + 1)}
         className={`w-full text-white btn mt-4 ${isLoading ? 'btn-disabled' : 'btn-secondary'}`}>
         Load More
       </button>
-      {/* </InView> */}
     </section>
   );
 }
