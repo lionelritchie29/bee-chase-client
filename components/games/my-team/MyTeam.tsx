@@ -1,5 +1,6 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 import { COLORS } from '../../../constants/color';
 import { Game } from '../../../models/Game';
 import { GameTeam, GameTeamRank } from '../../../models/GameTeam';
@@ -18,25 +19,13 @@ export default function MyTeam({ currentTeam, game }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const teamService = new GameTeamService(user?.access_token);
-  const [members, setMembers] = useState<GameTeamUser[] | null>(null);
-  const [teamRank, setTeamRank] = useState<(GameTeam & GameTeamRank) | null>(null);
 
-  useEffect(() => {
-    const fetchTeam = async () => {
-      const team = await teamService.getById(game.id, currentTeam.game_team_id);
-      setMembers(team.members);
-    };
-
-    const fetchCurrentLeaderboard = async () => {
-      const rank = await teamService.getCurrentTeamLeaderboard(game.id, currentTeam.game_team_id);
-      setTeamRank(rank);
-    };
-
-    if (user) {
-      fetchTeam();
-      fetchCurrentLeaderboard();
-    }
-  }, [user]);
+  const { data: team } = useSWR<GameTeam>('current-team-members', () =>
+    teamService.getById(game.id, currentTeam.game_team_id),
+  );
+  const { data: teamRank } = useSWR<GameTeam & GameTeamRank>('current-team-leaderboard', () =>
+    teamService.getCurrentTeamLeaderboard(game.id, currentTeam.game_team_id),
+  );
 
   return (
     <section className='mt-6'>
@@ -97,8 +86,8 @@ export default function MyTeam({ currentTeam, game }: Props) {
       <div className='mx-3'>
         <div className='border rounded-t mt-4 p-3 text-sm font-bold uppercase'>Members</div>
         <ul className=''>
-          {members ? (
-            members.map((member) => (
+          {team && team.members ? (
+            team.members.map((member) => (
               <li className='text-sm border-r border-l border-b p-2' key={member.id}>
                 {member.user_username} - {member.user_name}
               </li>

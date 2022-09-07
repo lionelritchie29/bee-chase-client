@@ -1,5 +1,6 @@
 import { useSession } from 'next-auth/react';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import useSWR from 'swr';
 import { Game } from '../../models/Game';
 import { GameTeam, GameTeamRank } from '../../models/GameTeam';
 import { GameTeamUser } from '../../models/GameTeamUser';
@@ -17,23 +18,15 @@ function LeaderboardList({ currentTeam, game }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const gameService = new GameService(user?.access_token);
-  const [teamRanks, setTeamRanks] = useState<(GameTeam & GameTeamRank)[]>([]);
 
-  useEffect(() => {
-    const fetchLeaderboards = async () => {
-      const result = await gameService.getLeaderboard(game.id);
-      setTeamRanks(result);
-    };
+  const { data } = useSWR<(GameTeam & GameTeamRank)[]>('/leaderboard', () =>
+    gameService.getLeaderboard(game.id),
+  );
 
-    if (user) {
-      fetchLeaderboards();
-    }
-  }, [user]);
-
-  if (teamRanks.length === 0) return <LeaderboardSkeleton />;
+  if (!data) return <LeaderboardSkeleton />;
   return (
     <ul className='pb-4'>
-      {teamRanks.map((teamRank) => (
+      {data.map((teamRank) => (
         <li key={teamRank.id}>
           <LeaderboardCard currentTeam={currentTeam} teamRank={teamRank} />
         </li>
