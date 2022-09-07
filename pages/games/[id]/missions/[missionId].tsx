@@ -61,6 +61,12 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
     mission.submissions.length > 0 ? mission.submissions[0] : null,
   );
 
+  const getSubmittedBy = () => {
+    if (!submission) return 'Not submitted yet';
+    if (submission.user) return submission.user.name;
+    return user.name;
+  };
+
   const submitAnswer = async (dto: CreateSubmissionDto) => {
     try {
       load('Submitting your answer...');
@@ -149,7 +155,7 @@ const MissionDetailPage: NextPage<Props> = ({ game, mission, teamUser }) => {
           </div>
 
           <div>
-            Submitted by: <span className='font-bold'>{submission.user?.name}</span>
+            Submitted by: <span className='font-bold'>{getSubmittedBy()}</span>
           </div>
         </div>
       )}
