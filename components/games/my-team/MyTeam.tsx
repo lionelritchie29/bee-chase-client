@@ -40,8 +40,10 @@ export default function MyTeam({ currentTeam, game }: Props) {
 
   return (
     <section className='mt-6'>
-      <div className='border rounded mx-3 py-4'>
-        <div className='flex justify-around items-center text-center'>
+      <div className='border rounded mx-3'>
+        <div className='border-b p-3 text-sm uppercase font-bold'>My team</div>
+
+        <div className='flex justify-around items-center text-center pt-6'>
           <div className='w-1/3'>
             {teamRank ? (
               <span className='block'>{teamRank.missions_sum_point_value ?? 0}</span>
@@ -74,24 +76,26 @@ export default function MyTeam({ currentTeam, game }: Props) {
             <div className='h-4 w-24 mt-2 bg-gray-300 mx-auto rounded animate-pulse'></div>
           )}
 
-          <div className='flex justify-center items-center'>
-            <span className='block mr-1'>Access Code:</span>
-            {teamRank ? (
-              <span className='block font-bold'> {teamRank?.access_code}</span>
-            ) : (
-              <div className='h-4 w-24 mt-2 bg-gray-300 mx-auto rounded animate-pulse'></div>
+          <div className='flex justify-center items-center pb-6'>
+            {teamRank && teamRank.access_code && (
+              <div>
+                <span className='block mr-1'>Access Code:</span>
+                <span className='block font-bold'> {teamRank.access_code}</span>
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className='border rounded mx-3 p-4 mt-4'>
-        <div className='font-bold'>Current game:</div>
-        <div>{game.name}</div>
+      <div className='mx-3'>
+        <div className='border rounded-t mt-4 p-3 text-sm font-bold uppercase'>Current Game</div>
+        <ul className=''>
+          <li className='text-sm border-r border-l border-b p-2'>{game.name}</li>
+        </ul>
       </div>
 
       <div className='mx-3'>
-        <div className='border rounded-t mt-4 p-3 text-sm'>Members</div>
+        <div className='border rounded-t mt-4 p-3 text-sm font-bold uppercase'>Members</div>
         <ul className=''>
           {members ? (
             members.map((member) => (

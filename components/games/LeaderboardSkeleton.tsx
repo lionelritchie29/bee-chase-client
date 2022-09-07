@@ -1,7 +1,7 @@
 export default function LeaderboardSkeleton() {
   return (
     <ul>
-      {[1, 2, 3, 4].map((rank) => (
+      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rank) => (
         <div key={rank} className='flex items-center justify-between p-2 border-b'>
           <div className='flex'>
             <div className='avatar'>
