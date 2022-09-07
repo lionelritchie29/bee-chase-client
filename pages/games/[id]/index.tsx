@@ -70,7 +70,7 @@ const GameIndexPage: NextPage<Props> = ({ game }) => {
     load('Verifying...');
     const isCorrect = await gameService.verifyPasscode(game.id, passcode);
     if (isCorrect) {
-      finish('Verified');
+      finish('Verified', { loading: true });
       router.push(`/games/${game.id}/teams`);
     } else {
       finish('Wrong passcode', { success: false });

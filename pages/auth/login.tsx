@@ -39,7 +39,7 @@ const Login: NextPage = () => {
       finish(response?.error as any, { success: false });
     } else {
       router.push('/');
-      finish('Logged in');
+      finish('Logged in', { loading: true });
     }
   });
 

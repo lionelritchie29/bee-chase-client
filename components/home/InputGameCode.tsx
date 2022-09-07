@@ -36,7 +36,7 @@ export default function InputGameCode() {
     } else if (isGameExpired(game)) {
       finish('Ups, game has already ended', { success: false });
     } else {
-      finish('Game found! Redirecting...');
+      finish('Game found! Redirecting...', { loading: true });
       router.push(`/games/${game.id}`);
     }
   });
