@@ -9,15 +9,15 @@ export default function useLoading(initLoadingState: boolean, initMessage: strin
   const isLoading = useRef(initLoadingState);
   const message = useRef(initMessage);
 
-  function load(msg: string, { useToast = true }: LoadOptions = {}) {
+  function load(msg: string = '', { useToast = true }: LoadOptions = {}) {
     isLoading.current = true;
-    if (useToast && msg) toast(msg, { icon: '🔄' });
+    if (useToast && msg.length > 0) toast(msg, { icon: '🔄' });
     if (msg) message.current = msg;
   }
 
   function finish(msg: string = '', { success = true, loading = false } = {}) {
     isLoading.current = loading;
-    if (msg) {
+    if (msg.length > 0) {
       toast.dismiss();
       if (success) toast.success(msg);
       else toast.error(msg);

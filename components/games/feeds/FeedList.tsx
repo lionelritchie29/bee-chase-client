@@ -45,7 +45,7 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
       return ['feeds', pageIndex + 1];
     },
     async (_, page) => {
-      load('');
+      load();
       const subs = forMyTeam
         ? await teamService.getAllSubmissions(game.id, currentTeam.game_team_id, page)
         : await gameService.getAllSubmissions(game.id, page);
