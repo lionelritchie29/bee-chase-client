@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { CreateGameTeamDto } from '../models/dto/game-teams/create-team.dto';
 import PaginateResponseDto from '../models/dto/paginate-response.dto';
-import { GameTeam } from '../models/GameTeam';
+import { GameTeam, GameTeamRank } from '../models/GameTeam';
 import { GameTeamUser } from '../models/GameTeamUser';
 import { PaginatedSubmission } from '../models/PaginatedSubmissions';
 import { BaseService } from './BaseService';
@@ -61,6 +61,14 @@ export class GameTeamService extends BaseService {
   public async getAllSubmissions(gameId: string, teamId: string) {
     const response: AxiosResponse<PaginatedSubmission> = await axios.get(
       `${this.API_URL}/games/${gameId}/game_teams/${teamId}/submissions`,
+      this.headerWithToken(),
+    );
+    return response.data;
+  }
+
+  public async getCurrentTeamLeaderboard(gameId: string, teamId: string) {
+    const response: AxiosResponse<GameTeam & GameTeamRank> = await axios.get(
+      `${this.API_URL}/games/${gameId}/game_teams/${teamId}/leaderboard`,
       this.headerWithToken(),
     );
     return response.data;

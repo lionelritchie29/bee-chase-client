@@ -4,33 +4,39 @@ import { COLORS } from '../../../constants/color';
 import { Game } from '../../../models/Game';
 import { GameTeam, GameTeamRank } from '../../../models/GameTeam';
 import { GameTeamUser } from '../../../models/GameTeamUser';
-import { PaginatedSubmission } from '../../../models/PaginatedSubmissions';
 import { SessionUser } from '../../../models/SessionUser';
 import { GameTeamService } from '../../../services/GameTeamService';
 import FeedList from '../feeds/FeedList';
 import TeamMembersSkeleton from './TeamMembersSkeleton';
 
 type Props = {
-  teamRank: (GameTeam & GameTeamRank) | null;
-  submissions: PaginatedSubmission | null;
   currentTeam: GameTeamUser;
   game: Game;
 };
 
-export default function MyTeam({ teamRank, submissions, currentTeam, game }: Props) {
+export default function MyTeam({ currentTeam, game }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const teamService = new GameTeamService(user?.access_token);
   const [members, setMembers] = useState<GameTeamUser[] | null>(null);
+  const [teamRank, setTeamRank] = useState<(GameTeam & GameTeamRank) | null>(null);
 
   useEffect(() => {
     const fetchTeams = async () => {
-      const team = await teamService.getById(teamRank!.game_id, currentTeam.game_team_id);
+      const team = await teamService.getById(game.id, currentTeam.game_team_id);
       setMembers(team.members);
     };
 
-    if (teamRank && user) fetchTeams();
-  }, [teamRank, user]);
+    const fetchCurrentLeaderboard = async () => {
+      const rank = await teamService.getCurrentTeamLeaderboard(game.id, currentTeam.game_team_id);
+      setTeamRank(rank);
+    };
+
+    if (user) {
+      fetchCurrentLeaderboard();
+      fetchTeams();
+    }
+  }, [user]);
 
   return (
     <section className='mt-6'>
@@ -101,7 +107,7 @@ export default function MyTeam({ teamRank, submissions, currentTeam, game }: Pro
 
       <div className='divider mx-3'></div>
 
-      <FeedList currentTeam={currentTeam} submissionsPaginated={submissions} />
+      <FeedList currentTeam={currentTeam} forMyTeam={true} game={game} />
     </section>
   );
 }

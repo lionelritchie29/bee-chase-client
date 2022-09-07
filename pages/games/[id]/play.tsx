@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/24/outline';
 import Layout from '../../../widgets/Layout';
 import { BottomNavbarItem } from '../../../models/view/BottomNavbarItem';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import { GameService } from '../../../services/GameService';
@@ -17,11 +17,8 @@ import { redirectToHome, redirectToTeamPage } from '../../../lib/server-redirect
 import { GameMissionService } from '../../../services/GameMissionService';
 import { Game } from '../../../models/Game';
 import { GameMission } from '../../../models/GameMission';
-import { useRouter } from 'next/router';
-import { GameTeam, GameTeamRank } from '../../../models/GameTeam';
 import { useSession } from 'next-auth/react';
 import { GameTeamUser } from '../../../models/GameTeamUser';
-import { PaginatedSubmission } from '../../../models/PaginatedSubmissions';
 import { isGameExpired } from '../../../lib/game-utils';
 import GameBottomNavbar from '../../../widgets/BottomNavbar';
 import dynamic from 'next/dynamic';
@@ -69,46 +66,10 @@ const PlayGamePage: NextPage<Props> = ({ game, missions, currentTeam }) => {
     },
   ];
 
-  const router = useRouter();
-  const session = useSession();
-  const user = session?.data?.user as SessionUser;
-  const gameService = new GameService(user?.access_token);
-  const teamService = new GameTeamService(user?.access_token);
-
   const remainingMissions = missions.filter((mission) => mission.submissions.length === 0);
   const completedMissions = missions.filter((mission) => mission.submissions.length > 0);
 
   const [activeNavItemId, setActiveNavItemId] = useState(1);
-  const [teamRanks, setTeamRanks] = useState<(GameTeam & GameTeamRank)[]>([]);
-  const [submissionsPaginated, setSubmissionsPaginated] = useState<PaginatedSubmission | null>(
-    null,
-  );
-  const [currentTeamSubmissionsPaginated, setCurrentTeamSubmissionsPaginated] =
-    useState<PaginatedSubmission | null>(null);
-  const currentTeamRanks = teamRanks.find((rank) => rank.id === currentTeam.game_team_id) ?? null;
-
-  useEffect(() => {
-    const fetchLeaderboards = async () => {
-      const result = await gameService.getLeaderboard(game.id);
-      setTeamRanks(result);
-    };
-
-    const fetchSubmissions = async () => {
-      const subs = await gameService.getAllSubmissions(game.id);
-      setSubmissionsPaginated(subs);
-    };
-
-    const fetchCurrentTeamSubmissions = async () => {
-      const subs = await teamService.getAllSubmissions(game.id, currentTeam.game_team_id);
-      setCurrentTeamSubmissionsPaginated(subs);
-    };
-
-    if (user) {
-      fetchLeaderboards();
-      fetchSubmissions();
-      fetchCurrentTeamSubmissions();
-    }
-  }, [user]);
 
   const renderContent = () => {
     switch (activeNavItemId) {
@@ -121,25 +82,11 @@ const PlayGamePage: NextPage<Props> = ({ game, missions, currentTeam }) => {
           />
         );
       case 2:
-        return <LeaderboardList currentTeam={currentTeam} teamRanks={teamRanks} key={game.id} />;
+        return <LeaderboardList currentTeam={currentTeam} game={game} key={game.id} />;
       case 3:
-        return (
-          <FeedList
-            currentTeam={currentTeam}
-            key={game.id}
-            submissionsPaginated={submissionsPaginated}
-          />
-        );
+        return <FeedList currentTeam={currentTeam} key={game.id} game={game} />;
       case 4:
-        return (
-          <MyTeam
-            currentTeam={currentTeam}
-            teamRank={currentTeamRanks}
-            submissions={currentTeamSubmissionsPaginated}
-            game={game}
-            key={game.id}
-          />
-        );
+        return <MyTeam currentTeam={currentTeam} game={game} key={game.id} />;
       default:
         return 'Content not supported';
     }
