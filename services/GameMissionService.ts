@@ -11,9 +11,9 @@ export class GameMissionService extends BaseService {
     return response.data;
   }
 
-  public async getByGame(gameId: string) {
+  public async getByGame(gameId: string, filterCurrentTeamSubmissions: boolean = true) {
     const response: AxiosResponse<GameMission[]> = await axios.get(
-      `${this.API_URL}/games/${gameId}/missions`,
+      `${this.API_URL}/games/${gameId}/missions?filterCurrentTeamSubmissions=${filterCurrentTeamSubmissions}`,
       this.headerWithToken(),
     );
     return response.data;
