@@ -10,10 +10,10 @@ import { GameService } from '../../../services/GameService';
 import { GameTeamService } from '../../../services/GameTeamService';
 import useSWRInfinite from 'swr/infinite';
 
-import Pagination from '../../shared/Pagination';
 import FeedCard from './FeedCard';
 import FeedCardSkeleton from './FeedCardSkeleton';
 import { InView } from 'react-intersection-observer';
+import useLoading from '../../../hooks/use-loading';
 
 type Props = {
   currentTeam: GameTeamUser;
@@ -23,7 +23,6 @@ type Props = {
 
 export default function FeedList({ currentTeam, game, forMyTeam = false }: Props) {
   const router = useRouter();
-  const page = router.query.page ?? 1;
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
@@ -32,6 +31,7 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
   const [submissionsPaginated, setSubmissionsPaginated] = useState<PaginatedSubmission | null>(
     null,
   );
+  const [{ isLoading, load, finish }] = useLoading(false);
 
   const { data, size, setSize } = useSWRInfinite(
     (pageIndex, previousPageData: PaginatedSubmission | null) => {
@@ -45,9 +45,11 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
       return ['feeds', pageIndex + 1];
     },
     async (_, page) => {
+      load('');
       const subs = forMyTeam
         ? await teamService.getAllSubmissions(game.id, currentTeam.game_team_id, page)
         : await gameService.getAllSubmissions(game.id, page);
+      finish();
       return subs;
     },
   );
@@ -75,6 +77,9 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
     );
   }
 
+  if (data && data[0].data.length === 0)
+    return <div className='border rounded p-4 mx-3 text-center'>No submissions yet...</div>;
+
   return (
     <section className='mx-3 pb-12'>
       <ul className='grid grid-cols-1 gap-4'>
@@ -86,7 +91,10 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
       </ul>
 
       <InView as='section' onChange={() => setSize(size + 1)} className='my-4 flex justify-center'>
-        <button onClick={() => setSize(size + 1)} className={`w-full text-white btn btn-secondary`}>
+        <button
+          disabled={isLoading}
+          onClick={() => setSize(size + 1)}
+          className={`w-full text-white btn ${isLoading ? 'btn-disabled' : 'btn-secondary'}`}>
           Load More
         </button>
       </InView>

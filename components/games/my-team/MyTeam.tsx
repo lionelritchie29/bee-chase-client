@@ -78,7 +78,7 @@ export default function MyTeam({ currentTeam, game }: Props) {
 
           <div className='flex justify-center items-center pb-6'>
             {teamRank && teamRank.access_code && (
-              <div>
+              <div className='flex'>
                 <span className='block mr-1'>Access Code:</span>
                 <span className='block font-bold'> {teamRank.access_code}</span>
               </div>

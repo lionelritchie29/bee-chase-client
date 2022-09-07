@@ -10,7 +10,7 @@ import LeaderboardSkeleton from './LeaderboardSkeleton';
 
 type Props = {
   currentTeam: GameTeamUser;
-  game: Game
+  game: Game;
 };
 
 function LeaderboardList({ currentTeam, game }: Props) {
@@ -32,7 +32,7 @@ function LeaderboardList({ currentTeam, game }: Props) {
 
   if (teamRanks.length === 0) return <LeaderboardSkeleton />;
   return (
-    <ul>
+    <ul className='pb-4'>
       {teamRanks.map((teamRank) => (
         <li key={teamRank.id}>
           <LeaderboardCard currentTeam={currentTeam} teamRank={teamRank} />
