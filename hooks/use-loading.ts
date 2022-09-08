@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 type LoadOptions = {
@@ -6,24 +6,24 @@ type LoadOptions = {
 };
 
 export default function useLoading(initLoadingState: boolean, initMessage: string = '') {
-  const isLoading = useRef(initLoadingState);
-  const message = useRef(initMessage);
+  const [isLoading, setIsLoading] = useState(initLoadingState);
+  const [message, setMessage] = useState(initMessage);
 
   function load(msg: string = '', { useToast = true }: LoadOptions = {}) {
-    isLoading.current = true;
+    setIsLoading(true);
     if (useToast && msg.length > 0) toast(msg, { icon: '🔄' });
-    if (msg) message.current = msg;
+    if (msg) setMessage(msg);
   }
 
   function finish(msg: string = '', { success = true, loading = false } = {}) {
-    isLoading.current = loading;
+    setIsLoading(loading);
     if (msg.length > 0) {
       toast.dismiss();
       if (success) toast.success(msg);
       else toast.error(msg);
     }
-    message.current = msg;
+    setMessage(msg);
   }
 
-  return [{ isLoading: isLoading.current, message: message.current, load, finish }];
+  return [{ isLoading, message, load, finish }];
 }
