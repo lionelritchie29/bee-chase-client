@@ -19,11 +19,9 @@ export type OnedriveUploadBytesParams = {
 };
 
 export class OnedriveService extends BaseService {
-  private MESSIER_API_URL = 'https://bluejack.binus.ac.id/lapi/API';
-
   public async getOnedriveToken() {
     const response: AxiosResponse<{ token: string }> = await axios.get(
-      `${this.MESSIER_API_URL}/Account/GetOneDriveToken`,
+      `${this.API_URL}/onedrive/token`,
     );
     return response.data;
   }
