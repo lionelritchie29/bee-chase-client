@@ -1,5 +1,4 @@
 import { CameraIcon, VideoCameraIcon } from '@heroicons/react/24/outline';
-import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -45,7 +44,6 @@ export default function InputFileAnswer({
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
-  const onedriveService = new OnedriveService(user?.access_token);
 
   const {
     register,
@@ -83,11 +81,11 @@ export default function InputFileAnswer({
   };
 
   const onSubmit = handleSubmit(async ({ caption }) => {
-    if (!file) return;
+    if (!file || !user) return;
 
+    const onedriveService = new OnedriveService(user.access_token);
     const tokenToast = toast('Getting token...', { icon: '🔄' });
-    const apiUrl = `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/onedrive-token`;
-    const { token } = await axios.get(apiUrl).then((res) => res.data);
+    const { token } = await onedriveService.getOnedriveToken();
     toast.dismiss(tokenToast);
 
     const params: OnedriveUploadSessionParams = {

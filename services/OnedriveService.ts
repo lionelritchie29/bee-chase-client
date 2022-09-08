@@ -22,6 +22,7 @@ export class OnedriveService extends BaseService {
   public async getOnedriveToken() {
     const response: AxiosResponse<{ token: string }> = await axios.get(
       `${this.API_URL}/onedrive/token`,
+      this.headerWithToken(),
     );
     return response.data;
   }
