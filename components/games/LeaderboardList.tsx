@@ -19,7 +19,7 @@ function LeaderboardList({ currentTeam, game }: Props) {
   const user = session?.data?.user as SessionUser;
   const gameService = new GameService(user?.access_token);
 
-  const { data } = useSWR<(GameTeam & GameTeamRank)[]>('/leaderboard', () =>
+  const { data } = useSWR<(GameTeam & GameTeamRank)[]>(user && 'leaderboard', () =>
     gameService.getLeaderboard(game.id),
   );
 

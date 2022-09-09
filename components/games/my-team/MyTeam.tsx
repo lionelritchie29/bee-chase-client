@@ -20,11 +20,12 @@ export default function MyTeam({ currentTeam, game }: Props) {
   const user = session?.data?.user as SessionUser;
   const teamService = new GameTeamService(user?.access_token);
 
-  const { data: team } = useSWR<GameTeam>('current-team-members', () =>
+  const { data: team } = useSWR<GameTeam>(user && 'current-team-members', () =>
     teamService.getById(game.id, currentTeam.game_team_id),
   );
-  const { data: teamRank } = useSWR<GameTeam & GameTeamRank>('current-team-leaderboard', () =>
-    teamService.getCurrentTeamLeaderboard(game.id, currentTeam.game_team_id),
+  const { data: teamRank } = useSWR<GameTeam & GameTeamRank>(
+    user && 'current-team-leaderboard',
+    () => teamService.getCurrentTeamLeaderboard(game.id, currentTeam.game_team_id),
   );
 
   return (
