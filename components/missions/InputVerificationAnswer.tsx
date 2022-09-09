@@ -80,7 +80,7 @@ export default function InputVerificationAnswer({
     const dto: CreateSubmissionDto = {
       caption: null,
       game_team_id: teamUser.game_team_id,
-      answer_data: { code },
+      answer_data: { code: code.toUpperCase() },
     };
     await submit(dto);
   };
@@ -109,7 +109,7 @@ export default function InputVerificationAnswer({
           {...register('code', { required: true })}
           type='text'
           placeholder='Enter verification code'
-          className='input input-bordered w-full mt-2'
+          className='input input-bordered w-full mt-2 uppercase'
           disabled={submission !== null}
         />
         {errors?.code && <small className='text-red-400'>Verification code is required</small>}

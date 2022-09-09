@@ -28,7 +28,7 @@ export default function InputGameCode() {
 
   const onSubmit = handleSubmit(async ({ code }) => {
     load('Searching game...');
-    const game = await gameService.getByCode(code);
+    const game = await gameService.getByCode(code.toUpperCase());
 
     toast.dismiss();
     if (!game) {
@@ -55,7 +55,7 @@ export default function InputGameCode() {
             type='text'
             id='game_code_inp'
             placeholder='Game Code'
-            className='input input-bordered w-full mt-2'
+            className='uppercase input input-bordered w-full mt-2'
           />
           {errors?.code?.type === 'required' && (
             <small className='text-red-300'>Game code must be filled</small>
