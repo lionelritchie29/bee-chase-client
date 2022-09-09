@@ -1,19 +1,22 @@
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import useSWR from 'swr';
 import { isGameExpired } from '../../lib/game-utils';
 import { Game } from '../../models/Game';
 import { GameMission } from '../../models/GameMission';
+import { SessionUser } from '../../models/SessionUser';
+import { GameMissionService } from '../../services/GameMissionService';
+import MissionListSkeleton from '../skeletons/MissionListSkeleton';
 import MissionCard from './MissionCard';
 
 type Props = {
-  remainingMissions: GameMission[];
-  completedMissions: GameMission[];
   game: Game;
 };
 
-export default function MissionList({ remainingMissions, completedMissions, game }: Props) {
+export default function MissionList({ game }: Props) {
   const tabs = [
     {
       id: 1,
@@ -25,8 +28,17 @@ export default function MissionList({ remainingMissions, completedMissions, game
     },
   ];
 
+  const session = useSession();
+  const user = session?.data?.user as SessionUser;
+  const missionService = new GameMissionService(user?.access_token);
   const [activeTabId, setActiveTabId] = useState(1);
   const router = useRouter();
+
+  const { data: missions } = useSWR<GameMission[]>(user && 'current-missions', () =>
+    missionService.getByGame(game.id),
+  );
+  const remainingMissions = missions?.filter((mission) => mission.submissions.length === 0) ?? [];
+  const completedMissions = missions?.filter((mission) => mission.submissions.length > 0) ?? [];
 
   const getMissions = () => {
     switch (activeTabId) {
@@ -52,8 +64,11 @@ export default function MissionList({ remainingMissions, completedMissions, game
     return '';
   };
 
-  const gameStatus = getGameStatus();
+  if (!missions) {
+    return <MissionListSkeleton />;
+  }
 
+  const gameStatus = getGameStatus();
   if (gameStatus) {
     return (
       <div className='h-full p-8 flex justify-center flex-col mt-40'>

@@ -15,12 +15,10 @@ import { SessionUser } from '../../../models/SessionUser';
 import { GameTeamService } from '../../../services/GameTeamService';
 import { redirectToHome, redirectToTeamPage } from '../../../lib/server-redirect-helper';
 import { Game } from '../../../models/Game';
-import { GameMission } from '../../../models/GameMission';
 import { GameTeamUser } from '../../../models/GameTeamUser';
 import { isGameExpired } from '../../../lib/game-utils';
 import GameBottomNavbar from '../../../widgets/BottomNavbar';
 import dynamic from 'next/dynamic';
-import { GameMissionService } from '../../../services/GameMissionService';
 
 const FeedList = dynamic(() => import('../../../components/games/feeds/FeedList'), {
   loading: () => <div className='text-center'>Loading...</div>,
@@ -37,17 +35,10 @@ const MissionList = dynamic(() => import('../../../components/games/MissionList'
 
 type Props = {
   game: Game;
-  remainingMissions: GameMission[];
-  completedMissions: GameMission[];
   currentTeam: GameTeamUser;
 };
 
-const PlayGamePage: NextPage<Props> = ({
-  game,
-  remainingMissions,
-  completedMissions,
-  currentTeam,
-}) => {
+const PlayGamePage: NextPage<Props> = ({ game, currentTeam }) => {
   const bottomNavItems: BottomNavbarItem[] = [
     {
       id: 1,
@@ -76,13 +67,7 @@ const PlayGamePage: NextPage<Props> = ({
   const renderContent = () => {
     switch (activeNavItemId) {
       case 1:
-        return (
-          <MissionList
-            game={game}
-            remainingMissions={remainingMissions}
-            completedMissions={completedMissions}
-          />
-        );
+        return <MissionList game={game} />;
       case 2:
         return <LeaderboardList currentTeam={currentTeam} game={game} key={game.id} />;
       case 3:
@@ -137,17 +122,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
   const currentTeam = await teamService.checkUserAlreadyInTeam(game.id);
   if (!currentTeam) return redirectToTeamPage(game.id);
 
-  const missionService = new GameMissionService(user.access_token);
-
-  const currentMissions = await missionService.getByGame(game.id);
-  const remainingMissions = currentMissions.filter((mission) => mission.submissions.length === 0);
-  const completedMissions = currentMissions.filter((mission) => mission.submissions.length > 0);
-
   return {
     props: {
       game,
-      remainingMissions,
-      completedMissions,
       currentTeam,
     },
   };
