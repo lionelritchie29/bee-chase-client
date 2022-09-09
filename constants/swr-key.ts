@@ -4,4 +4,5 @@ export const SWR_KEY = {
   FEEDS: 'feed_list',
   MY_TEAM: 'my-team',
   MY_TEAM_LEADERBOARD: 'my-team-leaderboard',
+  MY_GAMES: 'my-games',
 };

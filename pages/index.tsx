@@ -8,18 +8,16 @@ import { Game } from '../models/Game';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
+import useSWR from 'swr';
+import { SWR_KEY } from '../constants/swr-key';
+import GameListSkeleton from '../components/skeletons/GameListSkeleton';
 
 const GameList = dynamic(() => import('../components/home/GameList'));
 
-type Props = {
-  activeGames: Game[];
-  futureGames: Game[];
-  passedGames: Game[];
-};
-
-const Home: NextPage<Props> = ({ activeGames, futureGames, passedGames }) => {
+const Home: NextPage = () => {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+  const gameService = new GameService(user?.access_token);
 
   const tabs = [
     {
@@ -37,6 +35,31 @@ const Home: NextPage<Props> = ({ activeGames, futureGames, passedGames }) => {
   ];
 
   const [activeTabId, setActiveTabId] = useState(2);
+
+  const { data: games } = useSWR<Game[]>(user && SWR_KEY.MY_GAMES, () =>
+    gameService.getCurrentJoinedGames(),
+  );
+
+  if (!games) {
+    return <GameListSkeleton user={user} />;
+  }
+
+  const activeGames = games.filter((game) => {
+    if (!game.start_time || !game.end_time) return false;
+    const currDate = new Date();
+    const startDate = new Date(game.start_time);
+    const endDate = new Date(game.end_time);
+    return currDate.getTime() >= startDate.getTime() && currDate.getTime() <= endDate.getTime();
+  });
+
+  const futureGames = games.filter((game) => !game.start_time || !game.end_time);
+
+  const passedGames = games.filter((game) => {
+    if (!game.start_time || !game.end_time) return false;
+    const currDate = new Date();
+    const endDate = new Date(game.end_time);
+    return currDate.getTime() >= endDate.getTime();
+  });
 
   const renderGames = () => {
     switch (activeTabId) {
@@ -85,33 +108,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     };
   }
 
-  const user = session.user as SessionUser;
-  const gameService = new GameService(user?.access_token);
-  const games = await gameService.getCurrentJoinedGames();
-
-  const activeGames = games.filter((game) => {
-    if (!game.start_time || !game.end_time) return false;
-    const currDate = new Date();
-    const startDate = new Date(game.start_time);
-    const endDate = new Date(game.end_time);
-    return currDate.getTime() >= startDate.getTime() && currDate.getTime() <= endDate.getTime();
-  });
-
-  const futureGames = games.filter((game) => !game.start_time || !game.end_time);
-
-  const passedGames = games.filter((game) => {
-    if (!game.start_time || !game.end_time) return false;
-    const currDate = new Date();
-    const endDate = new Date(game.end_time);
-    return currDate.getTime() >= endDate.getTime();
-  });
-
   return {
-    props: {
-      activeGames,
-      passedGames,
-      futureGames,
-    },
+    props: {},
   };
 };
 
