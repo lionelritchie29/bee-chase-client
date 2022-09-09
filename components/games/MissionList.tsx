@@ -3,7 +3,8 @@ import { format } from 'date-fns';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
+import { SWR_KEY } from '../../constants/swr-key';
 import { isGameExpired } from '../../lib/game-utils';
 import { Game } from '../../models/Game';
 import { GameMission } from '../../models/GameMission';
@@ -34,9 +35,13 @@ export default function MissionList({ game }: Props) {
   const [activeTabId, setActiveTabId] = useState(1);
   const router = useRouter();
 
-  const { data: missions } = useSWR<GameMission[]>(user && 'current-missions', () =>
-    missionService.getByGame(game.id),
+  const { cache } = useSWRConfig();
+  const { data: missions } = useSWR<GameMission[]>(
+    user && SWR_KEY.CURRENT_MISSIONS,
+    () => missionService.getByGame(game.id),
+    { revalidateOnMount: !cache.get(SWR_KEY.CURRENT_MISSIONS) },
   );
+
   const remainingMissions = missions?.filter((mission) => mission.submissions.length === 0) ?? [];
   const completedMissions = missions?.filter((mission) => mission.submissions.length > 0) ?? [];
 

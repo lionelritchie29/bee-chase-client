@@ -1,7 +1,8 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import { COLORS } from '../../../constants/color';
+import { SWR_KEY } from '../../../constants/swr-key';
 import { Game } from '../../../models/Game';
 import { GameTeam, GameTeamRank } from '../../../models/GameTeam';
 import { GameTeamUser } from '../../../models/GameTeamUser';
@@ -20,12 +21,16 @@ export default function MyTeam({ currentTeam, game }: Props) {
   const user = session?.data?.user as SessionUser;
   const teamService = new GameTeamService(user?.access_token);
 
-  const { data: team } = useSWR<GameTeam>(user && 'current-team-members', () =>
-    teamService.getById(game.id, currentTeam.game_team_id),
+  const { cache } = useSWRConfig();
+  const { data: team } = useSWR<GameTeam>(
+    user && SWR_KEY.MY_TEAM,
+    () => teamService.getById(game.id, currentTeam.game_team_id),
+    { revalidateOnMount: !cache.get(SWR_KEY.MY_TEAM) },
   );
   const { data: teamRank } = useSWR<GameTeam & GameTeamRank>(
-    user && 'current-team-leaderboard',
+    user && SWR_KEY.MY_TEAM_LEADERBOARD,
     () => teamService.getCurrentTeamLeaderboard(game.id, currentTeam.game_team_id),
+    { revalidateOnMount: !cache.get(SWR_KEY.MY_TEAM_LEADERBOARD) },
   );
 
   return (

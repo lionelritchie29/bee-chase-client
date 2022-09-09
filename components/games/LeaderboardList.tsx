@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/react';
 import React from 'react';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
+import { SWR_KEY } from '../../constants/swr-key';
 import { Game } from '../../models/Game';
 import { GameTeam, GameTeamRank } from '../../models/GameTeam';
 import { GameTeamUser } from '../../models/GameTeamUser';
@@ -19,8 +20,11 @@ function LeaderboardList({ currentTeam, game }: Props) {
   const user = session?.data?.user as SessionUser;
   const gameService = new GameService(user?.access_token);
 
-  const { data } = useSWR<(GameTeam & GameTeamRank)[]>(user && 'leaderboard', () =>
-    gameService.getLeaderboard(game.id),
+  const { cache } = useSWRConfig();
+  const { data } = useSWR<(GameTeam & GameTeamRank)[]>(
+    user && SWR_KEY.LEADERBOARD,
+    () => gameService.getLeaderboard(game.id),
+    { revalidateOnMount: !cache.get(SWR_KEY.LEADERBOARD) },
   );
 
   if (!data) return <LeaderboardSkeleton />;
