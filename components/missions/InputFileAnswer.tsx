@@ -1,4 +1,5 @@
 import { CameraIcon, VideoCameraIcon } from '@heroicons/react/24/outline';
+import imageCompression from 'browser-image-compression';
 import { useSession } from 'next-auth/react';
 import { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -88,8 +89,12 @@ export default function InputFileAnswer({
     const { token } = await onedriveService.getOnedriveToken();
     toast.dismiss(tokenToast);
 
+    const compressToast = toast('Compressing image...', { icon: '🔄' });
+    const compressedFile = await imageCompression(file, { maxSizeMB: 0.25, useWebWorker: true });
+    toast.dismiss(compressToast);
+
     const params: OnedriveUploadSessionParams = {
-      file,
+      file: compressedFile,
       gameId: game.id,
       gameTeamId: teamUser.game_team_id,
       token,
@@ -101,7 +106,7 @@ export default function InputFileAnswer({
     toast.dismiss(uploadSessToast);
 
     const uploadParams: OnedriveUploadBytesParams = {
-      file,
+      file: compressedFile,
       rangeSize: 10 * 1024 * 1024,
       token,
       uploadUrl,
