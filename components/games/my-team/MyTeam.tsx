@@ -30,7 +30,10 @@ export default function MyTeam({ currentTeam, game }: Props) {
   return (
     <section className='mt-6'>
       <div className='border rounded mx-3'>
-        <div className='border-b p-3 text-sm uppercase font-bold'>My team</div>
+        <div className='border-b p-3 text-sm uppercase font-bold flex justify-between'>
+          <div>My team</div>
+          <div>Rank #{teamRank?.rank}</div>
+        </div>
 
         <div className='flex justify-around items-center text-center pt-6'>
           <div className='w-1/3'>
