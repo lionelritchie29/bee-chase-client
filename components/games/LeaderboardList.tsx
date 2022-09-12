@@ -29,13 +29,18 @@ function LeaderboardList({ currentTeam, game }: Props) {
 
   if (!data) return <LeaderboardSkeleton />;
   return (
-    <ul className='pb-4'>
-      {data.map((teamRank) => (
-        <li key={teamRank.id}>
-          <LeaderboardCard currentTeam={currentTeam} teamRank={teamRank} />
-        </li>
-      ))}
-    </ul>
+    <>
+      <div className='mx-3 text-xs text-blue-400'>
+        Leaderboard will be updated every 1 minute (ex: 11:01, 11:02, etc)
+      </div>
+      <ul className='pb-4'>
+        {data.map((teamRank) => (
+          <li key={teamRank.id}>
+            <LeaderboardCard currentTeam={currentTeam} teamRank={teamRank} />
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 

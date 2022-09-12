@@ -35,6 +35,11 @@ export default function MyTeam({ currentTeam, game }: Props) {
 
   return (
     <section className='mt-6'>
+      {!teamRank && (
+        <div className='mx-3 text-xs text-blue-400'>
+          If this section is still loading, please wait for one minute.
+        </div>
+      )}
       <div className='border rounded mx-3'>
         <div className='border-b p-3 text-sm uppercase font-bold flex justify-between'>
           <div>My team</div>
