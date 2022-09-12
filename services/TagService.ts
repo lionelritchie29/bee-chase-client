@@ -12,9 +12,17 @@ export class TagService extends BaseService {
     return response.data;
   }
 
-  public async getLeaderboard(tagId: string, limit: number = 10) {
+  public async getGlobalLeaderboard(tagId: string, limit: number = 10) {
     const response: AxiosResponse<GlobalRank[]> = await axios.get(
       `${this.API_URL}/tags/${tagId}/leaderboard?limit=${limit}`,
+      this.headerWithToken(),
+    );
+    return response.data;
+  }
+
+  public async getCurrentGlobalLeaderboard(tagId: string) {
+    const response: AxiosResponse<GlobalRank> = await axios.get(
+      `${this.API_URL}/tags/${tagId}/leaderboard/current`,
       this.headerWithToken(),
     );
     return response.data;

@@ -22,17 +22,31 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
   const tagService = new TagService(user?.access_token);
   const [selectedTagId, setSelectedTagId] = useState(tags ? tags[0].id : '');
   const [ranks, setRanks] = useState<GlobalRank[]>([]);
+  const [currentRank, setCurrentRank] = useState<GlobalRank | null>(null);
   const [{ isLoading, load, finish }] = useLoading(false);
+  const [{ isLoading: isLoadingCurrent, load: loadCurrent, finish: finishCurrent }] =
+    useLoading(false);
 
   useEffect(() => {
     const fetchRanks = async () => {
       load();
-      setRanks(await tagService.getLeaderboard(selectedTagId));
+      setRanks(await tagService.getGlobalLeaderboard(selectedTagId));
       finish();
     };
 
     if (user && tags.length > 0) fetchRanks();
   }, [selectedTagId, user]);
+
+  useEffect(() => {
+    const fetchCurrentRank = async () => {
+      loadCurrent();
+      const curr = await tagService.getCurrentGlobalLeaderboard(selectedTagId);
+      finishCurrent();
+      setCurrentRank(curr ?? null);
+    };
+
+    if (user && tags.length > 0) fetchCurrentRank();
+  }, [user]);
 
   if (tags.length == 0) {
     return (
@@ -46,7 +60,19 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
 
   return (
     <Layout title='Global Leaderboard' controlSpacing={false} className='mt-4'>
-      <div className='form-control w-full px-4 mb-4'>
+      <div className='flex items-center uppercase mx-3 bg-orange-100 border border-orange-300 rounded p-2'>
+        <span className='block'>Your Total Scores: </span>
+
+        {isLoadingCurrent ? (
+          <span className='block ml-1 h-5 w-20 bg-gray-300 rounded animate-pulse'></span>
+        ) : (
+          <span className='block font-bold ml-1'>
+            {currentRank ? currentRank.total_point : 0} pts
+          </span>
+        )}
+      </div>
+
+      <div className='form-control w-full px-3 mb-4'>
         <label className='label'>
           <span className='label-text'>Show leaderboard for:</span>
         </label>
@@ -76,10 +102,14 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
       )}
 
       {ranks.length == 0 && (
-        <div className='mt-4 border rounded p-3 mx-4 text-sm'>
+        <div className='mt-4 border rounded p-3 mx-3 text-sm'>
           Cannot show leaderboard, no data available yet.
         </div>
       )}
+
+      <div className='text-xs mx-3 mt-2 text-blue-600'>
+        Leaderboard will be updated every one hours (ex: 11:00, 12:00, etc)
+      </div>
     </Layout>
   );
 };
