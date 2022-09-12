@@ -46,7 +46,7 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
     };
 
     if (user && tags.length > 0) fetchCurrentRank();
-  }, [user]);
+  }, [selectedTagId, user]);
 
   if (tags.length == 0) {
     return (
@@ -60,24 +60,6 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
 
   return (
     <Layout title='Global Leaderboard' controlSpacing={false} className='mt-4'>
-      <div className='flex justify-between uppercase mx-3 bg-orange-100 border border-orange-300 rounded p-2'>
-        <div className='flex items-center'>
-          <span className='block'>Your Scores: </span>
-
-          {isLoadingCurrent ? (
-            <span className='block ml-1 h-5 w-20 bg-gray-300 rounded animate-pulse'></span>
-          ) : (
-            <span className='block font-bold ml-1'>
-              {currentRank ? currentRank.total_point : 0} pts
-            </span>
-          )}
-        </div>
-
-        <div>
-          Rank: #<span className='font-bold'>{currentRank ? currentRank.rank : 'N/A'}</span>
-        </div>
-      </div>
-
       <div className='form-control w-full px-3 mb-4'>
         <label className='label'>
           <span className='label-text'>Show leaderboard for:</span>
@@ -93,6 +75,26 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
             </option>
           ))}
         </select>
+      </div>
+
+      <div className='divider'></div>
+
+      <div className='flex justify-between uppercase mb-4 mx-3 bg-orange-100 border border-orange-300 rounded p-2'>
+        <div className='flex items-center'>
+          <span className='block'>Your Scores: </span>
+
+          {isLoadingCurrent ? (
+            <span className='block ml-1 h-5 w-20 bg-gray-300 rounded animate-pulse'></span>
+          ) : (
+            <span className='block font-bold ml-1'>
+              {currentRank ? currentRank.total_point : 0} pts
+            </span>
+          )}
+        </div>
+
+        <div>
+          Rank: #<span className='font-bold'>{currentRank ? currentRank.rank : 'N/A'}</span>
+        </div>
       </div>
 
       {!isLoading ? (
