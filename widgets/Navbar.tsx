@@ -3,6 +3,7 @@ import {
   PlusIcon,
   ArrowPathIcon,
   UserCircleIcon,
+  ChartBarIcon,
 } from '@heroicons/react/24/outline';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -16,6 +17,8 @@ type Props = {
 export default function Navbar({ title }: Props) {
   const router = useRouter();
 
+  const globalLeaderboardAllowedRoutes = ['/', '/join'];
+
   const backBtnAllowedRoutes = [
     '/games/[id]/play',
     '/games/[id]/missions/[missionId]',
@@ -23,6 +26,7 @@ export default function Navbar({ title }: Props) {
     '/games/[id]',
     '/games/[id]/teams',
     '/games/[id]/teams/create',
+    '/global-leaderboard',
   ];
 
   const refreshBtnAllowedRoutes = [
@@ -65,6 +69,17 @@ export default function Navbar({ title }: Props) {
             }}
             className='btn btn-square btn-ghost'>
             <PlusIcon className='w-5 h-5' />
+          </button>
+        )}
+
+        {globalLeaderboardAllowedRoutes.includes(router.pathname) && (
+          <button
+            tabIndex={0}
+            onClick={() => {
+              router.push('/global-leaderboard');
+            }}
+            className='btn btn-square btn-ghost'>
+            <ChartBarIcon className='w-5 h-5' />
           </button>
         )}
 
