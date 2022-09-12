@@ -1,3 +1,4 @@
+import { TEAM } from '../constants/team';
 import { Game } from '../models/Game';
 import { GameTeam } from '../models/GameTeam';
 
@@ -10,7 +11,9 @@ export const isGameExpired = (game: Game): boolean => {
 };
 
 export const teamIsFull = (game: Game, team: GameTeam): boolean => {
-  return game?.max_player_per_team === team?.members?.length;
+  return (
+    game?.max_player_per_team === team?.members?.length || team?.members?.length === TEAM.MAX_MEMBER
+  );
 };
 
 export const isIndividualGame = (game: Game): boolean => {

@@ -67,7 +67,7 @@ const PlayGamePage: NextPage<Props> = ({ game, currentTeam }) => {
   const renderContent = () => {
     switch (activeNavItemId) {
       case 1:
-        return <MissionList game={game} />;
+        return <MissionList currentTeam={currentTeam} game={game} />;
       case 2:
         return <LeaderboardList currentTeam={currentTeam} game={game} key={game.id} />;
       case 3:

@@ -8,16 +8,20 @@ import { SWR_KEY } from '../../constants/swr-key';
 import { isGameExpired } from '../../lib/game-utils';
 import { Game } from '../../models/Game';
 import { GameMission } from '../../models/GameMission';
+import { GameTeam } from '../../models/GameTeam';
+import { GameTeamUser } from '../../models/GameTeamUser';
 import { SessionUser } from '../../models/SessionUser';
 import { GameMissionService } from '../../services/GameMissionService';
+import { GameTeamService } from '../../services/GameTeamService';
 import MissionListSkeleton from '../skeletons/MissionListSkeleton';
 import MissionCard from './MissionCard';
 
 type Props = {
   game: Game;
+  currentTeam: GameTeamUser;
 };
 
-export default function MissionList({ game }: Props) {
+export default function MissionList({ game, currentTeam }: Props) {
   const tabs = [
     {
       id: 1,
@@ -32,6 +36,8 @@ export default function MissionList({ game }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const missionService = new GameMissionService(user?.access_token);
+  const teamService = new GameTeamService(user?.access_token);
+
   const [activeTabId, setActiveTabId] = useState(1);
   const router = useRouter();
 
@@ -40,6 +46,12 @@ export default function MissionList({ game }: Props) {
     user && SWR_KEY.CURRENT_MISSIONS,
     () => missionService.getByGame(game.id),
     { revalidateOnMount: !cache.get(SWR_KEY.CURRENT_MISSIONS) },
+  );
+
+  const { data: team } = useSWR<GameTeam>(
+    user && SWR_KEY.MY_TEAM,
+    () => teamService.getById(game.id, currentTeam.game_team_id),
+    { revalidateOnMount: !cache.get(SWR_KEY.MY_TEAM) },
   );
 
   const remainingMissions = missions?.filter((mission) => mission.submissions.length === 0) ?? [];
@@ -57,6 +69,9 @@ export default function MissionList({ game }: Props) {
   const getGameStatus = () => {
     if (!game.start_time || !game.end_time)
       return 'The game has been stopped or has not been started yet, please wait or contact admin.';
+
+    if (team && team.members.length < 2)
+      return 'Your team must consists of minimum 2 members and maximum of 10 members';
 
     const currDate = new Date();
     const startDate = new Date(game.start_time);

@@ -74,6 +74,13 @@ const GameTeamsPage: NextPage<Props> = ({ game, teamsPaginated }) => {
           This is an individual game, each team will only consist of one member.
         </div>
       )}
+
+      {!isIndividualGame(game) && (
+        <div className='border border-blue-300 bg-blue-100 rounded p-2 mx-3 text-sm text-blue-400 mb-2'>
+          A team must consists of minimum 2 members and maximum of 10 members
+        </div>
+      )}
+
       <div className='bg-gray-200 py-2 px-4 font-semibold uppercase text-sm'>Select Team</div>
 
       {game.allow_user_create_team && (
