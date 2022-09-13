@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('PreInstall') {
           steps {
-            sh 'sudo npm install -g pnpm'
+            sh 'wget -qO- https://get.pnpm.io/install.sh | sh -'
           }
         }
 
