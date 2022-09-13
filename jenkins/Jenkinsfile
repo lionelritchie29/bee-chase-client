@@ -7,7 +7,9 @@ pipeline {
     }
     stages {
         stage('PreInstall') {
-          sh 'npm install -g pnpm'
+          steps {
+            sh 'npm install -g pnpm'
+          }
         }
 
         stage('Build') { 
