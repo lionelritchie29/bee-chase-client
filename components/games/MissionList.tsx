@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { SWR_KEY } from '../../constants/swr-key';
-import { isGameExpired } from '../../lib/game-utils';
+import { isGameExpired, isIndividualGame } from '../../lib/game-utils';
 import { Game } from '../../models/Game';
 import { GameMission } from '../../models/GameMission';
 import { GameTeam } from '../../models/GameTeam';
@@ -70,7 +70,7 @@ export default function MissionList({ game, currentTeam }: Props) {
     if (!game.start_time || !game.end_time)
       return 'The game has been stopped or has not been started yet, please wait or contact admin.';
 
-    if (team && team.members.length < 2)
+    if (!isIndividualGame(game) && team && team.members.length < 2)
       return 'Your team must consists of minimum 2 members and maximum of 10 members';
 
     const currDate = new Date();
@@ -98,10 +98,10 @@ export default function MissionList({ game, currentTeam }: Props) {
         <div className='mt-4 text-center' dangerouslySetInnerHTML={{ __html: gameStatus }}></div>
         <button
           onClick={() => {
-            router.replace(`/games/${game.id}/play`);
+            router.reload();
           }}
           className='btn btn-primary text-white mt-4'>
-          Refresh game state
+          Refresh
         </button>
       </div>
     );

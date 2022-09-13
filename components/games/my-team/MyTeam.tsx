@@ -34,7 +34,7 @@ export default function MyTeam({ currentTeam, game }: Props) {
   );
 
   return (
-    <section className='mt-6'>
+    <section className='mt-6 pb-8'>
       {!teamRank && (
         <div className='mx-3 text-xs text-blue-400'>
           If this section is still loading, please wait for one minute.
