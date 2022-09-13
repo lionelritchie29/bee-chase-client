@@ -5,11 +5,13 @@ pipeline {
             args '-p 3000:3000' 
         }
     }
+    environment {
+        HOME = '.'
+    }
     stages {
         stage('PreInstall') {
           steps {
-            sh 'yum install wget'
-            sh 'wget -qO- https://get.pnpm.io/install.sh | sh -'
+            sh 'npm install -g pnpm'
           }
         }
 
