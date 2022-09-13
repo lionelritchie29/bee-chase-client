@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('PreInstall') {
           steps {
-            sh 'npx pnpm add -g pnpm'
+            sh 'sudo npm install -g pnpm'
           }
         }
 
