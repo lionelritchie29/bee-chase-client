@@ -1,12 +1,6 @@
 {
-  "theme_color": "#00A8E0",
-  "background_color": "#00A8E0",
-  "display": "standalone",
-  "scope": "/",
-  "start_url": "https://beechase.apps.binus.ac.id/",
   "name": "BeeChase",
   "short_name": "BeeChase",
-  "description": "BeeChase, Treasure Hunt Apps",
   "icons": [
     {
       "src": "/icons/icon-144x144.png",
@@ -33,5 +27,11 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "theme_color": "#00A8E0",
+  "background_color": "#00A8E0",
+  "start_url": "/",
+  "display": "standalone",
+  "description": "BeeChase, Treasure Hunt Apps",
+  "orientation": "portrait"
 }
