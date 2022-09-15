@@ -11,7 +11,7 @@ import { LocationAnswerData } from '../../../models/answer-data/LocationAnswerDa
 import { COLORS } from '../../../constants/color';
 import { GameTeamUser } from '../../../models/GameTeamUser';
 import { MultipleChoiceAnswerData } from '../../../models/answer-data/MultipleChoiceAnswerData';
-import { CheckIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { VerificationAnswerData } from '../../../models/answer-data/VerificationAnswerData';
 
 type Props = {
@@ -30,14 +30,23 @@ export default function FeedCard({ submission, currentTeam }: Props) {
     return <span className='text-gray-400'>Hidden</span>;
   };
 
-  const getMultipleChoiceAnswers = (answer: MultipleChoiceAnswerData) => {
+  const getMultipleChoiceAnswers = (answer: MultipleChoiceAnswerData, sub: Submission) => {
     if (submission.game_team_id !== currentTeam.game_team_id)
       return <span className='text-gray-400'>Hidden</span>;
     return (
       <ul>
         {answer.answers.map((ans) => (
-          <li className='font-bold flex items-center' key={ans}>
-            <CheckIcon className='w-5 h-5 mr-2' /> {ans}
+          <li
+            className={`font-bold flex items-center ${
+              sub.is_accepted ? 'text-green-600' : 'text-red-600'
+            }`}
+            key={ans}>
+            {sub.is_accepted ? (
+              <CheckIcon className='w-5 h-5 mr-2' />
+            ) : (
+              <XMarkIcon className='w-5 h-5 mr-2' />
+            )}{' '}
+            {ans}
           </li>
         ))}
       </ul>
@@ -76,7 +85,7 @@ export default function FeedCard({ submission, currentTeam }: Props) {
         );
       case AnswerType.MULTIPLE_CHOICE:
         answer = JSON.parse(submission.answer_data) as MultipleChoiceAnswerData;
-        return <ul>Answered: {getMultipleChoiceAnswers(answer)}</ul>;
+        return <ul>Answered: {getMultipleChoiceAnswers(answer, submission)}</ul>;
       default:
         return <div className='text-sm text-gray-400'>Answer cant be displayed.</div>;
     }
