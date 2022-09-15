@@ -81,7 +81,7 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
 
       <div className='flex justify-between uppercase mb-4 mx-3 bg-orange-100 border border-orange-300 rounded p-2'>
         <div className='flex items-center'>
-          <span className='block'>Your Scores: </span>
+          <span className='block'>Your Score: </span>
 
           {isLoadingCurrent ? (
             <span className='block ml-1 h-5 w-20 bg-gray-300 rounded animate-pulse'></span>
