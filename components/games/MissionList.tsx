@@ -42,10 +42,8 @@ export default function MissionList({ game, currentTeam }: Props) {
   const router = useRouter();
 
   const { cache } = useSWRConfig();
-  const { data: missions } = useSWR<GameMission[]>(
-    user && SWR_KEY.CURRENT_MISSIONS,
-    () => missionService.getByGame(game.id),
-    { revalidateOnMount: !cache.get(SWR_KEY.CURRENT_MISSIONS) },
+  const { data: missions } = useSWR<GameMission[]>(user && SWR_KEY.CURRENT_MISSIONS, () =>
+    missionService.getByGame(game.id),
   );
 
   const { data: team } = useSWR<GameTeam>(

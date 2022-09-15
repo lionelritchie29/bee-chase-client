@@ -8,6 +8,7 @@ import { GameTeamService } from '../../services/GameTeamService';
 import useLoading from '../../hooks/use-loading';
 import { Game } from '../../models/Game';
 import { teamIsFull } from '../../lib/game-utils';
+import { toast } from 'react-hot-toast';
 
 type Props = {
   selectedTeam: GameTeam | null;
@@ -52,7 +53,7 @@ export default function InputTeamCodeModal({
 
   const onSubmit = handleSubmit(async ({ accessCode }) => {
     if (selectedTeam?.has_access_code) {
-      load('Veriying...');
+      const verifyToast = toast('Veriying...');
       if (accessCode == null) {
         finish('Access code must be filled', { success: false });
         return;
@@ -63,6 +64,8 @@ export default function InputTeamCodeModal({
         selectedTeam.id,
         accessCode.toString(),
       );
+      toast.dismiss(verifyToast);
+
       if (isCorrect) {
         load('Joining...');
         await joinTeam(selectedTeam, accessCode.toString());
