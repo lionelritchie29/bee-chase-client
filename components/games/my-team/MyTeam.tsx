@@ -60,7 +60,7 @@ export default function MyTeam({ currentTeam, game }: Props) {
           <div className='w-1/3'>
             <div
               className='rounded-full w-24 h-24 border mx-auto'
-              style={{ backgroundColor: teamRank?.color || COLORS.TEAM_DEFAULT }}></div>
+              style={{ backgroundColor: team?.color || COLORS.TEAM_DEFAULT }}></div>
           </div>
 
           <div className='w-1/3'>
