@@ -53,7 +53,7 @@ export default function InputTeamCodeModal({
 
   const onSubmit = handleSubmit(async ({ accessCode }) => {
     if (selectedTeam?.has_access_code) {
-      const verifyToast = toast('Veriying...');
+      const verifyToast = toast('Verifying...');
       if (accessCode == null) {
         finish('Access code must be filled', { success: false });
         return;
