@@ -101,7 +101,7 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
         <ul className='border-t'>
           {ranks.map((rank) => (
             <li key={rank.id}>
-              <GlobalLeaderboardCard globalRank={rank} />
+              <GlobalLeaderboardCard currentUser={user} globalRank={rank} />
             </li>
           ))}
         </ul>
