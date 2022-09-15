@@ -20,11 +20,8 @@ function LeaderboardList({ currentTeam, game }: Props) {
   const user = session?.data?.user as SessionUser;
   const gameService = new GameService(user?.access_token);
 
-  const { cache } = useSWRConfig();
-  const { data } = useSWR<(GameTeam & GameTeamRank)[]>(
-    user && SWR_KEY.LEADERBOARD,
-    () => gameService.getLeaderboard(game.id),
-    { revalidateOnMount: !cache.get(SWR_KEY.LEADERBOARD) },
+  const { data } = useSWR<(GameTeam & GameTeamRank)[]>(user && SWR_KEY.LEADERBOARD, () =>
+    gameService.getLeaderboard(game.id),
   );
 
   if (!data) return <LeaderboardSkeleton />;
