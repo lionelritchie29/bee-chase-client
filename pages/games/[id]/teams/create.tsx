@@ -2,6 +2,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import useLoading from '../../../../hooks/use-loading';
 import { isGameExpired, isIndividualGame } from '../../../../lib/game-utils';
@@ -46,14 +47,18 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
 
   const MAX = 9999;
   const MIN = 1000;
-  const randomAccessCode = Math.floor(Math.random() * (MAX - MIN)) + MIN;
 
-  if (isIndividualGame(game)) {
-    setValue('name', `${user?.username} - ${user?.name}`);
-  } else {
-    setValue('name', `Team ${user?.name}`);
-    setValue('code', randomAccessCode);
-  }
+  useEffect(() => {
+    if (user) {
+      if (isIndividualGame(game)) {
+        setValue('name', `${user?.username} - ${user?.name}`);
+      } else {
+        const randomAccessCode = Math.floor(Math.random() * (MAX - MIN)) + MIN;
+        setValue('name', `Team ${user?.name}`);
+        setValue('code', randomAccessCode);
+      }
+    }
+  }, [user]);
 
   const currentSelectedColor = watch('color', '#00A0F0');
 
