@@ -26,7 +26,7 @@ export default function Layout({
   const deferredPrompt = useRef<any | null>(null);
 
   useEffect(() => {
-    if (window) {
+    if (typeof window !== 'undefined') {
       window.addEventListener('beforeinstallprompt', (e) => {
         deferredPrompt.current = e;
         setShowInstall(true);
