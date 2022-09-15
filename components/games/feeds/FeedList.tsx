@@ -25,7 +25,7 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
   const gameService = new GameService(user?.access_token);
   const teamService = new GameTeamService(user?.access_token);
   const [{ isLoading, load, finish }] = useLoading(false);
-  const [canLoadMore, setCanLoadMore] = useState(true);
+  const [canLoadMore, setCanLoadMore] = useState(false);
 
   const { data, size, setSize } = useSWRInfinite(
     (pageIndex, previousPageData: PaginatedSubmission | null) => {
@@ -47,6 +47,8 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
 
       const limitWhenFetchingSubmissions = 5;
       if (subs.data.length < limitWhenFetchingSubmissions) setCanLoadMore(false);
+      else setCanLoadMore(true);
+
       return subs;
     },
   );
