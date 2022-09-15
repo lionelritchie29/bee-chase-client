@@ -22,7 +22,7 @@ export default function LeaderboardCard({ teamRank, currentTeam }: Props) {
       <div className='flex'>
         <div className='avatar'>
           <div
-            className='w-12 rounded-full border border-gray-400'
+            className='w-12 h-12 rounded-full border border-gray-400'
             style={{ backgroundColor: teamRank.color ?? '' }}></div>
         </div>
         <div className='ml-3'>

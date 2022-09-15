@@ -73,17 +73,17 @@ export default function MyTeam({ currentTeam, game }: Props) {
           </div>
         </div>
         <div className='text-center'>
-          {teamRank ? (
-            <span className='block mt-2 text-lg font-bold'>{teamRank.name}</span>
+          {team ? (
+            <span className='block mt-2 text-lg font-bold'>{team.name}</span>
           ) : (
             <div className='h-4 w-24 mt-2 bg-gray-300 mx-auto rounded animate-pulse'></div>
           )}
 
           <div className='flex justify-center items-center pb-6'>
-            {teamRank && teamRank.access_code && (
+            {team && team.access_code && (
               <div className='flex'>
                 <span className='block mr-1'>Access Code:</span>
-                <span className='block font-bold'> {teamRank.access_code}</span>
+                <span className='block font-bold'> {team.access_code}</span>
               </div>
             )}
           </div>

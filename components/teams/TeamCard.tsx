@@ -16,10 +16,12 @@ export default function TeamCard({ team, verifyTeam, game }: Props) {
       onClick={() => verifyTeam(team.id)}
       className='w-full flex justify-between items-center p-4 border-b'>
       <div className='flex items-center text-orange-400'>
-        <div
-          className='w-6 h-6 rounded-full mr-2'
-          style={{ backgroundColor: team.color ?? COLORS.TEAM_DEFAULT }}
-        />
+        <div className='avatar'>
+          <div
+            className='w-6 h-6 rounded-full mr-2'
+            style={{ backgroundColor: team.color ?? COLORS.TEAM_DEFAULT }}
+          />
+        </div>
         <span className='block font-semibold'>{team.name}</span>
         {teamIsFull(game, team) && <span className='badge badge-outline ml-3'>Full</span>}
       </div>
