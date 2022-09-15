@@ -87,7 +87,7 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
             <span className='block ml-1 h-5 w-20 bg-gray-300 rounded animate-pulse'></span>
           ) : (
             <span className='block font-bold ml-1'>
-              {currentRank ? currentRank.total_point : 0} pts
+              {currentRank ? `${currentRank.total_point} pts` : '#NA'}
             </span>
           )}
         </div>
