@@ -11,6 +11,7 @@ import useSWRInfinite from 'swr/infinite';
 import FeedCard from './FeedCard';
 import FeedCardSkeleton from './FeedCardSkeleton';
 import useLoading from '../../../hooks/use-loading';
+import { useState } from 'react';
 
 type Props = {
   currentTeam: GameTeamUser;
@@ -24,6 +25,7 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
   const gameService = new GameService(user?.access_token);
   const teamService = new GameTeamService(user?.access_token);
   const [{ isLoading, load, finish }] = useLoading(false);
+  const [canLoadMore, setCanLoadMore] = useState(true);
 
   const { data, size, setSize } = useSWRInfinite(
     (pageIndex, previousPageData: PaginatedSubmission | null) => {
@@ -42,6 +44,9 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
         ? await teamService.getAllSubmissions(game.id, currentTeam.game_team_id, page)
         : await gameService.getAllSubmissions(game.id, page);
       finish();
+
+      const limitWhenFetchingSubmissions = 5;
+      if (subs.data.length < limitWhenFetchingSubmissions) setCanLoadMore(false);
       return subs;
     },
   );
@@ -69,12 +74,14 @@ export default function FeedList({ currentTeam, game, forMyTeam = false }: Props
           ))}
       </ul>
 
-      <button
-        disabled={isLoading}
-        onClick={() => setSize(size + 1)}
-        className={`w-full text-white btn mt-4 ${isLoading ? 'btn-disabled' : 'btn-secondary'}`}>
-        Load More
-      </button>
+      {canLoadMore && (
+        <button
+          disabled={isLoading}
+          onClick={() => setSize(size + 1)}
+          className={`w-full text-white btn mt-4 ${isLoading ? 'btn-disabled' : 'btn-secondary'}`}>
+          Load More
+        </button>
+      )}
     </section>
   );
 }
