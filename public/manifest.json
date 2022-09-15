@@ -3,7 +3,7 @@
   "background_color": "#00A8E0",
   "display": "standalone",
   "scope": "/",
-  "start_url": "/",
+  "start_url": "https://beechase.apps.binus.ac.id/",
   "name": "BeeChase",
   "short_name": "BeeChase",
   "description": "BeeChase, Treasure Hunt Apps",
