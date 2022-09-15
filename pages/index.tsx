@@ -52,7 +52,12 @@ const Home: NextPage = () => {
     return currDate.getTime() >= startDate.getTime() && currDate.getTime() <= endDate.getTime();
   });
 
-  const futureGames = games.filter((game) => !game.start_time || !game.end_time);
+  const futureGames = games.filter((game) => {
+    if (!game.start_time || !game.end_time) return true;
+    const currDate = new Date();
+    const startDate = new Date(game.start_time);
+    return startDate.getTime() > currDate.getTime();
+  });
 
   const passedGames = games.filter((game) => {
     if (!game.start_time || !game.end_time) return false;
