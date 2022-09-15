@@ -21,16 +21,12 @@ export default function MyTeam({ currentTeam, game }: Props) {
   const user = session?.data?.user as SessionUser;
   const teamService = new GameTeamService(user?.access_token);
 
-  const { cache } = useSWRConfig();
-  const { data: team } = useSWR<GameTeam>(
-    user && SWR_KEY.MY_TEAM,
-    () => teamService.getById(game.id, currentTeam.game_team_id),
-    { revalidateOnMount: !cache.get(SWR_KEY.MY_TEAM) },
+  const { data: team } = useSWR<GameTeam>(user && SWR_KEY.MY_TEAM, () =>
+    teamService.getById(game.id, currentTeam.game_team_id),
   );
   const { data: teamRank } = useSWR<GameTeam & GameTeamRank>(
     user && SWR_KEY.MY_TEAM_LEADERBOARD,
     () => teamService.getCurrentTeamLeaderboard(game.id, currentTeam.game_team_id),
-    { revalidateOnMount: !cache.get(SWR_KEY.MY_TEAM_LEADERBOARD) },
   );
 
   return (

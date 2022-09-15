@@ -41,15 +41,12 @@ export default function MissionList({ game, currentTeam }: Props) {
   const [activeTabId, setActiveTabId] = useState(1);
   const router = useRouter();
 
-  const { cache } = useSWRConfig();
   const { data: missions } = useSWR<GameMission[]>(user && SWR_KEY.CURRENT_MISSIONS, () =>
     missionService.getByGame(game.id),
   );
 
-  const { data: team } = useSWR<GameTeam>(
-    user && SWR_KEY.MY_TEAM,
-    () => teamService.getById(game.id, currentTeam.game_team_id),
-    { revalidateOnMount: !cache.get(SWR_KEY.MY_TEAM) },
+  const { data: team } = useSWR<GameTeam>(user && SWR_KEY.MY_TEAM, () =>
+    teamService.getById(game.id, currentTeam.game_team_id),
   );
 
   const remainingMissions = missions?.filter((mission) => mission.submissions.length === 0) ?? [];
