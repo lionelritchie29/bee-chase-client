@@ -27,6 +27,7 @@ export default function Navbar({ title }: Props) {
     '/games/[id]/teams',
     '/games/[id]/teams/create',
     '/global-leaderboard',
+    '/how-to-play',
   ];
 
   const refreshBtnAllowedRoutes = [

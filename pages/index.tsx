@@ -11,11 +11,14 @@ import dynamic from 'next/dynamic';
 import useSWR from 'swr';
 import { SWR_KEY } from '../constants/swr-key';
 import GameListSkeleton from '../components/skeletons/GameListSkeleton';
+import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/router';
 
 const GameList = dynamic(() => import('../components/home/GameList'));
 
 const Home: NextPage = () => {
   const session = useSession();
+  const router = useRouter();
   const user = session?.data?.user as SessionUser;
   const gameService = new GameService(user?.access_token);
 
@@ -71,14 +74,27 @@ const Home: NextPage = () => {
       case 1:
         return <GameList title={'passed'} games={passedGames} />;
       case 2:
-        return <GameList title={'active'} games={activeGames} />;
+        return (
+          <GameList
+            title={'active'}
+            games={[
+              ...activeGames,
+              ...activeGames,
+              ...activeGames,
+              ...activeGames,
+              ...activeGames,
+              ...activeGames,
+              ...activeGames,
+            ]}
+          />
+        );
       case 3:
         return <GameList title={'future'} games={futureGames} />;
     }
   };
 
   return (
-    <Layout className='bg-gray-50 min-h-screen pt-3'>
+    <Layout className='bg-gray-50 min-h-screen pt-3 mb-12'>
       <div className='font-semibold text-orange-400 border rounded py-2 px-3 shadow-xs bg-white'>
         Welcome, {user?.name}
       </div>
@@ -97,6 +113,14 @@ const Home: NextPage = () => {
       </div>
 
       {renderGames()}
+
+      <div className='fixed bottom-0 right-0 w-full text-right p-4'>
+        <button
+          onClick={() => router.push('/how-to-play')}
+          className='btn shadow-lg btn btn-secondary rounded-full text-white'>
+          <span>Learn How to Play</span>
+        </button>
+      </div>
     </Layout>
   );
 };
