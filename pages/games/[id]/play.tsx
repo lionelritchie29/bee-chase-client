@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/24/outline';
 import Layout from '../../../widgets/Layout';
 import { BottomNavbarItem } from '../../../models/view/BottomNavbarItem';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import { GameService } from '../../../services/GameService';
@@ -19,6 +19,7 @@ import { GameTeamUser } from '../../../models/GameTeamUser';
 import { isGameExpired } from '../../../lib/game-utils';
 import GameBottomNavbar from '../../../widgets/BottomNavbar';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 
 const FeedList = dynamic(() => import('../../../components/games/feeds/FeedList'), {
   loading: () => <div className='text-center'>Loading...</div>,
@@ -63,6 +64,24 @@ const PlayGamePage: NextPage<Props> = ({ game, currentTeam }) => {
   ];
 
   const [activeNavItemId, setActiveNavItemId] = useState(1);
+  const router = useRouter();
+
+  useEffect(() => {
+    const { t } = router.query;
+    setActiveNavItemId(Number(t) ?? 1);
+  }, []);
+
+  const setActiveTab = (tabId: number) => {
+    setActiveNavItemId(tabId);
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { t: tabId, id: game.id },
+      },
+      router.pathname,
+      { shallow: true },
+    );
+  };
 
   const renderContent = () => {
     switch (activeNavItemId) {
@@ -91,7 +110,7 @@ const PlayGamePage: NextPage<Props> = ({ game, currentTeam }) => {
 
       <GameBottomNavbar
         activeItemId={activeNavItemId}
-        setActiveItemId={setActiveNavItemId}
+        setActiveTab={setActiveTab}
         items={bottomNavItems}
       />
     </Layout>
