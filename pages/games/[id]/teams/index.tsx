@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import GameDetailHeader from '../../../../components/games/GameDetailHeader';
 import Pagination from '../../../../components/shared/Pagination';
 import TeamCard from '../../../../components/teams/TeamCard';
@@ -45,6 +45,7 @@ const GameTeamsPage: NextPage<Props> = ({ game, teamsPaginated }) => {
   const [selectedTeam, setSelectedTeam] = useState<GameTeam | null>(null);
   const [openModal, setOpenModal] = useState(false);
   const [{ load, finish, isLoading }] = useLoading(false);
+  const searchInputRef = useRef(null);
 
   const verifyTeam = async (teamId: string) => {
     const selected = await teamService.getById(game.id, teamId);
@@ -65,6 +66,15 @@ const GameTeamsPage: NextPage<Props> = ({ game, teamsPaginated }) => {
     }
   };
 
+  const onSearch = (e: any) => {
+    e.preventDefault();
+    const input = (searchInputRef.current as any).value;
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, q: input },
+    });
+  };
+
   return (
     <Layout controlSpacing={false}>
       <GameDetailHeader game={game} />
@@ -81,7 +91,19 @@ const GameTeamsPage: NextPage<Props> = ({ game, teamsPaginated }) => {
         </div>
       )}
 
-      <div className='bg-gray-200 py-2 px-4 font-semibold uppercase text-sm'>Select Team</div>
+      <div className='bg-gray-200 py-2 px-4 font-semibold uppercase text-sm flex items-center'>
+        <div className='w-1/2'>Select Team</div>
+        <form onSubmit={onSearch} className='w-1/2 flex'>
+          <input
+            ref={searchInputRef}
+            placeholder='Search...'
+            className='input input-xs w-full rounded-r-none'
+          />
+          <button type='submit' className='btn btn-xs btn-secondary text-white rounded-l-none'>
+            Search
+          </button>
+        </form>
+      </div>
 
       {game.allow_user_create_team && (
         <Link href={`/games/${id}/teams/create`}>
@@ -145,7 +167,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params,
   if (alreadyInTeam) return redirectToPlay(game.id);
 
   const page = query.page as string;
-  const teamsPaginated = await teamService.getByGameId(game.id, Number(page) ?? 1);
+  const q = query.q as string;
+  const teamsPaginated = await teamService.getByGameId(game.id, q ?? '', Number(page) ?? 1);
 
   return {
     props: {

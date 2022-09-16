@@ -48,11 +48,11 @@ const PaginationButtons: ComponentType<ComponentProps<'section'> & IPaginationBu
   return (
     <>
       {/* Mobile */}
-      <section className='btn-group flex justify-end sm:hidden' {...rest}>
+      <section className='btn-group flex justify-end sm:hidden mx-4' {...rest}>
         <button
           onClick={() => onChangePage(currentPage - 1)}
           disabled={!hasPrev}
-          className='btn btn-secondary'>
+          className='btn btn-secondary text-white'>
           <ChevronLeftIcon className='h-5 w-5' />
         </button>
 
@@ -63,7 +63,7 @@ const PaginationButtons: ComponentType<ComponentProps<'section'> & IPaginationBu
         <button
           onClick={() => onChangePage(currentPage + 1)}
           disabled={!hasNext}
-          className='btn btn-secondary'>
+          className='btn btn-secondary text-white'>
           <ChevronRightIcon className='h-5 w-5' />
         </button>
       </section>
