@@ -113,14 +113,6 @@ const Home: NextPage = () => {
       </div>
 
       {renderGames()}
-
-      <div className='fixed bottom-0 right-0 w-full text-right p-4'>
-        <button
-          onClick={() => router.push('/how-to-play')}
-          className='btn shadow-lg btn btn-secondary rounded-full text-white'>
-          <span>Learn How to Play</span>
-        </button>
-      </div>
     </Layout>
   );
 };

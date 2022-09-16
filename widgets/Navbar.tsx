@@ -104,6 +104,9 @@ export default function Navbar({ title }: Props) {
               tabIndex={0}
               className='dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 text-black'>
               <li>
+                <button onClick={() => router.push('/how-to-play')}>How to Play</button>
+              </li>
+              <li>
                 <button onClick={logOut}>Log out</button>
               </li>
             </ul>
