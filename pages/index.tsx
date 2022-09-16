@@ -74,20 +74,7 @@ const Home: NextPage = () => {
       case 1:
         return <GameList title={'passed'} games={passedGames} />;
       case 2:
-        return (
-          <GameList
-            title={'active'}
-            games={[
-              ...activeGames,
-              ...activeGames,
-              ...activeGames,
-              ...activeGames,
-              ...activeGames,
-              ...activeGames,
-              ...activeGames,
-            ]}
-          />
-        );
+        return <GameList title={'active'} games={activeGames} />;
       case 3:
         return <GameList title={'future'} games={futureGames} />;
     }
