@@ -68,7 +68,7 @@ const PlayGamePage: NextPage<Props> = ({ game, currentTeam }) => {
 
   useEffect(() => {
     const { t } = router.query;
-    setActiveNavItemId(Number(t) ?? 1);
+    setActiveNavItemId(Number(t ?? 1));
   }, []);
 
   const setActiveTab = (tabId: number) => {
