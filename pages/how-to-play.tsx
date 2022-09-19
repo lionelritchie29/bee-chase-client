@@ -26,7 +26,7 @@ const HowToPlayPage: NextPage = () => {
       step: 3,
       image: thirdStepImg,
       title: 'Join or Create Team',
-      desc: 'Join existing team or create a new team to play. There are two types of game: <strong>individual</strong> and <strong>team</strong>. Individual game will have teams that each consist only of one member (yourself), meanwhile for team game, each team should have minimum of 2 members and maximum of 10.',
+      desc: 'Join existing team or create a new team to play. There are two types of game: <strong>individual</strong> and <strong>team</strong>. Individual game will have teams that each consist of one member only (yourself). Meanwhile for team game, each team must have minimum of 2 members and maximum of 10.',
     },
     {
       step: 4,
@@ -37,14 +37,14 @@ const HowToPlayPage: NextPage = () => {
     {
       step: 5,
       image: fifthStepImg,
-      title: 'Join the vibes',
-      desc: `View <strong>leaderboard, other team's submission, and your team submission</strong> which could be accessed from bottom navigation menu.`,
+      title: 'Join the Vibes',
+      desc: `View <strong>leaderboard, other team's submissions, and your team submissions</strong> which could be accessed from bottom navigation menu.`,
     },
     {
       step: 6,
       image: sixthStepImg,
       title: 'Global Leaderboard',
-      desc: 'View <strong>current global standing</strong>, <strong>your total score</strong> and <strong>rank</strong> throughout every game you have participated.',
+      desc: 'View <strong>current global leaderboard</strong>, <strong>your total score</strong> and <strong>rank</strong> throughout every game you have participated.',
     },
   ];
 
