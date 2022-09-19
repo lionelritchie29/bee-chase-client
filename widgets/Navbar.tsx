@@ -127,7 +127,7 @@ export default function Navbar({ title }: Props) {
               <li>
                 <a href='http://line.me/ti/p/~@045wptvx' target='_blank' rel='noreferrer'>
                   <button className='flex items-center'>
-                    <ChatBubbleLeftRightIcon className='mr-3 w-5 h-5' /> Line Chat Support
+                    <ChatBubbleLeftRightIcon className='mr-3 w-5 h-5' /> Chat Support
                   </button>
                 </a>
               </li>
