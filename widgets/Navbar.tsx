@@ -4,6 +4,10 @@ import {
   ArrowPathIcon,
   UserCircleIcon,
   ChartBarIcon,
+  ArrowRightOnRectangleIcon,
+  ChatBubbleLeftRightIcon,
+  ClipboardDocumentCheckIcon,
+  InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -104,20 +108,33 @@ export default function Navbar({ title }: Props) {
               tabIndex={0}
               className='dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 text-black'>
               <li>
-                <button onClick={() => router.push('/how-to-play')}>How to Play</button>
+                <button className='flex items-center' onClick={() => router.push('/how-to-play')}>
+                  How to Play <InformationCircleIcon className='ml-2 w-5 h-5' />
+                </button>
               </li>
               <li>
                 <a href='https://forms.office.com/r/rZXEV215a5' target='_blank' rel='noreferrer'>
-                  <button>Feedback</button>
+                  <button className='flex items-center'>
+                    Feedback <ClipboardDocumentCheckIcon className='ml-2 w-5 h-5' />
+                  </button>
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a href='https://forms.office.com/r/8HF1a4fM3h' target='_blank' rel='noreferrer'>
                   <button>Report Bug</button>
                 </a>
+              </li> */}
+              <li>
+                <a href='http://line.me/ti/p/~@045wptvx' target='_blank' rel='noreferrer'>
+                  <button className='flex items-center'>
+                    Line Chat Support <ChatBubbleLeftRightIcon className='ml-2 w-5 h-5' />
+                  </button>
+                </a>
               </li>
               <li>
-                <button onClick={logOut}>Log out</button>
+                <button onClick={logOut} className='flex items-center'>
+                  Log out <ArrowRightOnRectangleIcon className='ml-1 w-5 h-5' />
+                </button>
               </li>
             </ul>
           </div>
