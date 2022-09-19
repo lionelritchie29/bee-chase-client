@@ -79,6 +79,9 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
 
       <div className='divider'></div>
 
+      <div className='mx-3'>
+        Hi, <span className='font-bold'>{user?.name}</span>
+      </div>
       <div className='flex justify-between uppercase mb-4 mx-3 bg-orange-100 border border-orange-300 rounded p-2'>
         <div className='flex items-center'>
           <span className='block'>Your Score: </span>
