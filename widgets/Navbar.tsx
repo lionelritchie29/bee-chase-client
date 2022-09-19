@@ -107,6 +107,16 @@ export default function Navbar({ title }: Props) {
                 <button onClick={() => router.push('/how-to-play')}>How to Play</button>
               </li>
               <li>
+                <a href='https://forms.office.com/r/rZXEV215a5' target='_blank' rel='noreferrer'>
+                  <button>Feedback</button>
+                </a>
+              </li>
+              <li>
+                <a href='https://forms.office.com/r/8HF1a4fM3h' target='_blank' rel='noreferrer'>
+                  <button>Report Bug</button>
+                </a>
+              </li>
+              <li>
                 <button onClick={logOut}>Log out</button>
               </li>
             </ul>
