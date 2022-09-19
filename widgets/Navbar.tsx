@@ -109,13 +109,13 @@ export default function Navbar({ title }: Props) {
               className='dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 text-black'>
               <li>
                 <button className='flex items-center' onClick={() => router.push('/how-to-play')}>
-                  How to Play <InformationCircleIcon className='ml-2 w-5 h-5' />
+                  <InformationCircleIcon className='w-5 h-5' /> How to Play
                 </button>
               </li>
               <li>
                 <a href='https://forms.office.com/r/rZXEV215a5' target='_blank' rel='noreferrer'>
                   <button className='flex items-center'>
-                    Feedback <ClipboardDocumentCheckIcon className='ml-2 w-5 h-5' />
+                    <ClipboardDocumentCheckIcon className='mr-3 w-5 h-5' /> Feedback
                   </button>
                 </a>
               </li>
@@ -127,13 +127,13 @@ export default function Navbar({ title }: Props) {
               <li>
                 <a href='http://line.me/ti/p/~@045wptvx' target='_blank' rel='noreferrer'>
                   <button className='flex items-center'>
-                    Line Chat Support <ChatBubbleLeftRightIcon className='ml-2 w-5 h-5' />
+                    <ChatBubbleLeftRightIcon className='mr-3 w-5 h-5' /> Line Chat Support
                   </button>
                 </a>
               </li>
               <li>
                 <button onClick={logOut} className='flex items-center'>
-                  Log out <ArrowRightOnRectangleIcon className='ml-1 w-5 h-5' />
+                  <ArrowRightOnRectangleIcon className='mr-1 w-5 h-5' /> Log out
                 </button>
               </li>
             </ul>
