@@ -63,19 +63,25 @@ const CreateTeamPage: NextPage<Props> = ({ game }) => {
   const currentSelectedColor = watch('color', '#00A0F0');
 
   const onSubmit = handleSubmit(async ({ name, code, color }) => {
-    const dto: CreateGameTeamDto = {
-      color,
-      name,
-      access_code: code ? code.toString() : null,
-    };
+    if (
+      await confirm(
+        'Are you sure you want to create this team ? Team name can not be changed and you can not leave once it has been created',
+      )
+    ) {
+      const dto: CreateGameTeamDto = {
+        color,
+        name,
+        access_code: code ? code.toString() : null,
+      };
 
-    load('Creating team...');
-    try {
-      await createTeamAndJoin(dto);
-      finish('Team created!', { loading: true });
-      router.push(`/games/${game.id}/play`);
-    } catch (e: any) {
-      finish(e.response.data.message, { success: false });
+      load('Creating team...');
+      try {
+        await createTeamAndJoin(dto);
+        finish('Team created!', { loading: true });
+        router.push(`/games/${game.id}/play`);
+      } catch (e: any) {
+        finish(e.response.data.message, { success: false });
+      }
     }
   });
 

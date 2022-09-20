@@ -52,6 +52,8 @@ export default function InputTeamCodeModal({
   };
 
   const onSubmit = handleSubmit(async ({ accessCode }) => {
+    const confirmMessage =
+      'Are you sure you want to join this team ? you can not leave after you had joined';
     if (selectedTeam?.has_access_code) {
       const verifyToast = toast('Verifying...');
       if (accessCode == null) {
@@ -66,15 +68,17 @@ export default function InputTeamCodeModal({
       );
       toast.dismiss(verifyToast);
 
-      if (isCorrect) {
+      if (isCorrect && (await confirm(confirmMessage))) {
         load('Joining...');
         await joinTeam(selectedTeam, accessCode.toString());
       } else {
         finish('Wrong access code', { success: false });
       }
     } else {
-      load('Joining...');
-      await joinTeam(selectedTeam!, null);
+      if (await confirm(confirmMessage)) {
+        load('Joining...');
+        await joinTeam(selectedTeam!, null);
+      }
     }
   });
 
