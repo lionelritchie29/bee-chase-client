@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import LeaderboardSkeleton from '../components/games/LeaderboardSkeleton';
 import GlobalLeaderboardCard from '../components/global-leaderboard/GlobalLeaderboardCard';
+import { GLOBAL_LEADERBOARD } from '../constants/global-leaderboard';
 import useLoading from '../hooks/use-loading';
 import { GlobalRank } from '../models/GlobalRank';
 import { SessionUser } from '../models/SessionUser';
@@ -24,13 +25,17 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
   const [selectedTagId, setSelectedTagId] = useState(tags ? tags[0].id : '');
   const [ranks, setRanks] = useState<GlobalRank[]>([]);
   const [currentRank, setCurrentRank] = useState<GlobalRank | null>(null);
-  const [filterDate, setFilterDate] = useState(true);
+  const [filterDate, setFilterDate] = useState(false);
   const [{ isLoading, load, finish }] = useLoading(false);
   const [{ isLoading: isLoadingCurrent, load: loadCurrent, finish: finishCurrent }] =
     useLoading(false);
 
-  const [startDate, setStartDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [endDate, setEndDate] = useState(format(addDays(new Date(), 1), 'yyyy-MM-dd'));
+  const [startDate, setStartDate] = useState(
+    format(new Date(GLOBAL_LEADERBOARD.DEFAULT_START_DATE), 'yyyy-MM-dd'),
+  );
+  const [endDate, setEndDate] = useState(
+    format(addDays(new Date(GLOBAL_LEADERBOARD.DEFAULT_END_DATE), 1), 'yyyy-MM-dd'),
+  );
 
   useEffect(() => {
     const fetchRanks = async () => {
