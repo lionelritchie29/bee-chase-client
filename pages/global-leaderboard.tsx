@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
@@ -23,30 +24,48 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
   const [selectedTagId, setSelectedTagId] = useState(tags ? tags[0].id : '');
   const [ranks, setRanks] = useState<GlobalRank[]>([]);
   const [currentRank, setCurrentRank] = useState<GlobalRank | null>(null);
+  const [filterDate, setFilterDate] = useState(true);
   const [{ isLoading, load, finish }] = useLoading(false);
   const [{ isLoading: isLoadingCurrent, load: loadCurrent, finish: finishCurrent }] =
     useLoading(false);
 
+  const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const endDate = new Date(selectedDate);
+  endDate.setDate(endDate.getDate() + 1);
+  const formattedEndDate = format(endDate, 'yyyy-MM-dd');
+
   useEffect(() => {
     const fetchRanks = async () => {
       load();
-      setRanks(await tagService.getGlobalLeaderboard(selectedTagId));
+
+      setRanks(
+        await tagService.getGlobalLeaderboard(
+          selectedTagId,
+          filterDate ? selectedDate : '1970-01-01',
+          filterDate ? formattedEndDate : '2999-01-01',
+        ),
+      );
       finish();
     };
 
     if (user && tags.length > 0) fetchRanks();
-  }, [selectedTagId, user]);
+  }, [selectedTagId, selectedDate, filterDate, user]);
 
   useEffect(() => {
     const fetchCurrentRank = async () => {
       loadCurrent();
-      const curr = await tagService.getCurrentGlobalLeaderboard(selectedTagId);
+
+      const curr = await tagService.getCurrentGlobalLeaderboard(
+        selectedTagId,
+        filterDate ? selectedDate : '1970-01-01',
+        filterDate ? formattedEndDate : '2999-01-01',
+      );
       finishCurrent();
       setCurrentRank(curr ?? null);
     };
 
     if (user && tags.length > 0) fetchCurrentRank();
-  }, [selectedTagId, user]);
+  }, [selectedTagId, selectedDate, filterDate, user]);
 
   if (tags.length == 0) {
     return (
@@ -76,6 +95,29 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
           ))}
         </select>
       </div>
+
+      <div className='form-control px-3'>
+        <label className='flex cursor-pointer'>
+          <input
+            type='checkbox'
+            onChange={(e) => setFilterDate(e.target.checked)}
+            checked={filterDate}
+            className='checkbox'
+          />
+          <div className='ml-3'>Filter date</div>
+        </label>
+      </div>
+
+      {filterDate && (
+        <div className='px-3 mb-4 mt-4'>
+          <input
+            defaultValue={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            type='date'
+            className='w-full input input-bordered'
+          />
+        </div>
+      )}
 
       <div className='divider'></div>
 
