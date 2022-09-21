@@ -27,17 +27,26 @@ export default function InputGameCode() {
   const router = useRouter();
 
   const onSubmit = handleSubmit(async ({ code }) => {
-    load('Searching game...');
-    const game = await gameService.getByCode(code.toUpperCase());
+    try {
+      load('Searching game...');
+      const game = await gameService.getByCode(code.toUpperCase());
 
-    toast.dismiss();
-    if (!game) {
-      finish('Ups, invalid code', { success: false });
-    } else if (isGameExpired(game)) {
-      finish('Ups, game has already ended', { success: false });
-    } else {
-      finish('Game found! Redirecting...', { loading: true });
-      router.push(`/games/${game.id}`);
+      toast.dismiss();
+      if (isGameExpired(game)) {
+        finish('Ups, game has already ended', { success: false });
+      } else {
+        finish('Game found! Redirecting...', { loading: true });
+        router.push(`/games/${game.id}`);
+      }
+    } catch (e: any) {
+      if (e.response?.data?.errors?.group) {
+        finish(e.response?.data?.errors?.group, { success: false });
+      } else if (e.response?.status === 404) {
+        finish('Ups, invalid code', { success: false });
+      } else {
+        console.log(e);
+        finish('Something is wrong, please contact admin');
+      }
     }
   });
 
