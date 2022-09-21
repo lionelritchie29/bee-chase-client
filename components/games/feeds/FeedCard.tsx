@@ -13,6 +13,7 @@ import { GameTeamUser } from '../../../models/GameTeamUser';
 import { MultipleChoiceAnswerData } from '../../../models/answer-data/MultipleChoiceAnswerData';
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { VerificationAnswerData } from '../../../models/answer-data/VerificationAnswerData';
+import { TextUtils } from '../../../lib/text-utils';
 
 type Props = {
   submission: Submission & { mission: GameMission } & { game_team: GameTeam };
@@ -21,7 +22,11 @@ type Props = {
 
 export default function FeedCard({ submission, currentTeam }: Props) {
   const getTextAnswer = (answer: TextAnswerData) => {
-    if (submission.game_team_id === currentTeam.game_team_id) return <b>{answer.text}</b>;
+    if (
+      submission.game_team_id === currentTeam.game_team_id &&
+      (answer.text.length != 6 || !TextUtils.validateContainsAlphaNumeric(answer.text))
+    )
+      return <b>{answer.text}</b>;
     return <span className='text-gray-400'>Hidden</span>;
   };
 

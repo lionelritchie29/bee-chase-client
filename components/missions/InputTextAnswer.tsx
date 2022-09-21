@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form';
+import { TextUtils } from '../../lib/text-utils';
 import { TextAnswerData } from '../../models/answer-data/TextAnswerData';
 import { CreateSubmissionDto } from '../../models/dto/submissions/create-submission.dto';
 import { GameTeamUser } from '../../models/GameTeamUser';
@@ -26,8 +27,11 @@ export default function InputTextAnswer({ submit, teamUser, isLoading, submissio
 
   if (submission) {
     const answer = JSON.parse(submission.answer_data) as TextAnswerData;
+    const isSecretCode =
+      TextUtils.validateContainsAlphaNumeric(answer.text) && answer.text.length === 6;
+
     setValue('caption', submission.caption);
-    setValue('text', answer.text);
+    setValue('text', isSecretCode ? 'Hidden Secret Code' : answer.text);
   }
 
   const onSubmit = handleSubmit(async ({ text, caption }) => {
