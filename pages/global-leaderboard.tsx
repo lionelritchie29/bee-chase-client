@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { addDays, format, subDays } from 'date-fns';
 import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
@@ -29,10 +29,8 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
   const [{ isLoading: isLoadingCurrent, load: loadCurrent, finish: finishCurrent }] =
     useLoading(false);
 
-  const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const endDate = new Date(selectedDate);
-  endDate.setDate(endDate.getDate() + 1);
-  const formattedEndDate = format(endDate, 'yyyy-MM-dd');
+  const [startDate, setStartDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [endDate, setEndDate] = useState(format(addDays(new Date(), 1), 'yyyy-MM-dd'));
 
   useEffect(() => {
     const fetchRanks = async () => {
@@ -41,15 +39,15 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
       setRanks(
         await tagService.getGlobalLeaderboard(
           selectedTagId,
-          filterDate ? selectedDate : '1970-01-01',
-          filterDate ? formattedEndDate : '2999-01-01',
+          filterDate ? startDate : '1970-01-01',
+          filterDate ? endDate : '2999-01-01',
         ),
       );
       finish();
     };
 
     if (user && tags.length > 0) fetchRanks();
-  }, [selectedTagId, selectedDate, filterDate, user]);
+  }, [selectedTagId, startDate, endDate, filterDate, user]);
 
   useEffect(() => {
     const fetchCurrentRank = async () => {
@@ -57,15 +55,15 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
 
       const curr = await tagService.getCurrentGlobalLeaderboard(
         selectedTagId,
-        filterDate ? selectedDate : '1970-01-01',
-        filterDate ? formattedEndDate : '2999-01-01',
+        filterDate ? startDate : '1970-01-01',
+        filterDate ? endDate : '2999-01-01',
       );
       finishCurrent();
       setCurrentRank(curr ?? null);
     };
 
     if (user && tags.length > 0) fetchCurrentRank();
-  }, [selectedTagId, selectedDate, filterDate, user]);
+  }, [selectedTagId, startDate, endDate, filterDate, user]);
 
   if (tags.length == 0) {
     return (
@@ -109,13 +107,38 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
       </div>
 
       {filterDate && (
-        <div className='px-3 mb-4 mt-4'>
-          <input
-            defaultValue={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            type='date'
-            className='w-full input input-bordered'
-          />
+        <div className='flex'>
+          <div className='px-3 mb-4 mt-4'>
+            <label className='text-sm ml-1'>From</label>
+            <input
+              defaultValue={startDate}
+              onChange={(e) => {
+                const date = e.target.value;
+                setStartDate(date);
+                setEndDate(format(addDays(new Date(date), 1), 'yyyy-MM-dd'));
+              }}
+              type='date'
+              className='w-full input input-bordered'
+            />
+          </div>
+
+          <div className='px-3 mb-4 mt-4'>
+            <label className='text-sm ml-1'>To</label>
+            <input
+              defaultValue={endDate}
+              onChange={(e) => {
+                const end = new Date(e.target.value);
+                const start = new Date(startDate);
+
+                if (start.getTime() >= end.getTime()) {
+                  setStartDate(format(subDays(end, 1), 'yyyy-MM-dd'));
+                }
+                setEndDate(e.target.value);
+              }}
+              type='date'
+              className='w-full input input-bordered'
+            />
+          </div>
         </div>
       )}
 
