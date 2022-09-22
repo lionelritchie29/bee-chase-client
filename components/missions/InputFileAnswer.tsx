@@ -89,12 +89,17 @@ export default function InputFileAnswer({
     const { token } = await onedriveService.getOnedriveToken();
     toast.dismiss(tokenToast);
 
-    const compressToast = toast('Compressing image...', { icon: '🔄' });
-    const compressedFile = await imageCompression(file, { maxSizeMB: 0.25, useWebWorker: true });
-    toast.dismiss(compressToast);
+    let finalFile = null;
+    if (file.type.includes('image')) {
+      const compressToast = toast('Compressing image...', { icon: '🔄' });
+      finalFile = await imageCompression(file, { maxSizeMB: 0.25, useWebWorker: true });
+      toast.dismiss(compressToast);
+    } else {
+      finalFile = file;
+    }
 
     const params: OnedriveUploadSessionParams = {
-      file: compressedFile,
+      file: finalFile,
       gameId: game.id,
       gameTeamId: teamUser.game_team_id,
       token,
@@ -106,7 +111,7 @@ export default function InputFileAnswer({
     toast.dismiss(uploadSessToast);
 
     const uploadParams: OnedriveUploadBytesParams = {
-      file: compressedFile,
+      file: finalFile,
       rangeSize: 10 * 1024 * 1024,
       token,
       uploadUrl,

@@ -15,6 +15,7 @@ export default function OnedriveImage({ submission }: Props) {
   const session = useSession();
   const user = session?.data?.user as SessionUser;
   const [url, setUrl] = useState('');
+  const [mimeType, setMimeType] = useState('');
 
   useEffect(() => {
     const getFile = async () => {
@@ -24,6 +25,7 @@ export default function OnedriveImage({ submission }: Props) {
         const ans = JSON.parse(submission.answer_data) as FileAnswerData;
         const r = await onedriveService.getOneDriveFileUrl(ans.download_url, token);
         setUrl(r['@microsoft.graph.downloadUrl']);
+        setMimeType(ans.mime_type);
       }
     };
 
@@ -31,6 +33,16 @@ export default function OnedriveImage({ submission }: Props) {
       getFile();
     }
   }, [submission]);
+
+  const renderContent = () => {
+    if (mimeType.includes('image')) {
+      return <img src={url} className='min-h-[12rem] w-full h-auto' alt='Uploaded File' />;
+    } else if (mimeType.includes('video')) {
+      return <video src={url} controls className='w-full' />;
+    } else {
+      return <div>Content not supported</div>;
+    }
+  };
 
   return (
     <>
@@ -43,7 +55,7 @@ export default function OnedriveImage({ submission }: Props) {
           height={600}
         />
       ) : (
-        <img src={url} className='min-h-[12rem] w-full h-auto' alt='Uploaded File' />
+        renderContent()
       )}
     </>
   );
