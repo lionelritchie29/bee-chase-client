@@ -1,8 +1,8 @@
-import { addDays, format, subDays } from 'date-fns';
+import { addDays, format, formatISO, subDays } from 'date-fns';
 import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import LeaderboardSkeleton from '../components/games/LeaderboardSkeleton';
 import GlobalLeaderboardCard from '../components/global-leaderboard/GlobalLeaderboardCard';
 import { GLOBAL_LEADERBOARD } from '../constants/global-leaderboard';
@@ -30,12 +30,11 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
   const [{ isLoading: isLoadingCurrent, load: loadCurrent, finish: finishCurrent }] =
     useLoading(false);
 
-  const [startDate, setStartDate] = useState(
-    format(new Date(GLOBAL_LEADERBOARD.DEFAULT_START_DATE), 'yyyy-MM-dd'),
-  );
-  const [endDate, setEndDate] = useState(
-    format(addDays(new Date(GLOBAL_LEADERBOARD.DEFAULT_END_DATE), 1), 'yyyy-MM-dd'),
-  );
+  const startDateDomRef = useRef<any>(null);
+  const endDateDomRef = useRef<any>(null);
+
+  const [startDate, setStartDate] = useState(new Date(GLOBAL_LEADERBOARD.START_DATE));
+  const [endDate, setEndDate] = useState(addDays(new Date(GLOBAL_LEADERBOARD.END_DATE), 1));
 
   useEffect(() => {
     const fetchRanks = async () => {
@@ -44,8 +43,8 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
       setRanks(
         await tagService.getGlobalLeaderboard(
           selectedTagId,
-          filterDate ? startDate : '1970-01-01',
-          filterDate ? endDate : '2999-01-01',
+          filterDate ? formatISO(startDate) : '1970-01-01T00:00:00Z',
+          filterDate ? formatISO(endDate) : '2999-01-01T00:00:00Z',
         ),
       );
       finish();
@@ -60,8 +59,8 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
 
       const curr = await tagService.getCurrentGlobalLeaderboard(
         selectedTagId,
-        filterDate ? startDate : '1970-01-01',
-        filterDate ? endDate : '2999-01-01',
+        filterDate ? formatISO(startDate) : '1970-01-01T00:00:00Z',
+        filterDate ? formatISO(endDate) : '2999-01-01T00:00:00Z',
       );
       finishCurrent();
       setCurrentRank(curr ?? null);
@@ -69,6 +68,39 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
 
     if (user && tags.length > 0) fetchCurrentRank();
   }, [selectedTagId, startDate, endDate, filterDate, user]);
+
+  const handleChangeStartDate = (e: any) => {
+    const selectedDate = new Date(e.target.value);
+    const globalStartDate = new Date(GLOBAL_LEADERBOARD.START_DATE);
+    const globalEndDate = new Date(GLOBAL_LEADERBOARD.END_DATE);
+
+    if (selectedDate.getTime() > globalEndDate.getTime()) {
+      alert(`Start date must be less than or equal ${format(globalEndDate, 'dd MMM yyyy, HH:mm')}`);
+      setStartDate(globalStartDate);
+      startDateDomRef.current.value = format(startDate, 'yyyy-MM-dd HH:mm');
+      return;
+    }
+
+    setStartDate(selectedDate);
+  };
+
+  const handleChangeEndDate = (e: any) => {
+    const selectedEnd = new Date(e.target.value);
+    const selectedStart = new Date(startDate);
+    const globalEndDate = new Date(GLOBAL_LEADERBOARD.END_DATE);
+
+    if (selectedEnd.getTime() > globalEndDate.getTime()) {
+      alert(`End date must be less than or equal ${format(globalEndDate, 'dd MMM yyyy, HH:mm')}`);
+      setEndDate(globalEndDate);
+      endDateDomRef.current.value = format(globalEndDate, 'yyyy-MM-dd HH:mm');
+      return;
+    }
+
+    if (selectedStart.getTime() >= selectedEnd.getTime()) {
+      setStartDate(subDays(selectedEnd, 1));
+    }
+    setEndDate(selectedEnd);
+  };
 
   if (tags.length == 0) {
     return (
@@ -82,6 +114,11 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
 
   return (
     <Layout title='Global Leaderboard' controlSpacing={false} className='mt-4'>
+      <div className='text-xs mx-3 mt-2 bg-blue-100 text-blue-600 p-2 border rounded border-blue-300'>
+        Leaderboard will be updated every one hour (ex: 11:00, 12:00, etc) and will not be updated
+        after <b>{format(new Date(GLOBAL_LEADERBOARD.END_DATE), 'dd MMM yyyy, HH:mm')}</b>
+      </div>
+
       <div className='form-control w-full px-3 mb-4'>
         <label className='label'>
           <span className='label-text'>Show leaderboard for:</span>
@@ -112,36 +149,32 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
       </div>
 
       {filterDate && (
-        <div className='flex'>
+        <div>
           <div className='px-3 mb-4 mt-4'>
             <label className='text-sm ml-1'>From</label>
             <input
-              defaultValue={startDate}
-              onChange={(e) => {
-                const date = e.target.value;
-                setStartDate(date);
-                setEndDate(format(addDays(new Date(date), 1), 'yyyy-MM-dd'));
-              }}
-              type='date'
+              defaultValue={formatISO(startDate).slice(0, -9)}
+              onChange={handleChangeStartDate}
+              ref={startDateDomRef}
+              min={GLOBAL_LEADERBOARD.START_DATE}
+              max={GLOBAL_LEADERBOARD.END_DATE}
+              type='datetime-local'
               className='w-full input input-bordered'
+              required
             />
           </div>
 
-          <div className='px-3 mb-4 mt-4'>
+          <div className='px-3 mb-4'>
             <label className='text-sm ml-1'>To</label>
             <input
-              defaultValue={endDate}
-              onChange={(e) => {
-                const end = new Date(e.target.value);
-                const start = new Date(startDate);
-
-                if (start.getTime() >= end.getTime()) {
-                  setStartDate(format(subDays(end, 1), 'yyyy-MM-dd'));
-                }
-                setEndDate(e.target.value);
-              }}
-              type='date'
+              defaultValue={formatISO(endDate).slice(0, -9)}
+              onChange={handleChangeEndDate}
+              type='datetime-local'
+              ref={endDateDomRef}
+              min={GLOBAL_LEADERBOARD.START_DATE}
+              max={GLOBAL_LEADERBOARD.END_DATE}
               className='w-full input input-bordered'
+              required
             />
           </div>
         </div>
@@ -187,10 +220,6 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
           Cannot show leaderboard, no data available yet.
         </div>
       )}
-
-      <div className='text-xs mx-3 mt-2 text-blue-600'>
-        Leaderboard will be updated every one hours (ex: 11:00, 12:00, etc)
-      </div>
     </Layout>
   );
 };
