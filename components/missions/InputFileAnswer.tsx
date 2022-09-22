@@ -1,7 +1,7 @@
 import { CameraIcon, VideoCameraIcon } from '@heroicons/react/24/outline';
 import imageCompression from 'browser-image-compression';
 import { useSession } from 'next-auth/react';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { MediaType } from '../../constants/media-type';
@@ -45,6 +45,7 @@ export default function InputFileAnswer({
 
   const session = useSession();
   const user = session?.data?.user as SessionUser;
+  const isUploadingRef = useRef(false);
 
   const {
     register,
@@ -83,6 +84,13 @@ export default function InputFileAnswer({
 
   const onSubmit = handleSubmit(async ({ caption }) => {
     if (!file || !user) return;
+    if (isUploadingRef.current) {
+      toast.error(
+        'Still uploading, please wait, you will be notified again if the file has been uploaded succesfully',
+      );
+      return;
+    }
+    isUploadingRef.current = true;
 
     const onedriveService = new OnedriveService(user.access_token);
     const tokenToast = toast('Getting token...', { icon: '🔄' });
@@ -132,6 +140,7 @@ export default function InputFileAnswer({
     };
 
     await submit(dto);
+    isUploadingRef.current = false;
   });
 
   return (
