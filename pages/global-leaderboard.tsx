@@ -120,7 +120,8 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
           to participants after{' '}
           <b>{format(new Date(GLOBAL_LEADERBOARD.END_DATE), 'dd MMM yyyy, HH:mm')}</b>. Leaderboard
           data calculated at <b>{GLOBAL_LEADERBOARD.CUT_OFF}</b> will be used to determine the
-          winner of this competition, and will be announced at the Closing Ceremony.
+          winner of this competition (but not shown to participants), and will be announced at the
+          Closing Ceremony.
         </p>
 
         <p>
