@@ -44,7 +44,7 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
         await tagService.getGlobalLeaderboard(
           selectedTagId,
           filterDate ? formatISO(startDate) : '1970-01-01T00:00:00Z',
-          filterDate ? formatISO(endDate) : '2999-01-01T00:00:00Z',
+          filterDate ? formatISO(endDate) : '2022-09-23T15:00:00Z',
         ),
       );
       finish();
@@ -60,7 +60,7 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
       const curr = await tagService.getCurrentGlobalLeaderboard(
         selectedTagId,
         filterDate ? formatISO(startDate) : '1970-01-01T00:00:00Z',
-        filterDate ? formatISO(endDate) : '2999-01-01T00:00:00Z',
+        filterDate ? formatISO(endDate) : '2022-09-23T15:00:00Z',
       );
       finishCurrent();
       setCurrentRank(curr ?? null);
