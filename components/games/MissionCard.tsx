@@ -56,7 +56,10 @@ export default function MissionCard({ className, mission }: Props) {
                 <span className='badge badge-outline mt-1'>{mission.point_value}pts</span>
               </div>
             </div>
-            <div className='text-gray-400 text-sm mt-1'>{mission.description}</div>
+            <div
+              className='text-gray-400 text-sm mt-1'
+              style={{ wordBreak: 'break-word' }}
+              dangerouslySetInnerHTML={{ __html: mission.description }}></div>
           </div>
         </div>
       </div>
