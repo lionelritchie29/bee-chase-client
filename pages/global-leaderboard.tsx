@@ -119,8 +119,8 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
           Leaderboard will be updated every one hour (ex: 11:00, 12:00, etc) and will not be updated
           to participants after{' '}
           <b>{format(new Date(GLOBAL_LEADERBOARD.END_DATE), 'dd MMM yyyy, HH:mm')}</b>. Leaderboard
-          data calculated <b>{GLOBAL_LEADERBOARD.CUT_OFF}</b> will be used to determine the winner
-          of this competition, and will be announced at the Closing Ceremony.
+          data calculated at <b>{GLOBAL_LEADERBOARD.CUT_OFF}</b> will be used to determine the
+          winner of this competition, and will be announced at the Closing Ceremony.
         </p>
 
         <p>
