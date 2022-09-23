@@ -114,9 +114,20 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
 
   return (
     <Layout title='Global Leaderboard' controlSpacing={false} className='mt-4'>
-      <div className='text-xs mx-3 mt-2 bg-blue-100 text-blue-600 p-2 border rounded border-blue-300'>
-        Leaderboard will be updated every one hour (ex: 11:00, 12:00, etc) and will not be updated
-        after <b>{format(new Date(GLOBAL_LEADERBOARD.END_DATE), 'dd MMM yyyy, HH:mm')}</b>
+      <div className='text-xs mx-3 mt-2 bg-blue-100 text-blue-600 p-2 border rounded border-blue-300 space-y-4'>
+        <p>
+          Leaderboard will be updated every one hour (ex: 11:00, 12:00, etc) and will not be updated
+          to participants after{' '}
+          <b>{format(new Date(GLOBAL_LEADERBOARD.END_DATE), 'dd MMM yyyy, HH:mm')}</b>. Leaderboard
+          data calculated <b>{GLOBAL_LEADERBOARD.CUT_OFF}</b> will be used to determine the winner
+          of this competition, and will be announced at the Closing Ceremony.
+        </p>
+
+        <p>
+          Please join the Reward Announcement and Closing at{' '}
+          <b>{format(new Date(GLOBAL_LEADERBOARD.ANNOUNCEMENT_DATE), 'HH:mm')}</b> in{' '}
+          <b>{GLOBAL_LEADERBOARD.ANNOUNCEMENT_PLACE}</b>.
+        </p>
       </div>
 
       <div className='form-control w-full px-3 mb-4'>
