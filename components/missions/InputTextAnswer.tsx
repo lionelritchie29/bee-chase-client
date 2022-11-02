@@ -38,7 +38,7 @@ export default function InputTextAnswer({ submit, teamUser, isLoading, submissio
     const dto: CreateSubmissionDto = {
       caption: caption ?? null,
       game_team_id: teamUser.game_team_id,
-      answer_data: { text },
+      answer_data: { text: text ?? '' },
     };
     await submit(dto);
   });
@@ -46,7 +46,7 @@ export default function InputTextAnswer({ submit, teamUser, isLoading, submissio
   return (
     <form onSubmit={onSubmit}>
       <input
-        {...register('text', { required: true })}
+        {...register('text')}
         type='text'
         placeholder='Answer'
         className='input input-bordered w-full mt-2'
