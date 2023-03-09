@@ -14,7 +14,7 @@ const HowToPlayPage: NextPage = () => {
       step: 1,
       image: firstStepImg,
       title: 'Visit & Login',
-      desc: `Visit <a class='underline text-blue-600' href="https://beechase.apps.binus.ac.id">BeeChase</a> in your browser and log in using your <strong>NIM</strong> and <strong>Binusmaya password</strong>.`,
+      desc: `Visit <a class='underline text-blue-600' href="https://beechase.apps.binus.ac.id">BeeChase</a> in your browser and log in using your <strong>email account</strong> and <strong>Binusmaya password</strong>.`,
     },
     {
       step: 2,
