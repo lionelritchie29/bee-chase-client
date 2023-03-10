@@ -1,4 +1,12 @@
-import { addDays, format, formatISO, subDays } from 'date-fns';
+import {
+  addDays,
+  endOfMonth,
+  format,
+  formatISO,
+  startOfMonth,
+  startOfYear,
+  subDays,
+} from 'date-fns';
 import { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
@@ -33,8 +41,22 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
   const startDateDomRef = useRef<any>(null);
   const endDateDomRef = useRef<any>(null);
 
-  const [startDate, setStartDate] = useState(new Date(GLOBAL_LEADERBOARD.START_DATE));
-  const [endDate, setEndDate] = useState(addDays(new Date(GLOBAL_LEADERBOARD.END_DATE), 1));
+  const currDate = new Date();
+  const minStartDate = GLOBAL_LEADERBOARD.ENABLE_FILTER
+    ? GLOBAL_LEADERBOARD.START_DATE
+    : '1970-01-01T00:00:00Z';
+  const maxEndDate = GLOBAL_LEADERBOARD.ENABLE_FILTER
+    ? GLOBAL_LEADERBOARD.END_DATE
+    : formatISO(endOfMonth(currDate)).slice(0, -9);
+
+  const [startDate, setStartDate] = useState(() => {
+    if (GLOBAL_LEADERBOARD.ENABLE_FILTER) return new Date(GLOBAL_LEADERBOARD.START_DATE);
+    return startOfYear(currDate);
+  });
+  const [endDate, setEndDate] = useState(() => {
+    if (GLOBAL_LEADERBOARD.ENABLE_FILTER) return addDays(new Date(GLOBAL_LEADERBOARD.END_DATE), 1);
+    return endOfMonth(currDate);
+  });
 
   useEffect(() => {
     const fetchRanks = async () => {
@@ -43,8 +65,8 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
       setRanks(
         await tagService.getGlobalLeaderboard(
           selectedTagId,
-          filterDate ? formatISO(startDate) : '1970-01-01T00:00:00Z',
-          filterDate ? formatISO(endDate) : GLOBAL_LEADERBOARD.END_DATE,
+          formatISO(startDate),
+          formatISO(endDate),
         ),
       );
       finish();
@@ -59,8 +81,8 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
 
       const curr = await tagService.getCurrentGlobalLeaderboard(
         selectedTagId,
-        filterDate ? formatISO(startDate) : '1970-01-01T00:00:00Z',
-        filterDate ? formatISO(endDate) : GLOBAL_LEADERBOARD.END_DATE,
+        formatISO(startDate),
+        formatISO(endDate),
       );
       finishCurrent();
       setCurrentRank(curr ?? null);
@@ -71,12 +93,13 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
 
   const handleChangeStartDate = (e: any) => {
     const selectedDate = new Date(e.target.value);
-    const globalStartDate = new Date(GLOBAL_LEADERBOARD.START_DATE);
-    const globalEndDate = new Date(GLOBAL_LEADERBOARD.END_DATE);
+    const endDate = GLOBAL_LEADERBOARD.ENABLE_FILTER
+      ? new Date(GLOBAL_LEADERBOARD.END_DATE)
+      : new Date();
 
-    if (selectedDate.getTime() > globalEndDate.getTime()) {
-      alert(`Start date must be less than or equal ${format(globalEndDate, 'dd MMM yyyy, HH:mm')}`);
-      setStartDate(globalStartDate);
+    if (selectedDate.getTime() > endDate.getTime()) {
+      alert(`Start date must be less than or equal ${format(endDate, 'dd MMM yyyy, HH:mm')}`);
+      setStartDate(startDate);
       startDateDomRef.current.value = format(startDate, 'yyyy-MM-dd HH:mm');
       return;
     }
@@ -87,12 +110,11 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
   const handleChangeEndDate = (e: any) => {
     const selectedEnd = new Date(e.target.value);
     const selectedStart = new Date(startDate);
-    const globalEndDate = new Date(GLOBAL_LEADERBOARD.END_DATE);
 
-    if (selectedEnd.getTime() > globalEndDate.getTime()) {
-      alert(`End date must be less than or equal ${format(globalEndDate, 'dd MMM yyyy, HH:mm')}`);
-      setEndDate(globalEndDate);
-      endDateDomRef.current.value = format(globalEndDate, 'yyyy-MM-dd HH:mm');
+    if (selectedEnd.getTime() > endDate.getTime()) {
+      alert(`End date must be less than or equal ${format(endDate, 'dd MMM yyyy, HH:mm')}`);
+      setEndDate(endDate);
+      endDateDomRef.current.value = format(endDate, 'yyyy-MM-dd HH:mm');
       return;
     }
 
@@ -112,8 +134,9 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
     );
   }
 
-  return (
-    <Layout title='Global Leaderboard' controlSpacing={false} className='mt-4'>
+  const renderLeaderboardInfo = () => {
+    if (!GLOBAL_LEADERBOARD.ENABLE_FILTER) return <></>;
+    return (
       <div className='text-xs mx-3 mt-2 bg-blue-100 text-blue-600 p-2 border rounded border-blue-300 space-y-4'>
         <p>
           Leaderboard will be updated every one hour (ex: 11:00, 12:00, etc) and will not be updated
@@ -130,6 +153,24 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
           <b>{GLOBAL_LEADERBOARD.ANNOUNCEMENT_PLACE}</b>.
         </p>
       </div>
+    );
+  };
+
+  const renderGlobalLeaderboardDateInfo = () => {
+    return (
+      <div className='text-xs mx-3 mt-2 bg-blue-100 text-blue-600 p-2 border rounded border-blue-300 space-y-4'>
+        <p>
+          Showing Global Leaderboard from <b>{format(startDate, 'dd MMM yyyy, HH:mm')}</b> to{' '}
+          <b>{format(endDate, 'dd MMM yyyy, HH:mm')}</b>
+        </p>
+      </div>
+    );
+  };
+
+  return (
+    <Layout title='Global Leaderboard' controlSpacing={false} className='mt-4'>
+      {renderLeaderboardInfo()}
+      {renderGlobalLeaderboardDateInfo()}
 
       <div className='form-control w-full px-3 mb-4'>
         <label className='label'>
@@ -168,8 +209,8 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
               defaultValue={formatISO(startDate).slice(0, -9)}
               onChange={handleChangeStartDate}
               ref={startDateDomRef}
-              min={GLOBAL_LEADERBOARD.START_DATE}
-              max={GLOBAL_LEADERBOARD.END_DATE}
+              min={minStartDate}
+              max={maxEndDate}
               type='datetime-local'
               className='w-full input input-bordered'
               required
@@ -183,8 +224,8 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
               onChange={handleChangeEndDate}
               type='datetime-local'
               ref={endDateDomRef}
-              min={GLOBAL_LEADERBOARD.START_DATE}
-              max={GLOBAL_LEADERBOARD.END_DATE}
+              min={minStartDate}
+              max={maxEndDate}
               className='w-full input input-bordered'
               required
             />
