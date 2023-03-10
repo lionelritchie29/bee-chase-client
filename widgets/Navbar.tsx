@@ -113,25 +113,6 @@ export default function Navbar({ title }: Props) {
                 </button>
               </li>
               <li>
-                <a href='https://forms.office.com/r/rZXEV215a5' target='_blank' rel='noreferrer'>
-                  <button className='flex items-center'>
-                    <ClipboardDocumentCheckIcon className='mr-3 w-5 h-5' /> Feedback
-                  </button>
-                </a>
-              </li>
-              {/* <li>
-                <a href='https://forms.office.com/r/8HF1a4fM3h' target='_blank' rel='noreferrer'>
-                  <button>Report Bug</button>
-                </a>
-              </li> */}
-              <li>
-                <a href='http://line.me/ti/p/~@045wptvx' target='_blank' rel='noreferrer'>
-                  <button className='flex items-center'>
-                    <ChatBubbleLeftRightIcon className='mr-3 w-5 h-5' /> Chat Support
-                  </button>
-                </a>
-              </li>
-              <li>
                 <button onClick={logOut} className='flex items-center'>
                   <ArrowRightOnRectangleIcon className='mr-1 w-5 h-5' /> Log out
                 </button>

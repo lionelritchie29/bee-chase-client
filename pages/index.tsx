@@ -83,8 +83,6 @@ const Home: NextPage = () => {
 
   return (
     <Layout className='bg-gray-50 min-h-screen pt-3 mb-12'>
-      <SupportAlert />
-
       <div className='font-semibold text-orange-400 border rounded py-2 px-3 shadow-xs bg-white'>
         Welcome, {user?.name}
       </div>
