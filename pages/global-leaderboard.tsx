@@ -42,19 +42,19 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
   const endDateDomRef = useRef<any>(null);
 
   const currDate = new Date();
-  const minStartDate = GLOBAL_LEADERBOARD.ENABLE_FILTER
+  const minStartDate = GLOBAL_LEADERBOARD.IS_FOR_EVENT
     ? GLOBAL_LEADERBOARD.START_DATE
     : '1970-01-01T00:00:00Z';
-  const maxEndDate = GLOBAL_LEADERBOARD.ENABLE_FILTER
+  const maxEndDate = GLOBAL_LEADERBOARD.IS_FOR_EVENT
     ? GLOBAL_LEADERBOARD.END_DATE
     : formatISO(endOfMonth(currDate)).slice(0, -9);
 
   const [startDate, setStartDate] = useState(() => {
-    if (GLOBAL_LEADERBOARD.ENABLE_FILTER) return new Date(GLOBAL_LEADERBOARD.START_DATE);
+    if (GLOBAL_LEADERBOARD.IS_FOR_EVENT) return new Date(GLOBAL_LEADERBOARD.START_DATE);
     return startOfYear(currDate);
   });
   const [endDate, setEndDate] = useState(() => {
-    if (GLOBAL_LEADERBOARD.ENABLE_FILTER) return addDays(new Date(GLOBAL_LEADERBOARD.END_DATE), 1);
+    if (GLOBAL_LEADERBOARD.IS_FOR_EVENT) return addDays(new Date(GLOBAL_LEADERBOARD.END_DATE), 1);
     return endOfMonth(currDate);
   });
 
@@ -93,7 +93,7 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
 
   const handleChangeStartDate = (e: any) => {
     const selectedDate = new Date(e.target.value);
-    const endDate = GLOBAL_LEADERBOARD.ENABLE_FILTER
+    const endDate = GLOBAL_LEADERBOARD.IS_FOR_EVENT
       ? new Date(GLOBAL_LEADERBOARD.END_DATE)
       : new Date();
 
@@ -135,7 +135,7 @@ const GlobalLeaderboardPage: NextPage<Props> = ({ tags }) => {
   }
 
   const renderLeaderboardInfo = () => {
-    if (!GLOBAL_LEADERBOARD.ENABLE_FILTER) return <></>;
+    if (!GLOBAL_LEADERBOARD.IS_FOR_EVENT) return <></>;
     return (
       <div className='text-xs mx-3 mt-2 bg-blue-100 text-blue-600 p-2 border rounded border-blue-300 space-y-4'>
         <p>
